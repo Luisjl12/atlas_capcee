@@ -1,6 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 
+<style>
+    .perfil-btn {
+        display: inline-block;
+        width: auto;
+        padding: 8px 16px;
+        background-color: #641C16;
+        color: #fff;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 6px;
+        font-weight: 600;
+        margin-top: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .perfil-btn:hover {
+        background-color: #4b1511;
+    }
+</style>
+
 <head>
     <meta charset="UTF-8">
     <title>Panel principal</title>
@@ -18,6 +38,7 @@
                     @csrf
                     <button type="submit" class="btn btn-danger">Cerrar sesion</button>
                 </form>
+                <a href="{{route('perfil')}}" class="perfil-btn">Ver Perfil</a>
             </div>
         </div>
     </div>

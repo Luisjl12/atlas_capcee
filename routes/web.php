@@ -16,3 +16,7 @@ Route::get('/dashboard', function () {
 })->middleware('auth.custom')->name('dashboard');
 
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+Route::get('/perfil', function () {
+    return view('perfil');
+})->middleware('auth.custom')->name('perfil');

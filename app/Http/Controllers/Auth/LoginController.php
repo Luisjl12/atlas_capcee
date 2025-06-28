@@ -29,6 +29,9 @@ class LoginController extends Controller
             Session::put('loggedin', true);
             Session::put('id', $usuario->id);
             Session::put('nombre_completo', $usuario->nombre_completo);
+            Session::put('correo_electronico', $usuario->correo_electronico);
+            Session::put('telefono_contacto', $usuario->telefono_contacto);
+            Session::put('ultima_conexion', $usuario->now);
             Session::put('role_id', $usuario->role_id);
 
 
@@ -47,7 +50,7 @@ class LoginController extends Controller
     public function logout()
     {
         Session::flush();
-        Session::flash('success', 'Sesion cerrada correctamente.');
+        Session::flash('success', 'Sesión cerrada correctamente.');
         return redirect()->route('login');
     }
 }

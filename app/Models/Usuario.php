@@ -17,6 +17,8 @@ class Usuario extends Authenticatable
     protected $fillable = [
         'nombre_completo',
         'correo_electronico',
+        'telefono contacto',
+        'ultima_conexion',
         'password_hash',
         'estado',
         'role_id'
@@ -29,5 +31,10 @@ class Usuario extends Authenticatable
     public function getAuthPassword()
     {
         return $this->password_hash;
+    }
+
+    public function getEmailForPasswordReset()
+    {
+        return $this->correo_electronico;
     }
 }
