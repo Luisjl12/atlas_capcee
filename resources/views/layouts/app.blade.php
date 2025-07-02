@@ -7,8 +7,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: rgba(212, 99, 65, 0.93);
-            /* color vino de fondo */
+            background-color: rgba(233, 225, 222, 0.93);
+            /* Color de fondo */
             font-family: 'Inter', sans-serif;
             color: #fff;
         }

@@ -10,5 +10,7 @@
         <p><strong>Correo electrónico:</strong> {{ session ('correo_electronico') }}</p>
         <p><strong>Teléfono:</strong> {{ session('telefono_contacto') ?? 'No registrado' }}</p>
     </div>
+    <a href="{{ route('perfil.cambiar-password') }}" class="btn btn-outline-secondary mt-3">Cambiar contraseña</a>
+
 </div>
 @endsection

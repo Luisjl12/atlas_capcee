@@ -17,7 +17,7 @@ class Usuario extends Authenticatable
     protected $fillable = [
         'nombre_completo',
         'correo_electronico',
-        'telefono contacto',
+        'telefono_contacto',
         'ultima_conexion',
         'password_hash',
         'estado',
@@ -36,5 +36,14 @@ class Usuario extends Authenticatable
     public function getEmailForPasswordReset()
     {
         return $this->correo_electronico;
+    }
+    public function rol()
+    {
+        return $this->belongsTo(Role::class, 'role_id');
+    }
+
+    public function tieneRol($nombreRol)
+    {
+        return optional($this->rol)->nombre_rol === $nombreRol;
     }
 }

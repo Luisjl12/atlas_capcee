@@ -41,6 +41,18 @@ class LoginController extends Controller
 
             Session::flash('success', 'Inicio de sesión exitoso.');
 
+            $rol = $usuario->rol->nombre_rol;
+
+            if ($rol === 'ADMINISTRADOR') {
+                return redirect()->route('dashboard.admin');
+            } elseif ($rol === 'ANALISTA') {
+                return redirect()->route('dashboard.analista');
+            } elseif ($rol === 'SUPERVISOR') {
+                return redirect()->route('dashboard.supervisor');
+            } elseif ($rol === 'DIRECTOR') {
+                return redirect()->route('dashboard.director');
+            }
+
             return redirect()->route('dashboard');
         }
 
