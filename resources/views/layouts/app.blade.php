@@ -56,6 +56,10 @@
         <div class="container">
             <a class="navbar-brand" href="{{ route('dashboard') }}">ATLAS DE PUEBLA</a>
             <div class="ms-auto">
+                <form action="{{route('perfil')}}" method="GET" style="display:inline;">
+                    @csrf
+                    <button type="submit" class="btn btn-danger">Ver perfil</button>
+                </form>
                 <form action="{{route('logout')}}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
