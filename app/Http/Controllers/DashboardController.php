@@ -1,5 +1,5 @@
 <?php
-
+//Controlador que reedirige al dashboard segun el rol
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

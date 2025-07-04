@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--Vista del dashboard-->
 <html lang="es">
 
 <style>

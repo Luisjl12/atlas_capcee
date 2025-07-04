@@ -1,5 +1,5 @@
 <?php
-
+//Modelo para la tabla "roles"
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;

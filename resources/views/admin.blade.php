@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+<!--Vista del dashboard del admistrador -->
 <h1>Has iniciado sesión como Administrador</h1>
 <p>Bienvenido, {{ session('nombre_completo') }}</p>
 <div class="d-flex gap-2 mb-3">

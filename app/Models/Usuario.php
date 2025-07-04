@@ -1,5 +1,5 @@
 <?php
-
+//Modelo para la tabla usuarios
 namespace App\Models;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -37,6 +37,8 @@ class Usuario extends Authenticatable
     {
         return $this->correo_electronico;
     }
+
+    //Relacion con la tabla rol
     public function rol()
     {
         return $this->belongsTo(Role::class, 'role_id');

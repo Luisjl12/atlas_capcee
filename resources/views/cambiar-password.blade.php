@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+<!-- Vista del la pantalla de cambiar contraseña-->
 @section('title', 'Cambiar contraseña')
 
 @section('content')
@@ -9,7 +9,7 @@
     @if ($errors->any())
     <div class="alert alert-danger">
         <ul class="mb-0">
-            @foreach($erros->all() as $error)
+            @foreach($errors->all() as $error)
             <li>{{$error}}</li>
             @endforeach
         </ul>

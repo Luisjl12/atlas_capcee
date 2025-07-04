@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title', 'Mi perfil')
-
+<!--Vista de la seccion de ver perfil-->
 @section('content')
 <div class="container mt-5">
     <h2>Perfil del Usuario</h2>

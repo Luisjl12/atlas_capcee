@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--Vista del login -->
 <html lang="es">
 
 <head>

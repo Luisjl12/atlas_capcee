@@ -6,8 +6,9 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
+    //Redirige a la vista de gestionar usuarios
     public function gestionUsuarios()
     {
-        return view('gestion_usuarios');
+        return redirect()->route('usuarios.index');
     }
 }

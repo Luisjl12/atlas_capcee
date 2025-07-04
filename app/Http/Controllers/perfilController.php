@@ -1,5 +1,5 @@
 <?php
-
+//Controlador que permite visualizar el perfil y cambiar datos del mismo
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;

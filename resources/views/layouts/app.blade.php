@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--Layout o plantilla-->
 <html lang="es">
 
 <head>
