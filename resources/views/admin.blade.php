@@ -6,6 +6,7 @@
 <div class="d-flex gap-2 mb-3">
     <a href="{{route('perfil')}}" class="btn btn-primary">Ver Perfil</a>
     <a href="{{route('gestion.usuarios')}}" class="btn btn-primary">Gestion de usuarios</a>
+    <a href="{{route('planteles.index')}}" class="btn btn-primary">Gestionar Planteles</a>
 </div>
 
 @endsection

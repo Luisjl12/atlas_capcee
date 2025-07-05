@@ -9,6 +9,7 @@ use PhpParser\Builder\Function_;
 use PhpParser\Node\Expr\FuncCall;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\PlantelController;
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -83,3 +84,6 @@ Route::middleware(['auth.custom'])->prefix('usuarios')->group(function () {
     Route::put('/{id}', [UsuarioController::class, 'update'])->name('usuarios.update');
     Route::delete('{id}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
 });
+
+//Rutas para planteles
+Route::resource('planteles', PlantelController::class);
