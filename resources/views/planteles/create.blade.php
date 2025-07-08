@@ -114,6 +114,65 @@
                 <input type="text" class="form-control" name="longitud" value="{{ old('longitud') }}" required>
             </div>
         </div>
+        {{-- Sección III: Contacto y director --}}
+        <h5 class="text-danger mt-4">III. Contacto y director</h5>
+        <hr style="border: 1px solid #a10000;">
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="telefono_plantel" class="form-label">Telefono del Plantel:</label>
+                <input type="text" class="form-control" name="telefono_plantel" value="{{ old('telefono_plantel') }}" required>
+            </div>
+            <div class="col-md-4">
+                <label for="correo_institucional" class="form-label">Correo Institucional:</label>
+                <input type="text" class="form-control" name="correo_institucional" value="{{ old('correo_institucional') }}" required>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="nombre_director_registrado" class="form-label">Nombre del Director:*</label>
+                <input type="text" class="form-control" name="nombre_director_registrado" value="{{old('nombre_director_registrado')}}" required>
+            </div>
+            <div class="col-md-4">
+                <label for="id_director_asignado" class="form-label">Director Asignado(Usuario):</label>
+                <select name="id_director_asignado" class="form-select" required>
+                    <option value="">Seleccione...</option>
+                    @foreach($directores as $director)
+                    <option value="{{ $director->id }}" {{ old('id_director_asignado') == $director->id ? 'selected' : '' }}>
+                        {{ $director->nombre_completo}}
+                    </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        {{-- Sección IV: Accesibilidad --}}
+        <h5 class="text-danger mt-4">IV. Accesibilidad</h5>
+        <hr style="border: 1px solid #a10000;">
+        <div class="mb-3">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="accesibilidad_rampas" id="accesibilidad_rampas" value="1"
+                    {{ old('accesibilidad_rampas') ? 'checked' : '' }}>
+                <label class="form-check-label" for="accesibilidad_rampas">Rampas</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="accesibilidad_banos_adaptados" id="accesibilidad_banos_adaptados" value="1"
+                    {{ old('accesibilidad_banos_adaptados') ? 'checked' : '' }}>
+                <label class="form-check-label" for="accesibilidad_banos_adaptados">Baños Adaptados</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="accesibilidad_sanaletica_braille" id="accesibilidad_sanaletica_braille" value="1"
+                    {{ old('accesibilidad_sanaletica_braille') ? 'checked' : '' }}>
+                <label class="form-check-label" for="accesibilidad_sanaletica_braille">Señalética Braille</label>
+            </div>
+        </div>
+        <div class="mb-3">
+            <label for="accesibilidad_otros" class="form-label">Otros (Accesibilidad):</label>
+            <input type="text" class="form-control" name="accesibilidad_otros" id="accesibilidad_otros"
+                value="{{ old('accesibilidad_otros') }}" placeholder="Especificar...">
+        </div>
+
 
         <button type="submit" class="btn btn-success">Guardar Plantel</button>
         <a href="{{ route('planteles.index') }}" class="btn btn-secondary">Cancelar</a>

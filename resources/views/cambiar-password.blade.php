@@ -24,14 +24,16 @@
 
     <form method="POST" action="{{route('perfil.actualizar-password')}}">
         @csrf
-        <div class="mb-3">
-            <label for="password_actual" class="form-control" style="width: 200px; font-size: 0.85rem;">Contraseña actual</label>
-            <input type="password" name="password_actual" id="password_actual" class="form-control" style="width: 200px; font-size: 0.85rem;" required>
-        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="password_actual" class="form-control" style="width: 200px; font-size: 0.85rem;">Contraseña actual</label>
+                <input type="password" name="password_actual" id="password_actual" class="form-control" style="width: 200px; font-size: 0.85rem;" required>
+            </div>
 
-        <div class="mb-3">
-            <label for="nueva_password" class="form-control" style="width: 200px; font-size: 0.85rem;">Nueva contraseña</label>
-            <input type="password" name="nueva_password" id="nueva_password" class="form-control" style="width: 200px; font-size: 0.85rem;" required>
+            <div class="col-md-6">
+                <label for="nueva_password" class="form-control" style="width: 200px; font-size: 0.85rem;">Nueva contraseña</label>
+                <input type="password" name="nueva_password" id="nueva_password" class="form-control" style="width: 200px; font-size: 0.85rem;" required>
+            </div>
         </div>
 
         <div class="mb-3">

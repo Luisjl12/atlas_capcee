@@ -25,7 +25,16 @@ class Plantel extends Model
         'longitud',
         'id_municipio',
         'id_localidad',
-        'id_corde'
+        'id_corde',
+        'telefono_plantel',
+        'correo_institucional',
+        'nombre_director_registrado',
+        'id_director_asignado',
+        'accesibilidad_rampas',
+        'accesibilidad_banos_adaptados',
+        'accesibilidad_sanaletica_braille',
+        'accesibilidad_otros',
+
     ];
 
     public function municipio()
@@ -41,5 +50,9 @@ class Plantel extends Model
     public function corde()
     {
         return $this->belongsTo(Corde::class, 'id_corde');
+    }
+    public function director()
+    {
+        return $this->belongsTo(Usuario::class, 'id_director_asignado');
     }
 }
