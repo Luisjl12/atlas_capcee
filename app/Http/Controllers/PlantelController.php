@@ -16,7 +16,7 @@ class PlantelController extends Controller
      */
     public function index()
     {
-        $planteles = Plantel::all();
+        $planteles = Plantel::with(['municipio', 'director'])->get();
         return view('planteles.index', compact('planteles'));
     }
 
@@ -64,6 +64,10 @@ class PlantelController extends Controller
             'nombre_director_registrado' => 'required',
             'id_director_asignado' => 'required|exists:usuarios,id',
             'accesibilidad_otros' => 'nullable|string|max:255',
+            'total_alumnos' => 'required',
+            'total_docentes' => 'required',
+            'total_administrativos' => 'required',
+            'estatus_plantel' => 'required|in:ACTIVO,INACTIVO,EN_REVISION',
         ]);
 
         Plantel::create($request->all());
@@ -94,7 +98,15 @@ class PlantelController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $plantel = Plantel::findOrFail($id);
+        $municipios = Municipio::all();
+        $localidades = Localidad::all();
+        $cordes = Corde::all();
+        $directores = Usuario::whereHas('rol', function ($q) {
+            $q->where('nombre_rol', 'DIRECTOR');
+        })->get();
+
+        return view('planteles.edit', compact('plantel', 'municipios', 'localidades', 'cordes', 'directores'));
     }
 
     /**
@@ -102,7 +114,40 @@ class PlantelController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $plantel = Plantel::findOrFail($id);
+
+        $request->merge([
+            'accesibilidad_rampas' => $request->has('accesibilidad_rampas') ? 1 : 0,
+            'accesibildad_banos_adaptados' => $request->has('accesibilidad_banos_adpatados') ? 1 : 0,
+            'accesibilidad_sanaletica_braille' => $request->has('accesibilidad_sanaletica_braille') ? 1 : 0,
+        ]);
+
+        $request->validate([
+            'cct' => 'required|unique:planteles,cct,' . $plantel->id,
+            'nombre_escuela' => 'required',
+            'nivel_educativo' => 'required',
+            'turno' => 'required',
+            'sostenimiento' => 'required',
+            'domicilio_calle_numero' => 'required',
+            'domicilio_colonia' => 'required',
+            'domicilio_cp' => 'required',
+            'latitud' => 'required',
+            'longitud' => 'required',
+            'id_municipio' => 'required|exists:municipios,id',
+            'id_localidad' => 'required|exists:localidades,id',
+            'id_corde' => 'required|exists:cordes,id',
+            'telefono_plantel' => 'required',
+            'correo_institucional' => 'required',
+            'nombre_director_registrado' => 'required',
+            'id_director_asignado' => 'required|exists:usuarios,id',
+            'accesibilidad_otros' => 'nullable|string|max:255',
+            'total_alumnos' => 'required',
+            'total_docentes' => 'required',
+            'total_administrativos' => 'required',
+            'estatus_plantel' => 'required|in:ACTIVO,INACTIVO,EN_REVISION',
+        ]);
+        $plantel->update($request->all());
+        return redirect()->route('planteles.index')->with('success', 'Plantel actualizado correctamente.');
     }
 
     /**
@@ -110,6 +155,9 @@ class PlantelController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $planteles = Plantel::findOrFail($id);
+        $planteles->delete();
+
+        return redirect()->route('planteles.index')->with('success', 'Plantel eliminado correctamente');
     }
 }

@@ -34,6 +34,10 @@ class Plantel extends Model
         'accesibilidad_banos_adaptados',
         'accesibilidad_sanaletica_braille',
         'accesibilidad_otros',
+        'total_alumos',
+        'total_docentes',
+        'total_administrativos',
+        'estatus_plantel',
 
     ];
 

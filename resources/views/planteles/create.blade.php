@@ -173,7 +173,39 @@
                 value="{{ old('accesibilidad_otros') }}" placeholder="Especificar...">
         </div>
 
+        {{-- Sección V: Total Usuarios Planteles --}}
+        <h5 class="text-danger mt-4">V. Total Usuarios Planteles</h5>
+        <hr style="border: 1px solid #a10000;">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <label for="total_alumnos" class="form-label">Total Alumnos:</label>
+                <input type="number" class="form-control" name="total_alumnos" value="{{ old('total_alumnos') }}" required>
+            </div>
+            <div class="col-md-6">
+                <label for="total_docentes" class="form-label">Total Docentes</label>
+                <input type="number" class="form-control" name="total_docentes" value="{{old('total_docentes')}}" required>
+            </div>
+            <div class="col-md-6">
+                <label for="total_administrativos" class="form-label">Total Administrativos</label>
+                <input type="number" class="form-control" name="total_administrativos" value="{{old('total_administrativos')}}" required>
+            </div>
+        </div>
 
+        {{-- Sección VI: estauts plantel(admin) --}}
+        <h5 class="text-danger mt-4">VI. Estatus Plantel(Admin)</h5>
+        <hr style="border: 1px solid #a10000;">
+        <div class="row mb-3">
+            <div class="col-md-4">
+                <label for="estatus_plantel" class="form-label">Estatus:</label>
+                <select name="estatus_plantel" class="form-select" required>
+                    <option value="">Seleccione una opcion</option>
+                    <option value="ACTIVO" {{old ('estatus_plantel')=='ACTIVO' ? 'selected': ''}}>ACTIVO</option>
+                    <option value="INACTIVO" {{old ('estatus_plantel')=='INACTIVO' ? 'selected': ''}}>INACTIVO</option>
+                    <option value="EN_REVISION" {{old ('estatus_plantel')=='EN_REVISION' ? 'selected': ''}}>EN REVISION</option>
+
+                </select>
+            </div>
+        </div>
         <button type="submit" class="btn btn-success">Guardar Plantel</button>
         <a href="{{ route('planteles.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>

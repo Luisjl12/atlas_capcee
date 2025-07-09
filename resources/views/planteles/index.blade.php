@@ -15,22 +15,35 @@
         <thread>
             <tr>
                 <th>CCT</th>
-                <th>Nombre</th>
-                <th>Nivel Educativo</th>
-                <th>Turnos</th>
-                <th>Sostenimiento</th>
+                <th>Nombre Escuela</th>
+                <th>Municipio</th>
+                <th>Director Asignado</th>
+                <th>Estatus</th>
+                <th>Acciones</th>
             </tr>
         </thread>
         <tbody>
             @foreach($planteles as $plantel)
+
             <tr>
                 <td>{{$plantel->cct}}</td>
                 <td>{{$plantel->nombre_escuela}}</td>
-                <td>{{$plantel->nivel_educativo}}</td>
-                <td>{{$plantel->turno}}</td>
-                <td>{{$plantel->sostenimiento}}</td>
+                <td>{{$plantel->municipio->nombre_municipio ?? 'Sin municipio'}}</td>
+                <td>{{$plantel->nombre_director_registrado}}</td>
+                <td>{{$plantel->estatus_plantel}}</td>
+                <td>
+                    <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-sm btn-primary">Editar</a>
+                    <form action="{{ route('planteles.destroy', $plantel->id) }}" method="POST" style="display:inline-block;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de eliminar este plantel?')">Eliminar</button>
+                    </form>
+                </td>
+
+
             </tr>
             @endforeach
+
         </tbody>
     </table>
     @endif
