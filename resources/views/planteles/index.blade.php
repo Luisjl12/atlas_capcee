@@ -32,6 +32,7 @@
                 <td>{{$plantel->nombre_director_registrado}}</td>
                 <td>{{$plantel->estatus_plantel}}</td>
                 <td>
+                    <a href="{{ route('planteles.show', $plantel->id)}}" class="btn btn-sm btn-primary">Ver</a>
                     <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-sm btn-primary">Editar</a>
                     <form action="{{ route('planteles.destroy', $plantel->id) }}" method="POST" style="display:inline-block;">
                         @csrf

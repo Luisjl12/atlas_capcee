@@ -90,7 +90,8 @@ class PlantelController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $plantel = Plantel::with(['espacios'])->findOrFail($id);
+        return view('planteles.show', compact('plantel'));
     }
 
     /**
@@ -159,5 +160,10 @@ class PlantelController extends Controller
         $planteles->delete();
 
         return redirect()->route('planteles.index')->with('success', 'Plantel eliminado correctamente');
+    }
+    public function editEspacios($cct)
+    {
+        $plantel = Plantel::with('espacios')->where('cct', $cct)->firstOrFail();
+        return view('planteles.edit_espacios', compact('plantel'));
     }
 }

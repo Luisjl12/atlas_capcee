@@ -59,4 +59,8 @@ class Plantel extends Model
     {
         return $this->belongsTo(Usuario::class, 'id_director_asignado');
     }
+    public function espacios()
+    {
+        return $this->hasMany(EspacioArea::class, 'cct', 'id');
+    }
 }

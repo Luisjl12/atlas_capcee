@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--Layout o plantilla-->
 <html lang="es">
 
 <head>
@@ -9,14 +8,12 @@
     <style>
         body {
             background-color: rgba(233, 225, 222, 0.93);
-            /* Color de fondo */
             font-family: 'Inter', sans-serif;
             color: #fff;
         }
 
         .navbar {
             background-color: #4E100B;
-            /* vino más oscuro para el navbar */
         }
 
         .navbar-brand {
@@ -59,7 +56,7 @@
             <div class="ms-auto">
                 <form action="{{route('perfil')}}" method="GET" style="display:inline;">
                     @csrf
-                    <button type="submit" class="btn btn-danger">Ver perfil</button>
+                    <button type="submit" class="btn btn-danger">Mi Perfil</button>
                 </form>
                 <form action="{{route('logout')}}" method="POST" style="display: inline;">
                     @csrf
@@ -79,6 +76,8 @@
         © 2025 ATLAS DE PUEBLA
     </footer>
 
+    <!-- 🔻 Mueve el script aquí -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

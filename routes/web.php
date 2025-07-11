@@ -4,12 +4,14 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\perfilController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\EspacioAreaController;
 use App\Models\Usuario;
 use PhpParser\Builder\Function_;
 use PhpParser\Node\Expr\FuncCall;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PlantelController;
+
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -87,3 +89,15 @@ Route::middleware(['auth.custom'])->prefix('usuarios')->group(function () {
 
 //Rutas para planteles
 Route::resource('planteles', PlantelController::class);
+
+
+//Rutas para las "ver planteles"
+Route::get('/planteles/{id}', [PlantelController::class, 'show'])->name('planteles.show');
+// Mostrar formulario de edición de espacios
+Route::get('/planteles/{id}/editar-espacios', [PlantelController::class, 'editEspacios'])->name('planteles.edit_espacios');
+
+
+Route::get('/planteles/{id}/editar-servicios', [PlantelController::class, 'editServicios'])->name('planteles.edit_servicios');
+Route::get('/planteles/{cct}/editar-espacios', [PlantelController::class, 'editEspacios'])->name('planteles.edit_espacios');
+Route::delete('/espacios/{id}', [EspacioAreaController::class], 'destroy')->name('espacios.destroy');
+Route::post('/espacios', [EspacioAreaController::class, 'store'])->name('espacios.store');
