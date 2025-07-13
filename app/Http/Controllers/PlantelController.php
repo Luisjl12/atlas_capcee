@@ -90,8 +90,10 @@ class PlantelController extends Controller
      */
     public function show(string $id)
     {
-        $plantel = Plantel::with(['espacios'])->findOrFail($id);
-        return view('planteles.show', compact('plantel'));
+        $plantel = Plantel::with(['espacios', 'detalleHidrosanitario', 'detalleServicio'])->findOrFail($id);
+        $hidrosanitario = $plantel->detalleHidrosanitario;
+        $servicio = $plantel->detalleServicio;
+        return view('planteles.show', compact('plantel', 'hidrosanitario', 'servicio'));
     }
 
     /**

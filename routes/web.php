@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\perfilController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EspacioAreaController;
+use App\Http\Controllers\InfraestructuraController;
 use App\Models\Usuario;
 use PhpParser\Builder\Function_;
 use PhpParser\Node\Expr\FuncCall;
@@ -95,9 +96,20 @@ Route::resource('planteles', PlantelController::class);
 Route::get('/planteles/{id}', [PlantelController::class, 'show'])->name('planteles.show');
 // Mostrar formulario de edición de espacios
 Route::get('/planteles/{id}/editar-espacios', [PlantelController::class, 'editEspacios'])->name('planteles.edit_espacios');
-
-
 Route::get('/planteles/{id}/editar-servicios', [PlantelController::class, 'editServicios'])->name('planteles.edit_servicios');
 Route::get('/planteles/{cct}/editar-espacios', [PlantelController::class, 'editEspacios'])->name('planteles.edit_espacios');
-Route::delete('/espacios/{id}', [EspacioAreaController::class], 'destroy')->name('espacios.destroy');
+Route::delete('/espacios/{id}', [EspacioAreaController::class, 'destroy'])->name('espacios.destroy');
 Route::post('/espacios', [EspacioAreaController::class, 'store'])->name('espacios.store');
+
+//Mostrar detalles del plantel 
+Route::get('/infraestructura/{cct}', [InfraestructuraController::class, 'mostrarInfraestructura'])->name('infraestructura.mostrar');
+
+
+//Editar o agregar servicios  
+Route::get('/infraestructura/{cct}/editar_servicios', [InfraestructuraController::class, 'editServicios'])->name('infraestructura.edit_servicios');
+Route::put('/infraestructura/{cct}/actualizar_servicios', [InfraestructuraController::class, 'updateServicios'])->name('infraestructura.update_servicios');
+
+//Editar o agregar hidrosanitario 
+Route::get('/infraestructura/{cct}/editar_hidrosanitario', [InfraestructuraController::class, 'editHidrosanitario'])->name('infraestructura.edit_hidrosanitario');
+Route::put('infraestructura/{cct}/actualizar_hidrosanitario', [InfraestructuraController::class, 'updateHidrosanitario'])->name('infraestructura.update_hidrosanitario');
+Route::get('/infraestructura/{cct}/editar', [InfraestructuraController::class, 'editarInfraestructuraCompleta'])->name('infraestructura.editar_completa');

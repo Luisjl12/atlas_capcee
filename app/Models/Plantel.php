@@ -63,4 +63,13 @@ class Plantel extends Model
     {
         return $this->hasMany(EspacioArea::class, 'cct', 'id');
     }
+
+    public function detalleHidrosanitario()
+    {
+        return $this->hasOne(DetalleHidrosanitario::class, 'cct', 'cct');
+    }
+    public function detalleServicio()
+    {
+        return $this->hasOne(DetalleServicio::class, 'cct', 'cct');
+    }
 }
