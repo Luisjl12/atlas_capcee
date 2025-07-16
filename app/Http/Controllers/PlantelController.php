@@ -8,6 +8,8 @@ use App\Models\Plantel;
 use App\Models\Localidad;
 use App\Models\Corde;
 use App\Models\Usuario;
+use Illuminate\Support\Str;
+
 
 class PlantelController extends Controller
 {
@@ -45,6 +47,8 @@ class PlantelController extends Controller
             'accesibildad_banos_adaptados' => $request->has('accesibilidad_banos_adpatados') ? 1 : 0,
             'accesibilidad_sanaletica_braille' => $request->has('accesibilidad_sanaletica_braille') ? 1 : 0,
         ]);
+
+        // Validar campos base, sin municipio, localidad y corde porque se validan después
         $request->validate([
             'cct' => 'required|unique:planteles',
             'nombre_escuela' => 'required',
@@ -56,9 +60,6 @@ class PlantelController extends Controller
             'domicilio_cp' => 'required',
             'latitud' => 'required',
             'longitud' => 'required',
-            'id_municipio' => 'required|exists:municipios,id',
-            'id_localidad' => 'required|exists:localidades,id',
-            'id_corde' => 'required|exists:cordes,id',
             'telefono_plantel' => 'required',
             'correo_institucional' => 'required',
             'nombre_director_registrado' => 'required',
@@ -68,8 +69,56 @@ class PlantelController extends Controller
             'total_docentes' => 'required',
             'total_administrativos' => 'required',
             'estatus_plantel' => 'required|in:ACTIVO,INACTIVO,EN_REVISION',
+
+            // Validar que el id_municipio sea requerido sólo si no hay nuevo municipio
+            'id_municipio' => 'required_without:nuevo_municipio|exists:municipios,id',
+            'nuevo_municipio' => 'nullable|string|max:255',
+
+            'id_localidad' => 'required_without:nuevo_localidad|exists:localidades,id',
+            'nuevo_localidad' => 'nullable|string|max:255',
+
+            'id_corde' => 'required_without:nuevo_corde|exists:cordes,id',
+            'nuevo_corde' => 'nullable|string|max:255',
         ]);
 
+        // Crear o usar municipio
+        if ($request->filled('nuevo_municipio')) {
+            $nombreMunicipio = trim(Str::title($request->nuevo_municipio));
+            $municipio = Municipio::firstOrCreate(['nombre_municipio' => $nombreMunicipio]);
+            $municipio_id = $municipio->id;
+        } else {
+            $municipio_id = $request->id_municipio;
+        }
+
+        // Crear o usar localidad (relacionándola con municipio)
+        if ($request->filled('nuevo_localidad')) {
+            $nombreLocalidad = trim(Str::title($request->nuevo_localidad));
+            $localidad = Localidad::firstOrCreate([
+                'nombre_localidad' => $nombreLocalidad,
+                'municipio_id' => $municipio_id,
+            ]);
+            $localidad_id = $localidad->id;
+        } else {
+            $localidad_id = $request->id_localidad;
+        }
+
+        // Crear o usar corde
+        if ($request->filled('nuevo_corde')) {
+            $nombreCorde = trim(Str::title($request->nuevo_corde));
+            $corde = Corde::firstOrCreate(['nombre_corde' => $nombreCorde]);
+            $corde_id = $corde->id;
+        } else {
+            $corde_id = $request->id_corde;
+        }
+
+        // Fusionar los ids correctos al request para crear plantel
+        $request->merge([
+            'id_municipio' => $municipio_id,
+            'id_localidad' => $localidad_id,
+            'id_corde' => $corde_id,
+        ]);
+
+        // Crear Plantel
         Plantel::create($request->all());
 
         return redirect()->route('planteles.index')->with('success', 'Datos agregados correctamente.');
@@ -90,7 +139,7 @@ class PlantelController extends Controller
      */
     public function show(string $id)
     {
-        $plantel = Plantel::with(['espacios', 'detalleHidrosanitario', 'detalleServicio'])->findOrFail($id);
+        $plantel = Plantel::with(['espacios', 'detalleHidrosanitario', 'detalleServicio', 'detalleProteccionCivil'])->findOrFail($id);
         $hidrosanitario = $plantel->detalleHidrosanitario;
         $servicio = $plantel->detalleServicio;
         return view('planteles.show', compact('plantel', 'hidrosanitario', 'servicio'));
@@ -136,9 +185,6 @@ class PlantelController extends Controller
             'domicilio_cp' => 'required',
             'latitud' => 'required',
             'longitud' => 'required',
-            'id_municipio' => 'required|exists:municipios,id',
-            'id_localidad' => 'required|exists:localidades,id',
-            'id_corde' => 'required|exists:cordes,id',
             'telefono_plantel' => 'required',
             'correo_institucional' => 'required',
             'nombre_director_registrado' => 'required',
@@ -148,10 +194,55 @@ class PlantelController extends Controller
             'total_docentes' => 'required',
             'total_administrativos' => 'required',
             'estatus_plantel' => 'required|in:ACTIVO,INACTIVO,EN_REVISION',
+
+            'id_municipio' => 'required_without:nuevo_municipio|exists:municipios,id',
+            'nuevo_municipio' => 'required_without:id_municipio|string|max:255',
+
+            'id_localidad' => 'required_without:nuevo_localidad|exists:localidades,id',
+            'nuevo_localidad' => 'required_without:id_localidad|string|max:255',
+
+            'id_corde' => 'required_without:nuevo_corde|exists:cordes,id',
+            'nuevo_corde' => 'required_without:id_corde|string|max:255',
         ]);
+
+        if ($request->filled('nuevo_municipio')) {
+            $nombreMunicipio = trim(Str::title($request->nuevo_municipio));
+            $municipio = Municipio::firstOrCreate(['nombre_municipio' => $nombreMunicipio]);
+            $municipio_id = $municipio->id;
+        } else {
+            $municipio_id = $request->id_municipio;
+        }
+
+        if ($request->filled('nuevo_localidad')) {
+            $nombreLocalidad = trim(Str::title($request->nuevo_localidad));
+            $localidad = Localidad::firstOrCreate([
+                'nombre_localidad' => $nombreLocalidad,
+                'municipio_id' => $municipio_id,
+            ]);
+            $localidad_id = $localidad->id;
+        } else {
+            $localidad_id = $request->id_localidad;
+        }
+
+        if ($request->filled('nuevo_corde')) {
+            $nombreCorde = trim(Str::title($request->nuevo_corde));
+            $corde = Corde::firstOrCreate(['nombre_corde' => $nombreCorde]);
+            $corde_id = $corde->id;
+        } else {
+            $corde_id = $request->id_corde;
+        }
+
+        $request->merge([
+            'id_municipio' => $municipio_id,
+            'id_localidad' => $localidad_id,
+            'id_corde' => $corde_id,
+        ]);
+
         $plantel->update($request->all());
+
         return redirect()->route('planteles.index')->with('success', 'Plantel actualizado correctamente.');
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -167,5 +258,38 @@ class PlantelController extends Controller
     {
         $plantel = Plantel::with('espacios')->where('cct', $cct)->firstOrFail();
         return view('planteles.edit_espacios', compact('plantel'));
+    }
+    public function editarProteccionCivil($id)
+    {
+        $plantel = Plantel::with('detalleProteccionCivil')->findOrFail($id);
+        return view('planteles.edit_proteccionCivil', compact('plantel'));
+    }
+
+    public function guardarProteccionCivil(Request $request, $cct)
+    {
+
+        $plantel = Plantel::where('cct', $cct)->firstOrFail();
+
+        $detalle = $plantel->detalleProteccionCivil;
+
+        $data = $request->validate([
+            'programa_interno_pc' => 'required|boolean',
+            'programa_interno_pc_fecha' => 'nullable|date',
+            'alarma_sismica' => 'required|boolean',
+            'alarma_sismica_funcional' => 'required|boolean',
+            'senaletica_estado' => 'required',
+            'extintores_cantidad' => 'required|string|max:255',
+            'extintores_vigente' => 'required|boolean',
+            'brigadas_conformadas' => 'required|boolean',
+        ]);
+
+        if (!$detalle) {
+            $data['cct'] = $cct;
+            $detalle = new \App\Models\DetalleProteccionCivil($data);
+            $detalle->save();
+        } else {
+            $detalle->update($data);
+        }
+        return redirect()->route('planteles.show', $plantel->id)->with('success', 'Proteccion civil guardada correctamente');
     }
 }

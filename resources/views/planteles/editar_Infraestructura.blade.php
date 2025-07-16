@@ -19,27 +19,28 @@
                 <div class="mb-3">
                     <label>Electricidad con contrato</label>
                     <select name="electricidad_contrato" class="form-control" required>
-                        <option value="Sí" {{ $servicio->electricidad_contrato ? 'selected' : '' }}>Sí</option>
-                        <option value="No" {{ !$servicio->electricidad_contrato ? 'selected' : '' }}>No</option>
+                        <option value="Sí" {{ isset($servicio) && $servicio->electricidad_contrato ? 'selected' : '' }}>Sí</option>
+                        <option value="No" {{ isset($servicio) && !$servicio->electricidad_contrato ? 'selected' : '' }}>No</option>
                     </select>
+                </div>
 
-                    <div class="mb-3">
-                        <label>Telefonia fija</label>
-                        <select name="telefonia_fija" class="form-control" required>
-                            <option value="Sí" {{ $servicio->telefonia_fija ? 'selected' : '' }}>Sí</option>
-                            <option value="No" {{ !$servicio->telefonia_fija ? 'selected' : '' }}>No</option>
-                        </select>
-                    </div>
+                <div class="mb-3">
+                    <label>Telefonía fija</label>
+                    <select name="telefonia_fija" class="form-control" required>
+                        <option value="Sí" {{ isset($servicio) && $servicio->telefonia_fija ? 'selected' : '' }}>Sí</option>
+                        <option value="No" {{ isset($servicio) && !$servicio->telefonia_fija ? 'selected' : '' }}>No</option>
+                    </select>
+                </div>
 
-                    <div class="mb-3">
-                        <label>Electricidad con contrato</label>
-                        <select name="internet_acceso" class="form-control" required>
-                            <option value="Sí" {{ $servicio->internet_acceso ? 'selected' : '' }}>Sí</option>
-                            <option value="No" {{ !$servicio->internet_acceso ? 'selected' : '' }}>No</option>
-                        </select>
-                    </div>
+                <div class="mb-3">
+                    <label>Acceso a Internet</label>
+                    <select name="internet_acceso" class="form-control" required>
+                        <option value="Sí" {{ isset($servicio) && $servicio->internet_acceso ? 'selected' : '' }}>Sí</option>
+                        <option value="No" {{ isset($servicio) && !$servicio->internet_acceso ? 'selected' : '' }}>No</option>
+                    </select>
+                </div>
 
-                    <button type="submit" class="btn btn-success">Guardar Servicios</button>
+                <button type="submit" class="btn btn-success">Guardar Servicios</button>
             </form>
         </div>
     </div>

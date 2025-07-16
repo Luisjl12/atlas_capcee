@@ -53,41 +53,54 @@
         {{-- Sección II: Ubicación --}}
         <h5 class="text-danger mt-4">II. Ubicación</h5>
         <hr style="border: 1px solid #a10000;">
+
         <div class="row mb-3">
+            {{-- MUNICIPIO --}}
             <div class="col-md-4">
                 <label for="id_municipio" class="form-label">Municipio:</label>
-                <select name="id_municipio" class="form-select" required>
+                <select name="id_municipio" id="select_municipio" class="form-select">
                     <option value="">Seleccione...</option>
                     @foreach($municipios as $municipio)
-                    <option value="{{ $municipio->id }}" {{ old('id_municipio') == $municipio->id ? 'selected' : '' }}>
-                        {{ $municipio->nombre_municipio}}
+                    <option value="{{ $municipio->id }}" {{ old('id_municipio', $plantel->id_municipio ?? '') == $municipio->id ? 'selected' : '' }}>
+                        {{ $municipio->nombre_municipio }}
                     </option>
                     @endforeach
+                    <option value="otro">Otro...</option>
                 </select>
+                <input type="text" name="nuevo_municipio" id="input_nuevo_municipio" class="form-control mt-2 d-none" placeholder="Nuevo municipio">
             </div>
+
+            {{-- LOCALIDAD --}}
             <div class="col-md-4">
                 <label for="id_localidad" class="form-label">Localidad:</label>
-                <select name="id_localidad" class="form-select" required>
+                <select name="id_localidad" id="select_localidad" class="form-select">
                     <option value="">Seleccione...</option>
                     @foreach($localidades as $localidad)
-                    <option value="{{ $localidad->id }}" {{ old('id_localidad') == $localidad->id ? 'selected' : '' }}>
-                        {{ $localidad->nombre_localidad}}
+                    <option value="{{ $localidad->id }}" {{ old('id_localidad', $plantel->id_localidad ?? '') == $localidad->id ? 'selected' : '' }}>
+                        {{ $localidad->nombre_localidad }}
                     </option>
                     @endforeach
+                    <option value="otro">Otro...</option>
                 </select>
+                <input type="text" name="nuevo_localidad" id="input_nuevo_localidad" class="form-control mt-2 d-none" placeholder="Nueva localidad">
             </div>
+
+            {{-- CORDE --}}
             <div class="col-md-4">
                 <label for="id_corde" class="form-label">CORDE:</label>
-                <select name="id_corde" class="form-select" required>
+                <select name="id_corde" id="select_corde" class="form-select">
                     <option value="">Seleccione...</option>
                     @foreach($cordes as $corde)
-                    <option value="{{ $corde->id }}" {{ old('id_corde') == $corde->id ? 'selected' : '' }}>
-                        {{ $corde->nombre_corde}}
+                    <option value="{{ $corde->id }}" {{ old('id_corde', $plantel->id_corde ?? '') == $corde->id ? 'selected' : '' }}>
+                        {{ $corde->nombre_corde }}
                     </option>
                     @endforeach
+                    <option value="otro">Otro...</option>
                 </select>
+                <input type="text" name="nuevo_corde" id="input_nuevo_corde" class="form-control mt-2 d-none" placeholder="Nuevo CORDE">
             </div>
         </div>
+
 
         <div class="row mb-3">
             <div class="col-md-6">
@@ -210,4 +223,37 @@
         <a href="{{ route('planteles.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        function toggleInput(selectId, inputId) {
+            const select = document.getElementById(selectId);
+            const input = document.getElementById(inputId);
+
+            if (select && input) {
+                select.addEventListener("change", function() {
+                    if (this.value === "otro") {
+                        input.classList.remove("d-none");
+                        input.required = true;
+                    } else {
+                        input.classList.add("d-none");
+                        input.required = false;
+                        input.value = ''; // limpiar valor anterior si vuelve a seleccionar
+                    }
+                });
+
+                // Verifica si ya viene seleccionado "otro" por old()
+                if (select.value === "otro") {
+                    input.classList.remove("d-none");
+                    input.required = true;
+                }
+            }
+        }
+
+        toggleInput("select_municipio", "input_nuevo_municipio");
+        toggleInput("select_localidad", "input_nuevo_localidad");
+        toggleInput("select_corde", "input_nuevo_corde");
+    });
+</script>
+
 @endsection

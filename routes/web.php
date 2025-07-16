@@ -12,6 +12,7 @@ use PhpParser\Node\Expr\FuncCall;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PlantelController;
+use App\Http\Controllers\DetalleProteccionCivilController;
 
 
 //Rutas para ver y acceder al login, accion del logout
@@ -113,3 +114,12 @@ Route::put('/infraestructura/{cct}/actualizar_servicios', [InfraestructuraContro
 Route::get('/infraestructura/{cct}/editar_hidrosanitario', [InfraestructuraController::class, 'editHidrosanitario'])->name('infraestructura.edit_hidrosanitario');
 Route::put('infraestructura/{cct}/actualizar_hidrosanitario', [InfraestructuraController::class, 'updateHidrosanitario'])->name('infraestructura.update_hidrosanitario');
 Route::get('/infraestructura/{cct}/editar', [InfraestructuraController::class, 'editarInfraestructuraCompleta'])->name('infraestructura.editar_completa');
+
+
+//Ruta para detalles proteccion civil
+Route::get('/planteles/{id}/editar-proteccion-civil', [PlantelController::class, 'editarProteccionCivil'])->name('planteles.editar_proteccion_civil');
+// Crear nuevo detalle de Protección Civil
+Route::post('/planteles/{cct}/proteccion-civil', [PlantelController::class, 'guardarProteccionCivil'])->name('detalle_proteccion_civil.store');
+
+// Actualizar detalle de Protección Civil existente
+//Route::put('/planteles/{cct}/proteccion-civil', [PlantelController::class, 'actualizarProteccionCivil'])->name('detalle_proteccion_civil.update');

@@ -18,6 +18,6 @@ class EspacioArea extends Model
 
     public function plantel()
     {
-        return $this->belongsTo(Plantel::class, 'cct', 'id');
+        return $this->belongsTo(Plantel::class, 'cct', 'cct');
     }
 }

@@ -18,7 +18,7 @@ class EspacioAreaController extends Controller
     {
 
         $request->validate([
-            'cct' => 'required|exists:planteles,id',
+            'cct' => 'required|exists:planteles,cct',
             'nombre_espacio' => 'required|string|max:255',
             'cantidad' => 'required|integer|min:1',
             'estado_conservacion' => 'required|string|max:255'
