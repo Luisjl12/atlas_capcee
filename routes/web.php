@@ -121,5 +121,5 @@ Route::get('/planteles/{id}/editar-proteccion-civil', [PlantelController::class,
 // Crear nuevo detalle de Protección Civil
 Route::post('/planteles/{cct}/proteccion-civil', [PlantelController::class, 'guardarProteccionCivil'])->name('detalle_proteccion_civil.store');
 
-// Actualizar detalle de Protección Civil existente
-//Route::put('/planteles/{cct}/proteccion-civil', [PlantelController::class, 'actualizarProteccionCivil'])->name('detalle_proteccion_civil.update');
+Route::get('/municipios/{id}/localidades', [PlantelController::class, 'getLocalidades']);
+Route::get('/localidades/{municipio_id}', [\App\Http\Controllers\LocalidadController::class, 'getPorMunicipio']);

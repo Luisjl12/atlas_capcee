@@ -7,7 +7,7 @@
 $detalle = $plantel->detalleProteccionCivil;
 @endphp
 <div class="container mt-4">
-    <h4><i class="fas fa-shield-alt"></i> Protección Civil - {{ $plantel->nombre ?? 'Plantel desconocido' }}</h4>
+    <h4><i class="fas fa-shield-alt"></i> Protección Civil - {{ $plantel->nombre_escuela ?? 'Plantel desconocido' }}</h4>
 
     <form action="{{ route ('detalle_proteccion_civil.store', $plantel->cct) }}" method="POST" class="mt-3">
 
@@ -44,7 +44,13 @@ $detalle = $plantel->detalleProteccionCivil;
 
             <div class="col-md-6 mb-2">
                 <label>Señalética Estado</label>
-                <input type="text" name="senaletica_estado" class="form-control" value="{{ $detalle?->senaletica_estado }}">
+                <select name="senaletica_estado" id="senaletica_estado" class="form-control" required>
+                    @foreach ($estadosProteccionCivil as $valor => $texto)
+                    <option value="{{ $valor }}" {{ old('senaletica_estado', $plantel->detalleProteccionCivil->senaletica_estado ?? '') == $valor ? 'selected' : '' }}>
+                        {{ $texto }}
+                    </option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="col-md-6 mb-2">

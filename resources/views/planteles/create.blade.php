@@ -58,30 +58,32 @@
             {{-- MUNICIPIO --}}
             <div class="col-md-4">
                 <label for="id_municipio" class="form-label">Municipio:</label>
-                <select name="id_municipio" id="select_municipio" class="form-select">
-                    <option value="">Seleccione...</option>
+                <select name="id_municipio" id="id_municipio" class="form-control">
+                    <option value="">Seleccione un municipio</option>
                     @foreach($municipios as $municipio)
-                    <option value="{{ $municipio->id }}" {{ old('id_municipio', $plantel->id_municipio ?? '') == $municipio->id ? 'selected' : '' }}>
-                        {{ $municipio->nombre_municipio }}
-                    </option>
+                    <option value="{{ $municipio->id }}">{{ $municipio->nombre_municipio }}</option>
                     @endforeach
-                    <option value="otro">Otro...</option>
+                    <option value="nuevo">Otro...</option> {{-- <-- esta línea agrega la opción para activar el input --}}
                 </select>
+
+
+
                 <input type="text" name="nuevo_municipio" id="input_nuevo_municipio" class="form-control mt-2 d-none" placeholder="Nuevo municipio">
             </div>
 
             {{-- LOCALIDAD --}}
             <div class="col-md-4">
                 <label for="id_localidad" class="form-label">Localidad:</label>
-                <select name="id_localidad" id="select_localidad" class="form-select">
+                <select name="id_localidad" id="select_localidad" class="form-control">
                     <option value="">Seleccione...</option>
                     @foreach($localidades as $localidad)
                     <option value="{{ $localidad->id }}" {{ old('id_localidad', $plantel->id_localidad ?? '') == $localidad->id ? 'selected' : '' }}>
                         {{ $localidad->nombre_localidad }}
                     </option>
                     @endforeach
-                    <option value="otro">Otro...</option>
+                    <option value="nuevo">Otro...</option> {{-- <-- esta línea también --}}
                 </select>
+
                 <input type="text" name="nuevo_localidad" id="input_nuevo_localidad" class="form-control mt-2 d-none" placeholder="Nueva localidad">
             </div>
 
@@ -225,35 +227,46 @@
 </div>
 
 <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        function toggleInput(selectId, inputId) {
-            const select = document.getElementById(selectId);
-            const input = document.getElementById(inputId);
+    function toggleInput(selectId, inputId) {
+        const select = document.getElementById(selectId);
+        const input = document.getElementById(inputId);
 
-            if (select && input) {
-                select.addEventListener("change", function() {
-                    if (this.value === "otro") {
-                        input.classList.remove("d-none");
-                        input.required = true;
-                    } else {
-                        input.classList.add("d-none");
-                        input.required = false;
-                        input.value = ''; // limpiar valor anterior si vuelve a seleccionar
-                    }
-                });
-
-                // Verifica si ya viene seleccionado "otro" por old()
-                if (select.value === "otro") {
-                    input.classList.remove("d-none");
-                    input.required = true;
-                }
+        select.addEventListener("change", function() {
+            if (this.value === "nuevo") {
+                input.classList.remove("d-none");
+                input.required = true;
+            } else {
+                input.classList.add("d-none");
+                input.required = false;
+                input.value = '';
             }
-        }
 
-        toggleInput("select_municipio", "input_nuevo_municipio");
-        toggleInput("select_localidad", "input_nuevo_localidad");
-        toggleInput("select_corde", "input_nuevo_corde");
-    });
+
+            // Si se seleccionó un municipio, hacer solicitud AJAX para obtener localidades
+            if (selectId === "id_municipio" && this.value !== "" && this.value !== "nuevo") {
+                fetch(`/municipios/${this.value}/localidades`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const localidadSelect = document.getElementById("select_localidad");
+                        localidadSelect.innerHTML = '<option value="">Seleccione una localidad</option>';
+
+                        data.forEach(localidad => {
+                            const option = document.createElement("option");
+                            option.value = localidad.id;
+                            option.textContent = localidad.nombre_localidad;
+                            localidadSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error("Error al cargar localidades:", error));
+            }
+        });
+    }
+
+    // Aplica la función a cada combo
+    toggleInput("id_municipio", "input_nuevo_municipio");
+    toggleInput("select_localidad", "input_nuevo_localidad");
+    toggleInput("select_corde", "input_nuevo_corde");
 </script>
+
 
 @endsection

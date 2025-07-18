@@ -9,7 +9,7 @@ class Localidad extends Model
     protected $table = 'localidades'; // 👈 Corrige el nombre de la tabla
 
     // Agrega si tienes campos llenables:
-    protected $fillable = ['nombre_localidad'];
+    protected $fillable = ['nombre_localidad', 'municipio_id'];
 
     public function planteles()
     {

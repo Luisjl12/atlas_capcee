@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2 class="mb-4">Editar Infraestructura del Plantel: {{ $plantel->nombre ?? 'Sin nombre' }}</h2>
+    <h2 class="mb-4">Editar Infraestructura del Plantel: {{ $plantel->nombre_escuela ?? 'Sin nombre' }}</h2>
 
     {{-- FORMULARIO SERVICIOS --}}
     <div class="card mb-5">

@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <h3>Espacios / Áreas del Plantel: {{ $plantel->nombre }}</h3>
+    <h3>Espacios / Áreas del Plantel: {{ $plantel->nombre_escuela }}</h3>
 
     <table class="table mt-3">
         <thead>

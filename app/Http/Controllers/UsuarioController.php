@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Usuario;
 use App\Models\Role;
+use App\Models\Plantel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -84,6 +85,8 @@ class UsuarioController extends Controller
     public function destroy($id)
     {
         $usuario = Usuario::findOrFail($id);
+        //Verificar si el usuario es director y tiene planteles asignados. 
+        Plantel::where('id_director_asignado', $usuario->id)->update(['id_director_asignado' => null]);
         $usuario->delete();
 
         return redirect()->route('usuarios.index')->with('success', 'Usuario eliminado correctamente');

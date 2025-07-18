@@ -5,8 +5,8 @@
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center">
-        <h4>
-            <i class="fas fa-school"></i> {{ $plantel->nombre }}
+        <h4 class="mb-0">
+            <i class="fas fa-school me-2"></i> {{ $plantel->nombre_escuela }}
             <small class="text-muted">(CCT: {{ $plantel->cct }})</small>
         </h4>
         <a href="{{ route('planteles.index') }}" class="btn btn-secondary">
@@ -61,7 +61,12 @@
                 </div>
                 <div class="col-md-4">
                     <label for="estado_conservacion" class="form-label">Estado de Conservación</label>
-                    <input type="text" name="estado_conservacion" class="form-control" required>
+                    <select name="estado_conservacion" class="form-select" required>
+                        <option value="">Selecciona una Opción</option>
+                        @foreach ($estadosConservacion as $estado)
+                        <option value="{{$estado}}">{{ ucwords(str_replace('_', ' ', strtolower($estado)))}}</option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
                     <button type="submit" class="btn btn-success w-100">
@@ -88,7 +93,8 @@
                         <tr>
                             <td>{{ $espacio->nombre_espacio }}</td>
                             <td>{{ $espacio->cantidad }}</td>
-                            <td>{{ $espacio->estado_conservacion }}</td>
+                            <td>{{ ucwords(str_replace('_', ' ', strtolower($espacio->estado_conservacion))) }}</td>
+
                             <td>
                                 <form action="{{ route('espacios.destroy', $espacio->id) }}" method="POST" style="display:inline;">
                                     @csrf
@@ -163,7 +169,7 @@
                 <div class="col-md-6 mb-2"><strong>Fecha Programa Interno:</strong> {{ $detalle->programa_interno_pc_fecha }}</div>
                 <div class="col-md-6 mb-2"><strong>Alarma Sísmica:</strong> {{ $detalle->alarma_sismica ? 'Sí' : 'No' }}</div>
                 <div class="col-md-6 mb-2"><strong>Alarma Funcional:</strong> {{ $detalle->alarma_sismica_funcional ? 'Sí' : 'No' }}</div>
-                <div class="col-md-6 mb-2"><strong>Señalética Estado:</strong> {{ $detalle->senaletica_estado }}</div>
+                <div class="col-md-6 mb-2"><strong>Señalética Estado:</strong> {{ ucwords(str_replace('_', ' ', strtolower($detalle->senaletica_estado))) }}</div>
                 <div class="col-md-6 mb-2"><strong>Extintores (Cantidad):</strong> {{ $detalle->extintores_cantidad }}</div>
                 <div class="col-md-6 mb-2"><strong>Extintores Vigentes:</strong> {{ $detalle->extintores_vigente ? 'Sí' : 'No' }}</div>
                 <div class="col-md-6 mb-2"><strong>Brigadas Conformadas:</strong> {{ $detalle->brigadas_conformadas ? 'Sí' : 'No' }}</div>

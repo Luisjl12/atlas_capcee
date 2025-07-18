@@ -21,7 +21,7 @@ class EspacioAreaController extends Controller
             'cct' => 'required|exists:planteles,cct',
             'nombre_espacio' => 'required|string|max:255',
             'cantidad' => 'required|integer|min:1',
-            'estado_conservacion' => 'required|string|max:255'
+            'estado_conservacion' => 'required|in:BUENO,REGULAR,MALO,NO_APLICA,EN_PROCESO'
 
         ]);
 
