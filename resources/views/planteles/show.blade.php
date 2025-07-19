@@ -27,6 +27,9 @@
         <li class="nav-item">
             <a class="nav-link" id="proteccion_civil-tab" data-bs-toggle="tab" href="#proteccion_civil" role="tab">Protección Civil</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="archivos-tab" data-bs-toggle="tab" href="#archivos" role="tab ">Areas</a>
+        </li>
     </ul>
 
     <div class="tab-content mt-3" id="plantelTabContent">

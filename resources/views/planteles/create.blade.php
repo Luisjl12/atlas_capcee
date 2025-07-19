@@ -74,17 +74,15 @@
             {{-- LOCALIDAD --}}
             <div class="col-md-4">
                 <label for="id_localidad" class="form-label">Localidad:</label>
-                <select name="id_localidad" id="select_localidad" class="form-control">
+                <select name="id_localidad" id="select_localidad" class="form-control" disabled>
                     <option value="">Seleccione...</option>
                     @foreach($localidades as $localidad)
-                    <option value="{{ $localidad->id }}" {{ old('id_localidad', $plantel->id_localidad ?? '') == $localidad->id ? 'selected' : '' }}>
-                        {{ $localidad->nombre_localidad }}
-                    </option>
+                    <option value="{{ $localidad->id }}">{{ $localidad->nombre_localidad }}</option>
                     @endforeach
                     <option value="nuevo">Otro...</option> {{-- <-- esta línea también --}}
                 </select>
 
-                <input type="text" name="nuevo_localidad" id="input_nuevo_localidad" class="form-control mt-2 d-none" placeholder="Nueva localidad">
+                <input type="text" id="input_nuevo_localidad" name="nuevo_localidad" class="form-control mt-2 d-none" placeholder="Ingrese nueva localidad">
             </div>
 
             {{-- CORDE --}}
@@ -97,7 +95,7 @@
                         {{ $corde->nombre_corde }}
                     </option>
                     @endforeach
-                    <option value="otro">Otro...</option>
+
                 </select>
                 <input type="text" name="nuevo_corde" id="input_nuevo_corde" class="form-control mt-2 d-none" placeholder="Nuevo CORDE">
             </div>
@@ -249,6 +247,7 @@
                     .then(data => {
                         const localidadSelect = document.getElementById("select_localidad");
                         localidadSelect.innerHTML = '<option value="">Seleccione una localidad</option>';
+                        localidadSelect.disabled = false;
 
                         data.forEach(localidad => {
                             const option = document.createElement("option");
@@ -256,6 +255,11 @@
                             option.textContent = localidad.nombre_localidad;
                             localidadSelect.appendChild(option);
                         });
+                        const otroOption = document.createElement("option");
+                        otroOption.value = "nuevo";
+                        otroOption.textContent = "Otro...";
+                        localidadSelect.appendChild(otroOption);
+
                     })
                     .catch(error => console.error("Error al cargar localidades:", error));
             }
@@ -267,6 +271,37 @@
     toggleInput("select_localidad", "input_nuevo_localidad");
     toggleInput("select_corde", "input_nuevo_corde");
 </script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const municipioSelect = document.getElementById("id_municipio");
+        const inputNuevoMunicipio = document.getElementById("input_nuevo_municipio");
+        const localidadSelect = document.getElementById("select_localidad");
+
+        function actualizarEstadoLocalidad() {
+            const seleccion = municipioSelect.value;
+
+            // Si seleccionó un municipio válido o seleccionó "nuevo" y escribió algo
+            const municipioValido = (
+                seleccion !== "" && seleccion !== "nuevo"
+            ) || (
+                seleccion === "nuevo" && inputNuevoMunicipio.value.trim() !== ""
+            );
+
+            // Habilita o deshabilita el select de localidad
+            localidadSelect.disabled = !municipioValido;
+        }
+
+        // Escucha cambios en el select de municipio
+        municipioSelect.addEventListener("change", actualizarEstadoLocalidad);
+
+        // Escucha cambios en el input de nuevo municipio
+        inputNuevoMunicipio.addEventListener("input", actualizarEstadoLocalidad);
+
+        // Ejecuta una vez al cargar
+        actualizarEstadoLocalidad();
+    });
+</script>
+
 
 
 @endsection
