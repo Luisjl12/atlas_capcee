@@ -20,4 +20,9 @@ class ArchivosPlantel extends Model
         'id_usuario_subio',
         'fecha_actualizacion_seccion'
     ];
+
+    public function plantel()
+    {
+        return $this->belongsTo(Plantel::class, 'cct', 'cct');
+    }
 }

@@ -1,5 +1,7 @@
 <?php
 //Controladores 
+
+use App\Http\Controllers\ArchivoPlantelController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\perfilController;
@@ -123,3 +125,7 @@ Route::post('/planteles/{cct}/proteccion-civil', [PlantelController::class, 'gua
 
 Route::get('/municipios/{id}/localidades', [PlantelController::class, 'getLocalidades']);
 Route::get('/localidades/{municipio_id}', [\App\Http\Controllers\LocalidadController::class, 'getPorMunicipio']);
+
+//Rutas para ver los archivos
+Route::post('/planteles/{id}/archivos', [ArchivoPlantelController::class, 'store'])->name('archivos.store')->middleware('auth.custom');
+Route::get('/planteles/{id}', [ArchivoPlantelController::class, 'show'])->name('planteles.show');

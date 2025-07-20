@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ArchivosPlantel;
+use App\Models\Plantel;
 use Illuminate\Http\Request;
 
 class ArchivoPlantelController extends Controller
@@ -12,6 +13,7 @@ class ArchivoPlantelController extends Controller
         $request->validate([
             'archivo' => 'required|file|max:10240',
             'tipo_documento' => 'required|string',
+            'otro_tipo' => 'nullable|required_if:tipo_documento,Otro|string',
             'descripcion' => 'nullable|string',
             'cct' => 'required|string|exists:planteles,cct',
         ]);
@@ -19,6 +21,9 @@ class ArchivoPlantelController extends Controller
         $archivo = $request->file('archivo');
 
         $nombreOriginal = $archivo->getClientOriginalName();
+        $tipoDocumento = $request->tipo_documento === 'Otro'
+            ? $request->otro_tipo
+            : $request->tipo_documento;
         $mimeType = $archivo->getClientMimeType();
         $tamano = $archivo->getSize();
         $nombreSistema = uniqid() . '_' . $nombreOriginal;
@@ -30,7 +35,7 @@ class ArchivoPlantelController extends Controller
             'nombre_archivo_original' => $nombreOriginal,
             'nombre_archivo_sistema' => $nombreSistema,
             'ruta_archivo' => $ruta,
-            'tipo_documento' => $request->tipo_documento,
+            'tipo_documento' => $tipoDocumento,
             'descripcion' => $request->descripcion,
             'fecha_subido' => now(),
             'mime_type' => $mimeType,
@@ -38,6 +43,14 @@ class ArchivoPlantelController extends Controller
             'id_usuario_subio' => session('id'),
             'fecha_actualizacion_seccion' => now(),
         ]);
-        return back()->with('success', 'Archivo subido correctamente');
+
+        $plantel = Plantel::where('cct', $request->cct)->first();
+        return redirect()->route('planteles.show', ['id' => $request->id_plantel])
+            ->with('success', 'Archivo subido correctamente.');
+    }
+    public function show()
+    {
+        $archivos = ArchivosPlantel::where('cct', $request->cct ?? '')->get();
+        return view('planteles.show', compact('archivos'));
     }
 }

@@ -28,7 +28,7 @@
             <a class="nav-link" id="proteccion_civil-tab" data-bs-toggle="tab" href="#proteccion_civil" role="tab">Protección Civil</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" id="archivos-tab" data-bs-toggle="tab" href="#archivos" role="tab ">Areas</a>
+            <a class="nav-link" id="archivos-tab" data-bs-toggle="tab" href="#archivos" role="tab ">Archivos</a>
         </li>
     </ul>
 
@@ -185,6 +185,76 @@
                 <i class="fas fa-edit"></i> Editar Protección Civil
             </a>
         </div>
+        <!--Archivos-->
+        <div class="tab-pane fade" id="archivos" role="tabpanel">
+            <form action="{{route('archivos.store', ['id'=> $plantel->id])}}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="cct" value="{{$plantel->cct}}">
+                <input type="hidden" name="id_plantel" value="{{$plantel->id}}">
+                <div class="mb-3">
+                    <label for="archivo" class="form-label">Seleccionar archivo</label>
+                    <input type="file" class="form-control" name="archivo" required>
+                </div>
+                <div class="mb-3">
+                    <label for="tipo_documento" class="form-label">Tipo documento</label>
+                    <select name="tipo_documento" id="tipo_documento" class="form-select" required>
+                        <option value="">Seleccione una opcion</option>
+                        <option value="Plano">Plano</option>
+                        <option value="Oficio">Oficio</option>
+                        <option value="Otro">Otro...</option>
+                    </select>
+                </div>
+                <div class="mb-3 d-none" id="otro_tipo_container">
+                    <label for="otro_tipo" class="form-label">Especificar otro tipo de documento...</label>
+                    <input type="text" name="otro_tipo" id="otro_tipo" class="form-control">
+                </div>
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripcion</label>
+                    <textarea name="descripcion" class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary">Subir Archivo</button>
+            </form>
+            <table class="table">
+                <thread>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Tipo de documento</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Acción</th>
+                    </tr>
+                </thread>
+                <tbody>
+                    @foreach($archivos as $archivo)
+                    <tr>
+                        <td>{{$archivo->nombre_archivo_original}}</td>
+                        <td>{{$archivo->tipo_documento}}</td>
+                        <td>{{$archivo->descripcion}}</td>
+                        <td>{{$archivo->fecha_subido}}</td>
+
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const tipoSelect = document.getElementById("tipo_documento");
+        const otroTipoContainer = document.getElementById("otro_tipo_container");
+
+        tipoSelect.addEventListener("change", function() {
+            if (this.value === "Otro") {
+                otroTipoContainer.classList.remove("d-none");
+                document.getElementById("otro_tipo").setAttribute("required", true);
+            } else {
+                otroTipoContainer.classList.add("d-none");
+                document.getElementById("otro_tipo").removeAttribute("required");
+            }
+        });
+    });
+</script>
+
 @endsection

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArchivosPlantel;
 use App\Models\Municipio;
 use Illuminate\Http\Request;
 use App\Models\Plantel;
@@ -141,7 +142,8 @@ class PlantelController extends Controller
         $hidrosanitario = $plantel->detalleHidrosanitario;
         $servicio = $plantel->detalleServicio;
         $estadosConservacion = ['BUENO', 'REGULAR', 'MALO', 'NO_APLICA', 'EN_PROCESO'];
-        return view('planteles.show', compact('plantel', 'hidrosanitario', 'servicio', 'estadosConservacion'));
+        $archivos = ArchivosPlantel::where('cct', $plantel->cct)->get();
+        return view('planteles.show', compact('plantel', 'hidrosanitario', 'servicio', 'estadosConservacion', 'archivos'));
     }
 
     /**
