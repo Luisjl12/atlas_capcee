@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Plantel;
 use App\Models\Localidad;
 use App\Models\Corde;
+use App\Models\GaleriaFotos;
 use App\Models\Usuario;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -143,7 +144,8 @@ class PlantelController extends Controller
         $servicio = $plantel->detalleServicio;
         $estadosConservacion = ['BUENO', 'REGULAR', 'MALO', 'NO_APLICA', 'EN_PROCESO'];
         $archivos = ArchivosPlantel::where('cct', $plantel->cct)->get();
-        return view('planteles.show', compact('plantel', 'hidrosanitario', 'servicio', 'estadosConservacion', 'archivos'));
+        $fotos = GaleriaFotos::where('cct', $plantel->cct)->get();
+        return view('planteles.show', compact('plantel', 'hidrosanitario', 'servicio', 'estadosConservacion', 'archivos', 'fotos'));
     }
 
     /**

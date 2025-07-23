@@ -30,6 +30,9 @@
         <li class="nav-item">
             <a class="nav-link" id="archivos-tab" data-bs-toggle="tab" href="#archivos" role="tab ">Archivos</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" id="fotos-tab" data-bs-toggle="tab" href="#fotos" role="tab">Galeria Fotos</a>
+        </li>
     </ul>
 
     <div class="tab-content mt-3" id="plantelTabContent">
@@ -220,41 +223,110 @@
                         <th>Nombre</th>
                         <th>Tipo de documento</th>
                         <th>Descripción</th>
-                        <th>Fecha</th>
+                        <th>Subido</th>
                         <th>Acción</th>
                     </tr>
                 </thread>
                 <tbody>
                     @foreach($archivos as $archivo)
                     <tr>
-                        <td>{{$archivo->nombre_archivo_original}}</td>
+                        <td>
+                            <a href="{{ route('archivos.descargar', $archivo->id) }}" style="text-decoration: none;">
+                                <i class="fas fa-file-pdf text-danger"></i>
+                                {{ $archivo->nombre_archivo_original }}
+                            </a>
+                        </td>
                         <td>{{$archivo->tipo_documento}}</td>
                         <td>{{$archivo->descripcion}}</td>
                         <td>{{$archivo->fecha_subido}}</td>
-
+                        <td>
+                            <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este archivo?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm"">
+                                    <i class=" fas fa-trash-alt"></i>Eliminar
+                                </button>
+                            </form>
+                        </td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
+        <!--Fotos-->
+        <div class="tab-pane fade" id="fotos" role="tabpanel">
+            <h4>Subir foto al plantel(CCT: {{ $plantel -> cct }})</h4>
+            @if (session('foto_subida'))
+            <div class="alert alert-success">
+                Foto subida correctamente:
+                <img src="{{ session('foto_subida') }}" alt="Foto subida" class="img-thumbnail mt-2" width="200">
+            </div>
+            @endif
+            <form action="{{ route('galeria.store', $plantel ->cct) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+
+                <div class="mb-3">
+                    <label for="foto" class="form-label">Seleccionar foto</label>
+                    <input type="file" name="foto" accept="image/png, image/jpeg, image/jpg, image/webp" class="form-control" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción</label>
+                    <input type="text" name="descripcion" id="descripcion" class="form-control">
+                </div>
+
+                <button type="submit" class="btn btn-primary">Subir Foto</button>
+            </form>
+            <div class="row">
+                @forelse ($fotos as $foto)
+                <div class="col-md-3 mb-4 position-relative">
+                    <div class="card">
+                        <form action="{{ route('galeria.destroy', $foto->id) }}" method="POST" class="position-absolute top-0 end-0 m-1">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta foto?')">
+                                &times;
+                            </button>
+                        </form>
+
+                        <img src="{{ Storage::url($foto->ruta_foto) }}" class="img-fluid">
+                        <div class="card-body">
+                            <p class="card-text">{{ $foto->descripcion_foto ?? 'Sin descripción' }}</p>
+                        </div>
+                    </div>
+                </div>
+                @empty
+                <p class="text-muted">No hay fotos subidas para este plantel.</p>
+                @endforelse
+
+            </div>
+            @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+            @endif
+        </div>
 
     </div>
-</div>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const tipoSelect = document.getElementById("tipo_documento");
-        const otroTipoContainer = document.getElementById("otro_tipo_container");
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tipoSelect = document.getElementById("tipo_documento");
+            const otroTipoContainer = document.getElementById("otro_tipo_container");
 
-        tipoSelect.addEventListener("change", function() {
-            if (this.value === "Otro") {
-                otroTipoContainer.classList.remove("d-none");
-                document.getElementById("otro_tipo").setAttribute("required", true);
-            } else {
-                otroTipoContainer.classList.add("d-none");
-                document.getElementById("otro_tipo").removeAttribute("required");
-            }
+            tipoSelect.addEventListener("change", function() {
+                if (this.value === "Otro") {
+                    otroTipoContainer.classList.remove("d-none");
+                    document.getElementById("otro_tipo").setAttribute("required", true);
+                } else {
+                    otroTipoContainer.classList.add("d-none");
+                    document.getElementById("otro_tipo").removeAttribute("required");
+                }
+            });
         });
-    });
-</script>
+    </script>
 
-@endsection
+    @endsection

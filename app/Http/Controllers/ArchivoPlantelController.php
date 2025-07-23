@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ArchivosPlantel;
 use App\Models\Plantel;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 
 class ArchivoPlantelController extends Controller
@@ -48,9 +49,33 @@ class ArchivoPlantelController extends Controller
         return redirect()->route('planteles.show', ['id' => $request->id_plantel])
             ->with('success', 'Archivo subido correctamente.');
     }
-    public function show()
+    public function show($id)
     {
-        $archivos = ArchivosPlantel::where('cct', $request->cct ?? '')->get();
-        return view('planteles.show', compact('archivos'));
+        $plantel = Plantel::findOrFail($id);
+        $archivos = ArchivosPlantel::where('cct', $plantel->cct)->get();
+
+        return view('planteles.show', compact('plantel', 'archivos'));
+    }
+    public function descargar($id)
+    {
+        $archivo = ArchivosPlantel::findOrfail($id);
+
+        if (!Storage::exists($archivo->ruta_archivo)) {
+            return redirect()->back()->with('Error', 'Archivo no encontrado');
+        }
+
+        return Storage::download($archivo->ruta_archivo, $archivo->nombre_archivo_original);
+    }
+    public function destroy($id)
+    {
+        $archivo = ArchivosPlantel::findOrFail($id);
+
+        if (Storage::exists($archivo->ruta_archivo)) {
+            Storage::delete($archivo->ruta_archivo);
+        }
+
+        $archivo->delete();
+
+        return redirect()->back()->with('success', 'Archivo eliminador correctamente');
     }
 }

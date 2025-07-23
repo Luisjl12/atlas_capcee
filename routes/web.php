@@ -15,6 +15,7 @@ use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PlantelController;
 use App\Http\Controllers\DetalleProteccionCivilController;
+use App\Http\Controllers\GaleriaFotoController;
 
 
 //Rutas para ver y acceder al login, accion del logout
@@ -129,3 +130,13 @@ Route::get('/localidades/{municipio_id}', [\App\Http\Controllers\LocalidadContro
 //Rutas para ver los archivos
 Route::post('/planteles/{id}/archivos', [ArchivoPlantelController::class, 'store'])->name('archivos.store')->middleware('auth.custom');
 Route::get('/planteles/{id}', [ArchivoPlantelController::class, 'show'])->name('planteles.show');
+//Ruta para descargar los archivos 
+Route::get('/archivos/{archivo}/descargar', [ArchivoPlantelController::class, 'descargar'])->name('archivos.descargar');
+//Eliminar achivo
+Route::delete('/archivods{id}', [ArchivoPlantelController::class, 'destroy'])->name('archivos.destroy');
+
+//Rutas para acceder a la galeria de fotos
+Route::get('/planteles/{cct}/galeria', [GaleriaFotoController::class, 'create'])->name('galeria.fotos');
+Route::post('/planteles/{cct}/galeria', [GaleriaFotoController::class, 'store'])->name('galeria.store');
+//Ruta para eliminar fotos 
+Route::delete('/galeria/{foto}', [GaleriaFotoController::class, 'destroy'])->name('galeria.destroy');
