@@ -2,6 +2,7 @@
 //Modelo para la tabla usuarios
 namespace App\Models;
 
+use App\Http\Controllers\GaleriaFotoController;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -47,5 +48,10 @@ class Usuario extends Authenticatable
     public function tieneRol($nombreRol)
     {
         return optional($this->rol)->nombre_rol === $nombreRol;
+    }
+
+    public function fotosSubidas()
+    {
+        return $this->hasMany(GaleriaFotos::class, 'id_usuario_subio');
     }
 }

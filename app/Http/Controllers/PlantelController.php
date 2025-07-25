@@ -144,7 +144,7 @@ class PlantelController extends Controller
         $servicio = $plantel->detalleServicio;
         $estadosConservacion = ['BUENO', 'REGULAR', 'MALO', 'NO_APLICA', 'EN_PROCESO'];
         $archivos = ArchivosPlantel::where('cct', $plantel->cct)->get();
-        $fotos = GaleriaFotos::where('cct', $plantel->cct)->get();
+        $fotos = GaleriaFotos::with(['usuario', 'plantel'])->where('cct', $plantel->cct)->get();
         return view('planteles.show', compact('plantel', 'hidrosanitario', 'servicio', 'estadosConservacion', 'archivos', 'fotos'));
     }
 

@@ -76,4 +76,8 @@ class Plantel extends Model
     {
         return $this->hasOne(DetalleProteccionCivil::class, 'cct', 'cct');
     }
+    public function fotosGaleria()
+    {
+        return $this->hasOne(GaleriaFotos::class, 'cct', 'cct');
+    }
 }

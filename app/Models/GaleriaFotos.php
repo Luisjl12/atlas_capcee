@@ -18,4 +18,13 @@ class GaleriaFotos extends Model
         'fecha_subida',
         'id_usuario_subio'
     ];
+
+    public function usuario()
+    {
+        return $this->belongsTo(Usuario::class, 'id_usuario_subio');
+    }
+    public function plantel()
+    {
+        return $this->belongsTo(Plantel::class, 'cct', 'cct');
+    }
 }

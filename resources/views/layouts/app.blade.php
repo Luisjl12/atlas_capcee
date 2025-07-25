@@ -76,7 +76,7 @@
         © 2025 ATLAS DE PUEBLA
     </footer>
 
-    <!-- 🔻 Mueve el script aquí -->
+    <!--Scripts--->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

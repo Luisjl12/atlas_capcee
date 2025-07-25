@@ -2,6 +2,7 @@
 
 @section('title', 'Ver Plantel')
 
+
 @section('content')
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center">
@@ -255,53 +256,14 @@
         </div>
         <!--Fotos-->
         <div class="tab-pane fade" id="fotos" role="tabpanel">
-            <h4>Subir foto al plantel(CCT: {{ $plantel -> cct }})</h4>
-            @if (session('foto_subida'))
-            <div class="alert alert-success">
-                Foto subida correctamente:
-                <img src="{{ session('foto_subida') }}" alt="Foto subida" class="img-thumbnail mt-2" width="200">
-            </div>
-            @endif
-            <form action="{{ route('galeria.store', $plantel ->cct) }}" method="POST" enctype="multipart/form-data">
-                @csrf
+            @include('planteles.galeria.formulario', ['plantel' => $plantel])
 
-                <div class="mb-3">
-                    <label for="foto" class="form-label">Seleccionar foto</label>
-                    <input type="file" name="foto" accept="image/png, image/jpeg, image/jpg, image/webp" class="form-control" required>
-                </div>
+            @include('planteles.galeria.imagenes', ['fotos' => $fotos])
 
-                <div class="mb-3">
-                    <label for="descripcion" class="form-label">Descripción</label>
-                    <input type="text" name="descripcion" id="descripcion" class="form-control">
-                </div>
+            @include ('planteles.galeria.modal')
 
-                <button type="submit" class="btn btn-primary">Subir Foto</button>
-            </form>
-            <div class="row">
-                @forelse ($fotos as $foto)
-                <div class="col-md-3 mb-4 position-relative">
-                    <div class="card">
-                        <form action="{{ route('galeria.destroy', $foto->id) }}" method="POST" class="position-absolute top-0 end-0 m-1">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Estás seguro de que deseas eliminar esta foto?')">
-                                &times;
-                            </button>
-                        </form>
-
-                        <img src="{{ Storage::url($foto->ruta_foto) }}" class="img-fluid">
-                        <div class="card-body">
-                            <p class="card-text">{{ $foto->descripcion_foto ?? 'Sin descripción' }}</p>
-                        </div>
-                    </div>
-                </div>
-                @empty
-                <p class="text-muted">No hay fotos subidas para este plantel.</p>
-                @endforelse
-
-            </div>
             @if ($errors->any())
-            <div class="alert alert-danger">
+            <div class="alert alert-danger mt-3">
                 <ul class="mb-0">
                     @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -311,22 +273,24 @@
             @endif
         </div>
 
-    </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const tipoSelect = document.getElementById("tipo_documento");
-            const otroTipoContainer = document.getElementById("otro_tipo_container");
+        @push('scripts')
+        @include('planteles.galeria.scripts')
+        @endpush
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                const tipoSelect = document.getElementById("tipo_documento");
+                const otroTipoContainer = document.getElementById("otro_tipo_container");
 
-            tipoSelect.addEventListener("change", function() {
-                if (this.value === "Otro") {
-                    otroTipoContainer.classList.remove("d-none");
-                    document.getElementById("otro_tipo").setAttribute("required", true);
-                } else {
-                    otroTipoContainer.classList.add("d-none");
-                    document.getElementById("otro_tipo").removeAttribute("required");
-                }
+                tipoSelect.addEventListener("change", function() {
+                    if (this.value === "Otro") {
+                        otroTipoContainer.classList.remove("d-none");
+                        document.getElementById("otro_tipo").setAttribute("required", true);
+                    } else {
+                        otroTipoContainer.classList.add("d-none");
+                        document.getElementById("otro_tipo").removeAttribute("required");
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 
-    @endsection
+        @endsection
