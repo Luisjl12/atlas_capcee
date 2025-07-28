@@ -1,12 +1,33 @@
 @extends('layouts.app')
 @section('content')
 <!--Vista del dashboard del admistrador -->
-<h1>Has iniciado sesión como Administrador</h1>
-<p>Bienvenido, {{ session('nombre_completo') }}</p>
-<div class="d-flex gap-2 mb-3">
-    <a href="{{route('perfil')}}" class="btn btn-primary">Mi Perfil</a>
-    <a href="{{route('gestion.usuarios')}}" class="btn btn-primary">Gestion de usuarios</a>
-    <a href="{{route('planteles.index')}}" class="btn btn-primary">Gestionar Planteles</a>
+
+<div class="dashboard-welcome card-header-custom">
+    <h2><i class="fas fa-tachometer-alt"></i> Panel Principal</h2>
+</div>
+
+<div class="card-body-custom">
+    <p class="lead">¡Bienvenido, {{ session('nombre_completo') }}!</p>
+    <p>Has iniciado sesión como Administrador</p>
+    <hr>
+    <h6>Acciones Disponibles:</h6>
+    <nav class="dashboard-nav">
+        <div class="contenedor-acciones-grid">
+            <div class="columna-acciones">
+                <a href="{{route('gestion.usuarios')}}" class="accion-card red">
+                    <i class="fas fa-users-cog"></i> Gestión de Usuarios
+                </a>
+                <a href="{{route('planteles.index')}}" class="accion-card red">
+                    <i class="fas fa-school"></i> Gestionar Planteles
+                </a>
+            </div>
+            <div class="columna-acciones">
+                <a href="{{route('perfil')}}" class="accion-card green">
+                    <i class="fas fa-user-edit"></i> Mi Perfil
+                </a>
+            </div>
+        </div>
+    </nav>
 </div>
 
 @endsection

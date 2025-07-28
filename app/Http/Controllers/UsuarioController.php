@@ -10,9 +10,20 @@ use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $usuarios = Usuario::with('rol')->get();
+        $query = Usuario::with('rol');
+
+        if ($request->filled('buscar')) {
+            $buscar = $request->input('buscar');
+            $query->where(function ($q) use ($buscar) {
+                $q->where('nombre_completo', 'LIKE', "%{$buscar}%")
+                    ->orWhere('correo_electronico', 'LIKE', "%{$buscar}%");
+            });
+        }
+
+        $usuarios = $query->get();
+
         return view('gestion_usuarios', compact('usuarios'));
     }
 

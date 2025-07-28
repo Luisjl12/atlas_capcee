@@ -32,6 +32,8 @@ Route::get('/perfil', function () {
 Route::get('/cambiar-password', [perfilController::class, 'formCambiarPassword'])
     ->name('perfil.cambiar-password')
     ->middleware('auth.custom');
+//Ruta para actusalizar datos personales
+Route::post('/perfil/actualizar-datos', [PerfilController::class, 'actualizarDatosPersonales'])->name('perfil.actualizarDatos');
 
 //Rutas para actualizar el password
 Route::post('/cambiar-password', [perfilController::class, 'actualizarPassword'])
@@ -77,10 +79,11 @@ Route::get('/dashboard', function () {
 })->middleware('auth.custom')->name('dashboard');
 
 
-//Ruta para acceder al menu de gestion de usuarios
+//Ruta para acceder al menu de gestion de usuarios y buscar usuarios
 Route::get('/gestion_usuarios', [App\Http\Controllers\AdminController::class, 'gestionUsuarios'])
     ->name('gestion.usuarios')
     ->middleware('auth.custom');
+Route::get('/usuarios/index', [UsuarioController::class, 'buscar'])->name('usuarios.index');
 
 //Ruta para acceder a los diferentes acciones de gestion de usuarios 
 Route::middleware(['auth.custom'])->prefix('usuarios')->group(function () {

@@ -3,81 +3,67 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>@yield('title', 'Mi Aplicación')</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@yield('title', 'Mi aplicación')</title>
+
+    {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: rgba(233, 225, 222, 0.93);
-            font-family: 'Inter', sans-serif;
-            color: #fff;
-        }
 
-        .navbar {
-            background-color: #4E100B;
-        }
+    {{-- Estilos personalizados --}}
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
-        .navbar-brand {
-            font-weight: bold;
-            font-size: 1.3rem;
-        }
 
-        .btn-outline-light {
-            border-color: #fff;
-            color: #fff;
-        }
-
-        .btn-outline-light:hover {
-            background-color: #fff;
-            color: #4E100B;
-        }
-
-        .content-box {
-            background-color: #fff;
-            color: #000;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        footer {
-            color: #fff;
-            text-align: center;
-            margin-top: 2rem;
-            padding-bottom: 1rem;
-        }
-    </style>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-expand-lg navbar-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{{ route('dashboard') }}">ATLAS DE PUEBLA</a>
-            <div class="ms-auto">
-                <form action="{{route('perfil')}}" method="GET" style="display:inline;">
-                    @csrf
-                    <button type="submit" class="btn btn-danger">Mi Perfil</button>
-                </form>
-                <form action="{{route('logout')}}" method="POST" style="display: inline;">
-                    @csrf
-                    <button type="submit" class="btn btn-danger">Cerrar Sesión</button>
-                </form>
-            </div>
+    {{-- Barra de navegación --}}
+    <nav class="main-header a">
+
+        <div class="d-flex align-items-center">
+            <a href="{{ route('dashboard') }}">
+                <img src="{{ asset('img/logotipo.png') }}" alt="Logo" class="logo-img me-3" style="height: 40px;">
+            </a>
+            <a class="navbar-brand text-white fw-bold fs-5" href="{{ route('dashboard') }}">ATLAS DE PUEBLA</a>
+        </div>
+
+        <div class="d-flex gap-2">
+            <form action="{{ route('perfil') }}" method="GET" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-outline-light">
+                    <i class="fas fa-user-circle"></i> {{ session('nombre_completo') }}
+                </button>
+            </form>
+
+            <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                @csrf
+                <button type="submit" class="btn btn-outline-light">
+                    <i class="fas fa-sign-out-alt"></i> Salir
+                </button>
+            </form>
         </div>
     </nav>
 
-    <main class="container">
-        <div class="content-box">
+    {{-- Contenido principal --}}
+    <main class="container my-4">
+        <div class="content-box bg-white text-dark rounded p-4 shadow">
             @yield('content')
         </div>
     </main>
 
-    <footer>
-        © 2025 ATLAS DE PUEBLA
+    {{-- Pie de página --}}
+    <footer class="main-footer text-center text-muted py-3">
+
+        © 2025 ATLAS DE PUEBLA. Todos los derechos reservados.
     </footer>
 
-    <!--Scripts--->
+    {{-- Scripts --}}
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    {{-- Scripts adicionales desde @push --}}
+    @stack('scripts')
+
 </body>
 
 </html>

@@ -1,11 +1,18 @@
 @extends('layouts.app')
 @section('title', 'Crear nuevo usuario')
 
+
 @section('content')
+<div class="card-header bg-white border-bottom">
+    <a href="{{ route('usuarios.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+        <h4 class="mb-4">
+            <i class="fas fa-arrow-left "></i>
+            <i class="fas fa-user-plus"></i> Agregar Nuevo Usuario
+        </h4>
+    </a>
+</div>
 <div class="container mt-4">
-    <h4 class="mb-4">
-        <i class="fas fa-user-plus"></i> Crear Nuevo Usuario
-    </h4>
+
 
     {{-- Validación de errores --}}
     @if ($errors->any())
@@ -26,12 +33,12 @@
     @endif
 
     {{-- Card de formulario --}}
-    <div class="card shadow-sm">
+    <div class="container mt-4">
         <div class="card-header bg-white border-bottom">
-            <h5 class="mb-0 text-danger">Datos del Usuario</h5>
+            <h5 class=" mb-0" style="color: var(--color-vino-secundario);">Datos del Usuario</h5>
         </div>
-        <div class="card-body">
-            <form method="POST" action="{{ route('usuarios.store') }}">
+        <div class=" card-body">
+            <form method="POST" action="{{ route('usuarios.store') }}" class="form-ficha-base">
                 @csrf
 
                 <div class="row mb-3">
@@ -77,12 +84,9 @@
                 </div>
 
                 <div class="d-flex justify-content-start gap-2">
-                    <button type="submit" class="btn btn-danger">
-                        <i class="fas fa-user-plus"></i> Crear Usuario
+                    <button type="submit" class="btn btn-primary btn-lg">
+                        <i class="fas fa-save"></i> Crear
                     </button>
-                    <a href="{{ route('usuarios.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancelar
-                    </a>
                 </div>
             </form>
         </div>
