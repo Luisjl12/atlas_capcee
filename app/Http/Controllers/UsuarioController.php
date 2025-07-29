@@ -10,7 +10,13 @@ use Illuminate\Support\Facades\Hash;
 
 class UsuarioController extends Controller
 {
-    public function index(Request $request)
+    public function index()
+    {
+        $usuarios = Usuario::with('rol')->get();
+        return view('gestion_usuarios', compact('usuarios'));
+    }
+
+    public function buscar(Request $request)
     {
         $query = Usuario::with('rol');
 
@@ -24,8 +30,11 @@ class UsuarioController extends Controller
 
         $usuarios = $query->get();
 
-        return view('gestion_usuarios', compact('usuarios'));
+        return response()->json([
+            'html' => view('partials.tabla_usuarios', compact('usuarios'))->render()
+        ]);
     }
+
 
     public function create()
     {
@@ -95,8 +104,16 @@ class UsuarioController extends Controller
 
     public function destroy($id)
     {
+
+
+        $usuarioAutenticadoId = session('id');
+
+        if ($usuarioAutenticadoId == $id) {
+            return redirect()->route('usuarios.index')->with('error', 'No puedes eliminar tu propio usuario.');
+        }
+
         $usuario = Usuario::findOrFail($id);
-        //Verificar si el usuario es director y tiene planteles asignados. 
+        //Verificar si el usuario es director y tiene planteles asignados.
         Plantel::where('id_director_asignado', $usuario->id)->update(['id_director_asignado' => null]);
         $usuario->delete();
 

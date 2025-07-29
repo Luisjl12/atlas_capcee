@@ -1723,6 +1723,23 @@ p {
     border-radius: 4px;
     height: 38px;
 }
+/* Reduce el tamaño general del texto en la paginación */
+.pagination .page-link {
+    font-size: 0.85rem;  /* Puedes ajustar esto a tu gusto */
+    padding: 0.25rem 0.5rem; /* Reduce el tamaño del botón */
+}
+
+/* Si Laravel usa íconos SVG (como ← o →), reduce su tamaño */
+.pagination svg {
+    width: 0.75em;
+    height: 0.75em;
+}
+
+/* Si usas FontAwesome u otros íconos con <i>, añade también: */
+.pagination i {
+    font-size: 0.75rem;
+}
+
 
 
 

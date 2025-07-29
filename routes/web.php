@@ -83,7 +83,7 @@ Route::get('/dashboard', function () {
 Route::get('/gestion_usuarios', [App\Http\Controllers\AdminController::class, 'gestionUsuarios'])
     ->name('gestion.usuarios')
     ->middleware('auth.custom');
-Route::get('/usuarios/index', [UsuarioController::class, 'buscar'])->name('usuarios.index');
+
 
 //Ruta para acceder a los diferentes acciones de gestion de usuarios 
 Route::middleware(['auth.custom'])->prefix('usuarios')->group(function () {
@@ -96,7 +96,10 @@ Route::middleware(['auth.custom'])->prefix('usuarios')->group(function () {
 });
 
 //Rutas para planteles
+Route::get('/planteles/buscar', [PlantelController::class, 'buscar'])->name('planteles.buscar');
+
 Route::resource('planteles', PlantelController::class);
+
 
 
 //Rutas para las "ver planteles"
@@ -143,3 +146,7 @@ Route::get('/planteles/{cct}/galeria', [GaleriaFotoController::class, 'create'])
 Route::post('/planteles/{cct}/galeria', [GaleriaFotoController::class, 'store'])->name('galeria.store');
 //Ruta para eliminar fotos 
 Route::delete('/galeria/{foto}', [GaleriaFotoController::class, 'destroy'])->name('galeria.destroy');
+
+
+//Buscadores interactivos 
+Route::get('/usuarios/buscar', [UsuarioController::class, 'buscar'])->name('usuarios.buscar');

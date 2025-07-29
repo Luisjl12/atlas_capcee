@@ -21,7 +21,7 @@ class PlantelController extends Controller
      */
     public function index()
     {
-        $planteles = Plantel::with(['municipio', 'director'])->get();
+        $planteles = Plantel::with(['municipio', 'director'])->paginate(10);
         return view('planteles.index', compact('planteles'));
     }
 
@@ -297,5 +297,23 @@ class PlantelController extends Controller
             $detalle->update($data);
         }
         return redirect()->route('planteles.show', $plantel->id)->with('success', 'Proteccion civil guardada correctamente');
+    }
+    public function buscar(Request $request)
+    {
+        $query = Plantel::with(['municipio', 'director']);
+
+        if ($request->filled('buscar')) {
+            $buscar = $request->input('buscar');
+            $query->where(function ($q) use ($buscar) {
+                $q->where('nombre_escuela', 'LIKE', "%{$buscar}%")
+                    ->orWhere('cct', 'LIKE', "%{$buscar}%");
+            });
+        }
+
+        $planteles = $query->get();
+
+        return response()->json([
+            'html' => view('partials.lista', compact('planteles'))->render()
+        ]);
     }
 }
