@@ -45,13 +45,29 @@ class PlantelController extends Controller
      */
     public function store(Request $request)
     {
-        $request->merge([
-            'accesibilidad_rampas' => $request->has('accesibilidad_rampas') ? 1 : 0,
-            'accesibildad_banos_adaptados' => $request->has('accesibilidad_banos_adpatados') ? 1 : 0,
-            'accesibilidad_sanaletica_braille' => $request->has('accesibilidad_sanaletica_braille') ? 1 : 0,
+        // Validar solo la sección I (Identificación)
+        $validated = $request->validate([
+            'cct' => 'required|unique:planteles',
+            'nombre_escuela' => 'required',
+            'nivel_educativo' => 'required',
+            'turno' => 'required',
+            'sostenimiento' => 'required',
         ]);
 
-        // Crear o usar municipio
+        // Crear el plantel solo con los campos iniciales
+        $plantel = Plantel::create($validated);
+
+        // Redirigir al formulario de edición para continuar llenando
+        return redirect()->route('planteles.edit', $plantel->id)
+            ->with('success', 'Sección I guardada. Ahora puedes llenar el resto del formulario.');
+    }
+
+
+    public function updateUbicacion(Request $request, $id)
+    {
+        $plantel = Plantel::findOrFail($id);
+
+
         if ($request->filled('nuevo_municipio')) {
             $nombreMunicipio = trim(Str::title($request->nuevo_municipio));
             $municipio = Municipio::firstOrCreate(['nombre_municipio' => $nombreMunicipio]);
@@ -91,37 +107,92 @@ class PlantelController extends Controller
             'id_corde' => $corde_id,
         ]);
 
-        // Validación final con los ids definitivos
-        $request->validate([
-            'cct' => 'required|unique:planteles',
-            'nombre_escuela' => 'required',
-            'nivel_educativo' => 'required',
-            'turno' => 'required',
-            'sostenimiento' => 'required',
-            'domicilio_calle_numero' => 'required',
-            'domicilio_colonia' => 'required',
-            'domicilio_cp' => 'required',
-            'latitud' => 'required',
-            'longitud' => 'required',
-            'telefono_plantel' => 'required',
-            'correo_institucional' => 'required',
-            'nombre_director_registrado' => 'required',
-            'id_director_asignado' => 'required|exists:usuarios,id',
-            'accesibilidad_otros' => 'nullable|string|max:255',
-            'total_alumnos' => 'required',
-            'total_docentes' => 'required',
-            'total_administrativos' => 'required',
-            'estatus_plantel' => 'required|in:ACTIVO,INACTIVO,EN_REVISION',
-            'id_municipio' => 'required|exists:municipios,id',
-            'id_localidad' => 'required|exists:localidades,id',
-            'id_corde' => 'required|exists:cordes,id',
+        // Validar y procesar localidad, municipio, corde (incluyendo si es nuevo)
+        $plantel->update([
+            'id_municipio' => $request->input('id_municipio'),
+            'id_localidad' => $request->input('id_localidad'),
+            'id_corde' => $request->input('id_corde'),
+            'domicilio_calle_numero' => $request->input('domicilio_calle_numero'),
+            'domicilio_colonia' => $request->input('domicilio_colonia'),
+            'domicilio_cp' => $request->input('domicilio_cp'),
+            'latitud' => $request->input('latitud'),
+            'longitud' => $request->input('longitud'),
         ]);
 
-        // Crear Plantel
-        Plantel::create($request->all());
-
-        return redirect()->route('planteles.index')->with('success', 'Datos agregados correctamente.');
+        return back()->with('success', 'Sección II guardada correctamente.');
     }
+
+    public function updateContacto(Request $request, $id)
+    {
+        $plantel = Plantel::findOrFail($id);
+
+        $plantel->update([
+            'telefono_plantel' => $request->input('telefono_plantel'),
+            'correo_institucional' => $request->input('correo_institucional'),
+            'nombre_director_registrado' => $request->input('nombre_director_registrado'),
+            'id_director_asignado' => $request->input('id_director_asignado'),
+        ]);
+
+        return back()->with('success', 'Sección III guardada correctamente.');
+    }
+    public function updateAccesibilidad(Request $request, $id)
+    {
+        $plantel = Plantel::findOrFail($id);
+
+        $request->merge([
+            'accesibilidad_rampas' => $request->has('accesibilidad_rampas') ? 1 : 0,
+            'accesibilidad_banos_adaptados' => $request->has('accesibilidad_banos_adaptados') ? 1 : 0,
+            'accesibilidad_sanaletica_braille' => $request->has('accesibilidad_sanaletica_braille') ? 1 : 0,
+        ]);
+
+        $request->validate([
+            'accesibilidad_otros' => 'nullable|string|max:255',
+        ]);
+
+        $plantel->update([
+            'accesibilidad_rampas' => $request->accesibilidad_rampas,
+            'accesibilidad_banos_adaptados' => $request->accesibilidad_banos_adaptados,
+            'accesibilidad_sanaletica_braille' => $request->accesibilidad_sanaletica_braille,
+            'accesibilidad_otros' => $request->accesibilidad_otros,
+        ]);
+
+        return redirect()->back()->with('success', 'Datos de accesibilidad actualizados correctamente.');
+    }
+    public function updateTotalUsuariosPlanteles(Request $request, $id)
+    {
+        $plantel = Plantel::findOrFail($id);
+
+        $request->validate([
+            'total_alumnos' => 'required|integer|min:0',
+            'total_docentes' => 'required|integer|min:0',
+            'total_administrativos' => 'required|integer|min:0',
+        ]);
+
+        $plantel->update([
+            'total_alumnos' => $request->total_alumnos,
+            'total_docentes' => $request->total_docentes,
+            'total_administrativos' => $request->total_administrativos,
+        ]);
+
+        return redirect()->back()->with('success', 'Totales de usuarios actualizados correctamente.');
+    }
+    public function updateEstatus(Request $request, $id)
+    {
+        $plantel = Plantel::findOrFail($id);
+
+        $request->validate([
+            'estatus_plantel' => 'required|in:ACTIVO,INACTIVO,EN_REVISION',
+        ]);
+
+        $plantel->update([
+            'estatus_plantel' => $request->estatus_plantel,
+        ]);
+
+        return redirect()->back()->with('success', 'Estatus del plantel actualizado correctamente.');
+    }
+
+
+
 
 
     public function asignar(Usuario $usuario)

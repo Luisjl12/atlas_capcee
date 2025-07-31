@@ -95,10 +95,20 @@ Route::middleware(['auth.custom'])->prefix('usuarios')->group(function () {
     Route::delete('{id}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
 });
 
+
 //Rutas para planteles y buscador interactivo de plantel 
 Route::get('/planteles/buscar', [PlantelController::class, 'buscar'])->name('planteles.buscar');
 
 Route::resource('planteles', PlantelController::class);
+
+//Agregar planteles 
+Route::post('/planteles', [PlantelController::class, 'store'])->name('planteles.store'); // Sección I
+
+Route::put('/planteles/{id}/ubicacion', [PlantelController::class, 'updateUbicacion'])->name('planteles.update.ubicacion'); // Sección II
+Route::put('/planteles/{id}/contacto', [PlantelController::class, 'updateContacto'])->name('planteles.update.contacto'); // Sección III
+Route::put('/planteles/{id}/accesibilidad', [PlantelController::class, 'updateAccesibilidad'])->name('planteles.update.accesibilidad'); // Sección IV
+Route::put('/planteles/{id}/usuarios', [PlantelController::class, 'updateTotalUsuariosPlanteles'])->name('planteles.update.totalUsuariosPlanteles'); // Sección V
+Route::put('/planteles/{id}/estatus', [PlantelController::class, 'updateEstatus'])->name('planteles.update.estatus'); // Sección VI
 
 
 
