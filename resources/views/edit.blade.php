@@ -3,9 +3,16 @@
 
 @section('content')
 <div class="container mt-4">
-    <h4 class="mb-4">
-        <i class="fas fa-user-edit"></i> Editar Usuario: <strong>{{ $usuario->nombre_completo }}</strong>
-    </h4>
+
+    <div class="card-header bg-white border-bottom">
+        <a href="{{ route('usuarios.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+            <h4 class="mb-4">
+                <i class="fas fa-arrow-left "></i>
+                <i class="fas fa-user-edit"></i> Editar Usuario: <strong>{{ $usuario->nombre_completo }}</strong>
+
+            </h4>
+        </a>
+    </div>
 
     @if($errors->any())
     <div class="alert alert-danger">
@@ -21,11 +28,11 @@
     <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <div class="card shadow-sm">
+    <form class="form-ficha-base">
         <div class="card-header bg-white border-bottom">
             <h5 class="mb-0 text-danger">Datos del Usuario</h5>
         </div>
-        <div class="card-body">
+        <div class="form-section">
             <form method="POST" action="{{ route('usuarios.update', $usuario->id) }}">
                 @csrf
                 @method('PUT')
@@ -41,7 +48,7 @@
                     </div>
                 </div>
 
-                <div class="mb-3">
+                <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label">Contraseña:</label>
                         <input type="password" name="password" class="form-control" placeholder="Dejar en blanco para no cambiar">
@@ -74,15 +81,12 @@
                 </div>
 
                 <div class="d-flex justify-content-start gap-2">
-                    <button type="submit" class="btn btn-danger">
+                    <button type="submit" class="btn btn-primary btn-lg">
                         <i class="fas fa-save"></i> Actualizar
                     </button>
-                    <a href="{{ route('usuarios.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-times"></i> Cancelar
-                    </a>
                 </div>
             </form>
         </div>
-    </div>
+    </form>
 </div>
 @endsection

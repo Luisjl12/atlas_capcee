@@ -4,7 +4,14 @@
 
 @section('content')
 <div class="container mt-4">
-    <h2 class="mb-4">Agregar Plantel</h2>
+    <div class="card-header bg-white border-bottom">
+        <a href="{{ route('planteles.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+            <h4 class="mb-4">
+                <i class="fas fa-arrow-left "></i>
+                <i class="fas fa-clipboard-list"></i> Registrar Nuevo Plantel
+            </h4>
+        </a>
+    </div>
 
     {{-- Mostrar errores de validación --}}
     @if ($errors->any())
@@ -18,212 +25,280 @@
     @endif
 
     {{-- Formulario --}}
-    <form action="{{ route('planteles.store') }}" method="POST">
+    <form action="{{ route('planteles.store') }}" method="POST" class="needs-validation form-ficha-base">
         @csrf
-
-        {{-- Sección I: Datos del Plantel --}}
-        <h5 class="text-primary">I. Datos Generales</h5>
-        <hr>
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="cct" class="form-label">CCT:</label>
-                <input type="text" class="form-control" name="cct" value="{{ old('cct') }}" required>
-            </div>
-            <div class="col-md-8">
-                <label for="nombre_escuela" class="form-label">Nombre de la Escuela:</label>
-                <input type="text" class="form-control" name="nombre_escuela" value="{{ old('nombre_escuela') }}" required>
-            </div>
+        <div class="form-navigation nav-tabs-text mb-3">
+            <span class="nav-tab" data-step="0">I. Identificación</span>
+            <span class="nav-tab" data-step="1">II. Ubicación</span>
+            <span class="nav-tab" data-step="2">III. Contacto</span>
+            <span class="nav-tab" data-step="3">IV. Accesibilidad</span>
+            <span class="nav-tab" data-step="4">V. Usuarios</span>
+            <span class="nav-tab" data-step="5">VI. Estatus</span>
         </div>
 
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="nivel_educativo" class="form-label">Nivel Educativo:</label>
-                <input type="text" class="form-control" name="nivel_educativo" value="{{ old('nivel_educativo') }}" required>
+        <!--Tab panes--->
+        <div class="tab-content" id="plantelTabsContent">
+            <div class="form-section step-section" data-step="0">
+                <h4>I. Datos de Identificación</h4>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="cct" class="form-label">CCT:</label>
+                        <input type="text" class="form-control" name="cct" value="{{ old('cct') }}" required>
+                    </div>
+                    <div class="col-md-8">
+                        <label for="nombre_escuela" class="form-label">Nombre de la Escuela:</label>
+                        <input type="text" class="form-control" name="nombre_escuela" value="{{ old('nombre_escuela') }}" required>
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="nivel_educativo" class="form-label">Nivel Educativo:</label>
+                        <input type="text" class="form-control" name="nivel_educativo" value="{{ old('nivel_educativo') }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="turno" class="form-label">Turno:</label>
+                        <input type="text" class="form-control" name="turno" value="{{ old('turno') }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="sostenimiento" class="form-label">Sostenimiento:</label>
+                        <input type="text" class="form-control" name="sostenimiento" value="{{ old('sostenimiento') }}" required>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <label for="turno" class="form-label">Turno:</label>
-                <input type="text" class="form-control" name="turno" value="{{ old('turno') }}" required>
+            <!--Ubicacion--->
+            <div class="form-section step-section d-none" data-step="1">
+                <h4>II. Ubicación</h4>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="id_municipio" class="form-label">Municipio:</label>
+                        <select name="id_municipio" id="id_municipio" class="form-control">
+                            <option value="">Seleccione un municipio</option>
+                            @foreach($municipios as $municipio)
+                            <option value="{{ $municipio->id }}">{{ $municipio->nombre_municipio }}</option>
+                            @endforeach
+                            <option value="nuevo">Otro...</option> {{-- <-- esta línea agrega la opción para activar el input --}}
+                        </select>
+
+                        <input type="text" name="nuevo_municipio" id="input_nuevo_municipio" class="form-control mt-2 d-none" placeholder="Nuevo municipio">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_localidad" class="form-label">Localidad:</label>
+                        <select name="id_localidad" id="select_localidad" class="form-control" disabled>
+                            <option value="">Seleccione...</option>
+                            @foreach($localidades as $localidad)
+                            <option value="{{ $localidad->id }}">{{ $localidad->nombre_localidad }}</option>
+                            @endforeach
+                            <option value="nuevo">Otro...</option> {{-- <-- esta línea también --}}
+                        </select>
+
+                        <input type="text" id="input_nuevo_localidad" name="nuevo_localidad" class="form-control mt-2 d-none" placeholder="Ingrese nueva localidad">
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_corde" class="form-label">CORDE:</label>
+                        <select name="id_corde" id="select_corde" class="form-select">
+                            <option value="">Seleccione...</option>
+                            @foreach($cordes as $corde)
+                            <option value="{{ $corde->id }}" {{ old('id_corde', $plantel->id_corde ?? '') == $corde->id ? 'selected' : '' }}>
+                                {{ $corde->nombre_corde }}
+                            </option>
+                            @endforeach
+
+                        </select>
+                        <input type="text" name="nuevo_corde" id="input_nuevo_corde" class="form-control mt-2 d-none" placeholder="Nuevo CORDE">
+                    </div>
+                </div>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="domicilio_calle_numero" class="form-label">Calle y Número:</label>
+                        <input type="text" class="form-control" name="domicilio_calle_numero" value="{{ old('domicilio_calle_numero') }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="domicilio_colonia" class="form-label">Colonia:</label>
+                        <input type="text" class="form-control" name="domicilio_colonia" value="{{ old('domicilio_colonia') }}" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="domicilio_cp" class="form-label">C.P.:</label>
+                        <input type="text" class="form-control" name="domicilio_cp" value="{{ old('domicilio_cp') }}" required>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <label for="latitud" class="form-label">Latitud:</label>
+                        <input type="text" class="form-control" name="latitud" value="{{ old('latitud') }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="longitud" class="form-label">Longitud:</label>
+                        <input type="text" class="form-control" name="longitud" value="{{ old('longitud') }}" required>
+                    </div>
+                </div>
             </div>
-            <div class="col-md-4">
-                <label for="sostenimiento" class="form-label">Sostenimiento:</label>
-                <input type="text" class="form-control" name="sostenimiento" value="{{ old('sostenimiento') }}" required>
+            <!--Contacto--->
+            <div class="form-section step-section d-none" data-step="2">
+                <h4>III. Contacto y Director</h4>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="telefono_plantel" class="form-label">Telefono del Plantel:</label>
+                        <input type="text" class="form-control" name="telefono_plantel" value="{{ old('telefono_plantel') }}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="correo_institucional" class="form-label">Correo Institucional:</label>
+                        <input type="text" class="form-control" name="correo_institucional" value="{{ old('correo_institucional') }}" required>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="nombre_director_registrado" class="form-label">Nombre del Director:*</label>
+                        <input type="text" class="form-control" name="nombre_director_registrado" value="{{old('nombre_director_registrado')}}" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="id_director_asignado" class="form-label">Director Asignado(Usuario):</label>
+                        <select name="id_director_asignado" class="form-select" required>
+                            <option value="">Seleccione...</option>
+                            @foreach($directores as $director)
+                            <option value="{{ $director->id }}" {{ old('id_director_asignado') == $director->id ? 'selected' : '' }}>
+                                {{ $director->nombre_completo}}
+                            </option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+            {{-- Sección IV: Accesibilidad --}}
+            <div class="form-section step-section d-none" data-step="3">
+                <h4>IV. Accesibilidad</h4>
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="accesibilidad_rampas" id="accesibilidad_rampas" value="1"
+                            {{ old('accesibilidad_rampas') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="accesibilidad_rampas">Rampas</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="accesibilidad_banos_adaptados" id="accesibilidad_banos_adaptados" value="1"
+                            {{ old('accesibilidad_banos_adaptados') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="accesibilidad_banos_adaptados">Baños Adaptados</label>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" class="form-check-input" name="accesibilidad_sanaletica_braille" id="accesibilidad_sanaletica_braille" value="1"
+                            {{ old('accesibilidad_sanaletica_braille') ? 'checked' : '' }}>
+                        <label class="form-check-label" for="accesibilidad_sanaletica_braille">Señalética Braille</label>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="accesibilidad_otros" class="form-label">Otros (Accesibilidad):</label>
+                    <input type="text" class="form-control" name="accesibilidad_otros" id="accesibilidad_otros"
+                        value="{{ old('accesibilidad_otros') }}" placeholder="Especificar...">
+                </div>
+            </div>
+            {{-- Sección V: Total Usuarios Planteles --}}
+            <div class="form-section step-section d-none" data-step="4">
+                <h4>V. Total Usuarios Planteles</h4>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="total_alumnos" class="form-label">Total Alumnos:</label>
+                        <input type="number" class="form-control" name="total_alumnos" value="{{ old('total_alumnos') }}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="total_docentes" class="form-label">Total Docentes</label>
+                        <input type="number" class="form-control" name="total_docentes" value="{{old('total_docentes')}}" required>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="total_administrativos" class="form-label">Total Administrativos</label>
+                        <input type="number" class="form-control" name="total_administrativos" value="{{old('total_administrativos')}}" required>
+                    </div>
+                </div>
+            </div>
+            {{-- Sección VI: estauts plantel(admin) --}}
+            <div class="form-section step-section d-none" data-step="5">
+                <h4>VI. Estatus(Admin)</h4>
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="estatus_plantel" class="form-label">Estatus:</label>
+                        <select name="estatus_plantel" class="form-select" required>
+                            <option value="">Seleccione una opcion</option>
+                            <option value="ACTIVO" {{old ('estatus_plantel')=='ACTIVO' ? 'selected': ''}}>ACTIVO</option>
+                            <option value="INACTIVO" {{old ('estatus_plantel')=='INACTIVO' ? 'selected': ''}}>INACTIVO</option>
+                            <option value="EN_REVISION" {{old ('estatus_plantel')=='EN_REVISION' ? 'selected': ''}}>EN REVISION</option>
+
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!-- Botones fuera de las pestañas -->
+            <div class="mt-4">
+                <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i>Registrar Plantel</button>
             </div>
         </div>
-
-        {{-- Sección II: Ubicación --}}
-        <h5 class="text-danger mt-4">II. Ubicación</h5>
-        <hr style="border: 1px solid #a10000;">
-
-        <div class="row mb-3">
-            {{-- MUNICIPIO --}}
-            <div class="col-md-4">
-                <label for="id_municipio" class="form-label">Municipio:</label>
-                <select name="id_municipio" id="id_municipio" class="form-control">
-                    <option value="">Seleccione un municipio</option>
-                    @foreach($municipios as $municipio)
-                    <option value="{{ $municipio->id }}">{{ $municipio->nombre_municipio }}</option>
-                    @endforeach
-                    <option value="nuevo">Otro...</option> {{-- <-- esta línea agrega la opción para activar el input --}}
-                </select>
-
-
-
-                <input type="text" name="nuevo_municipio" id="input_nuevo_municipio" class="form-control mt-2 d-none" placeholder="Nuevo municipio">
-            </div>
-
-            {{-- LOCALIDAD --}}
-            <div class="col-md-4">
-                <label for="id_localidad" class="form-label">Localidad:</label>
-                <select name="id_localidad" id="select_localidad" class="form-control" disabled>
-                    <option value="">Seleccione...</option>
-                    @foreach($localidades as $localidad)
-                    <option value="{{ $localidad->id }}">{{ $localidad->nombre_localidad }}</option>
-                    @endforeach
-                    <option value="nuevo">Otro...</option> {{-- <-- esta línea también --}}
-                </select>
-
-                <input type="text" id="input_nuevo_localidad" name="nuevo_localidad" class="form-control mt-2 d-none" placeholder="Ingrese nueva localidad">
-            </div>
-
-            {{-- CORDE --}}
-            <div class="col-md-4">
-                <label for="id_corde" class="form-label">CORDE:</label>
-                <select name="id_corde" id="select_corde" class="form-select">
-                    <option value="">Seleccione...</option>
-                    @foreach($cordes as $corde)
-                    <option value="{{ $corde->id }}" {{ old('id_corde', $plantel->id_corde ?? '') == $corde->id ? 'selected' : '' }}>
-                        {{ $corde->nombre_corde }}
-                    </option>
-                    @endforeach
-
-                </select>
-                <input type="text" name="nuevo_corde" id="input_nuevo_corde" class="form-control mt-2 d-none" placeholder="Nuevo CORDE">
-            </div>
-        </div>
-
-
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="domicilio_calle_numero" class="form-label">Calle y Número:</label>
-                <input type="text" class="form-control" name="domicilio_calle_numero" value="{{ old('domicilio_calle_numero') }}" required>
-            </div>
-            <div class="col-md-4">
-                <label for="domicilio_colonia" class="form-label">Colonia:</label>
-                <input type="text" class="form-control" name="domicilio_colonia" value="{{ old('domicilio_colonia') }}" required>
-            </div>
-            <div class="col-md-2">
-                <label for="domicilio_cp" class="form-label">C.P.:</label>
-                <input type="text" class="form-control" name="domicilio_cp" value="{{ old('domicilio_cp') }}" required>
-            </div>
-        </div>
-
-        <div class="row mb-4">
-            <div class="col-md-6">
-                <label for="latitud" class="form-label">Latitud:</label>
-                <input type="text" class="form-control" name="latitud" value="{{ old('latitud') }}" required>
-            </div>
-            <div class="col-md-6">
-                <label for="longitud" class="form-label">Longitud:</label>
-                <input type="text" class="form-control" name="longitud" value="{{ old('longitud') }}" required>
-            </div>
-        </div>
-        {{-- Sección III: Contacto y director --}}
-        <h5 class="text-danger mt-4">III. Contacto y director</h5>
-        <hr style="border: 1px solid #a10000;">
-
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="telefono_plantel" class="form-label">Telefono del Plantel:</label>
-                <input type="text" class="form-control" name="telefono_plantel" value="{{ old('telefono_plantel') }}" required>
-            </div>
-            <div class="col-md-4">
-                <label for="correo_institucional" class="form-label">Correo Institucional:</label>
-                <input type="text" class="form-control" name="correo_institucional" value="{{ old('correo_institucional') }}" required>
-            </div>
-        </div>
-
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="nombre_director_registrado" class="form-label">Nombre del Director:*</label>
-                <input type="text" class="form-control" name="nombre_director_registrado" value="{{old('nombre_director_registrado')}}" required>
-            </div>
-            <div class="col-md-4">
-                <label for="id_director_asignado" class="form-label">Director Asignado(Usuario):</label>
-                <select name="id_director_asignado" class="form-select" required>
-                    <option value="">Seleccione...</option>
-                    @foreach($directores as $director)
-                    <option value="{{ $director->id }}" {{ old('id_director_asignado') == $director->id ? 'selected' : '' }}>
-                        {{ $director->nombre_completo}}
-                    </option>
-                    @endforeach
-                </select>
-            </div>
-        </div>
-
-        {{-- Sección IV: Accesibilidad --}}
-        <h5 class="text-danger mt-4">IV. Accesibilidad</h5>
-        <hr style="border: 1px solid #a10000;">
-        <div class="mb-3">
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="accesibilidad_rampas" id="accesibilidad_rampas" value="1"
-                    {{ old('accesibilidad_rampas') ? 'checked' : '' }}>
-                <label class="form-check-label" for="accesibilidad_rampas">Rampas</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="accesibilidad_banos_adaptados" id="accesibilidad_banos_adaptados" value="1"
-                    {{ old('accesibilidad_banos_adaptados') ? 'checked' : '' }}>
-                <label class="form-check-label" for="accesibilidad_banos_adaptados">Baños Adaptados</label>
-            </div>
-            <div class="form-check">
-                <input type="checkbox" class="form-check-input" name="accesibilidad_sanaletica_braille" id="accesibilidad_sanaletica_braille" value="1"
-                    {{ old('accesibilidad_sanaletica_braille') ? 'checked' : '' }}>
-                <label class="form-check-label" for="accesibilidad_sanaletica_braille">Señalética Braille</label>
-            </div>
-        </div>
-        <div class="mb-3">
-            <label for="accesibilidad_otros" class="form-label">Otros (Accesibilidad):</label>
-            <input type="text" class="form-control" name="accesibilidad_otros" id="accesibilidad_otros"
-                value="{{ old('accesibilidad_otros') }}" placeholder="Especificar...">
-        </div>
-
-        {{-- Sección V: Total Usuarios Planteles --}}
-        <h5 class="text-danger mt-4">V. Total Usuarios Planteles</h5>
-        <hr style="border: 1px solid #a10000;">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <label for="total_alumnos" class="form-label">Total Alumnos:</label>
-                <input type="number" class="form-control" name="total_alumnos" value="{{ old('total_alumnos') }}" required>
-            </div>
-            <div class="col-md-6">
-                <label for="total_docentes" class="form-label">Total Docentes</label>
-                <input type="number" class="form-control" name="total_docentes" value="{{old('total_docentes')}}" required>
-            </div>
-            <div class="col-md-6">
-                <label for="total_administrativos" class="form-label">Total Administrativos</label>
-                <input type="number" class="form-control" name="total_administrativos" value="{{old('total_administrativos')}}" required>
-            </div>
-        </div>
-
-        {{-- Sección VI: estauts plantel(admin) --}}
-        <h5 class="text-danger mt-4">VI. Estatus Plantel(Admin)</h5>
-        <hr style="border: 1px solid #a10000;">
-        <div class="row mb-3">
-            <div class="col-md-4">
-                <label for="estatus_plantel" class="form-label">Estatus:</label>
-                <select name="estatus_plantel" class="form-select" required>
-                    <option value="">Seleccione una opcion</option>
-                    <option value="ACTIVO" {{old ('estatus_plantel')=='ACTIVO' ? 'selected': ''}}>ACTIVO</option>
-                    <option value="INACTIVO" {{old ('estatus_plantel')=='INACTIVO' ? 'selected': ''}}>INACTIVO</option>
-                    <option value="EN_REVISION" {{old ('estatus_plantel')=='EN_REVISION' ? 'selected': ''}}>EN REVISION</option>
-
-                </select>
-            </div>
-        </div>
-        <button type="submit" class="btn btn-success">Guardar Plantel</button>
-        <a href="{{ route('planteles.index') }}" class="btn btn-secondary">Cancelar</a>
     </form>
 </div>
 
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const secciones = document.querySelectorAll('.step-section');
+        const pestañas = document.querySelectorAll('.nav-tab');
+
+        function mostrarSeccion(numero) {
+            for (let i = 0; i < secciones.length; i++) {
+                if (i === numero) {
+                    secciones[i].classList.add('active');
+                } else {
+                    secciones[i].classList.remove('active');
+                }
+            }
+
+            for (let i = 0; i < pestañas.length; i++) {
+                if (i === numero) {
+                    pestañas[i].classList.add('active');
+                } else {
+                    pestañas[i].classList.remove('active');
+                }
+            }
+        }
+
+        // Cuando se hace clic en alguna pestaña
+        for (let i = 0; i < pestañas.length; i++) {
+            pestañas[i].addEventListener('click', function() {
+                mostrarSeccion(i);
+            });
+        }
+        mostrarSeccion(0);
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const secciones = document.querySelectorAll('.step-section');
+        const pestañas = document.querySelectorAll('.nav-tab');
+
+        function mostrarSeccion(numero) {
+            secciones.forEach((seccion, i) => {
+                if (i === numero) {
+                    seccion.classList.remove('d-none');
+                } else {
+                    seccion.classList.add('d-none');
+                }
+            });
+
+            pestañas.forEach((pestana, i) => {
+                if (i === numero) {
+                    pestana.classList.add('active');
+                } else {
+                    pestana.classList.remove('active');
+                }
+            });
+        }
+
+        pestañas.forEach((pestana, i) => {
+            pestana.addEventListener('click', () => {
+                mostrarSeccion(i);
+            });
+        });
+
+        // Mostrar la primera al cargar
+        mostrarSeccion(0);
+    });
+</script>
 <script>
     function toggleInput(selectId, inputId) {
         const select = document.getElementById(selectId);
@@ -301,7 +376,7 @@
         actualizarEstadoLocalidad();
     });
 </script>
-
+@endpush
 
 
 @endsection

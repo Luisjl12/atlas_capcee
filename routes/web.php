@@ -95,7 +95,7 @@ Route::middleware(['auth.custom'])->prefix('usuarios')->group(function () {
     Route::delete('{id}', [UsuarioController::class, 'destroy'])->name('usuarios.destroy');
 });
 
-//Rutas para planteles
+//Rutas para planteles y buscador interactivo de plantel 
 Route::get('/planteles/buscar', [PlantelController::class, 'buscar'])->name('planteles.buscar');
 
 Route::resource('planteles', PlantelController::class);
@@ -148,5 +148,5 @@ Route::post('/planteles/{cct}/galeria', [GaleriaFotoController::class, 'store'])
 Route::delete('/galeria/{foto}', [GaleriaFotoController::class, 'destroy'])->name('galeria.destroy');
 
 
-//Buscadores interactivos 
+//Buscadores interactivos de usuarios
 Route::get('/usuarios/buscar', [UsuarioController::class, 'buscar'])->name('usuarios.buscar');

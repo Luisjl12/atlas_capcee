@@ -1296,6 +1296,7 @@ p i {
 /* --- Añadir a css/style.css --- */
 
 /* Estilos para Pestañas (Tabs) */
+
  .tab-nav {
     overflow: hidden;
     border: 1px solid var(--color-bordes);

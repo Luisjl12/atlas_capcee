@@ -33,7 +33,7 @@
     @endif
 
     {{-- Card de formulario --}}
-    <div class="container mt-4">
+    <div class="form-ficha-base">
         <div class="card-header bg-white border-bottom">
             <h5 class=" mb-0" style="color: var(--color-vino-secundario);">Datos del Usuario</h5>
         </div>
