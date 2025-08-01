@@ -22,14 +22,18 @@
                         {{ $plantel->estatus_plantel }}
                     </span>
                 </td>
+
                 <td data-label="Acciones">
-                    <div class="acciones-btns">
+
+                    <div class="acciones-btns d-flex align-items-center gap-1 flex-nowrap">
+
                         <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-sm btn-info" title="Ver Detalle Completo">
                             <i class="fas fa-eye"></i>
                         </a>
                         <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-sm btn-primary" title="Editar Ficha Base">
                             <i class="fas fa-edit"></i>
                         </a>
+
                         <form action="{{ route('planteles.destroy', $plantel->id) }}" method="POST" style="display:inline-block;">
                             @csrf
                             @method('DELETE')
@@ -39,6 +43,7 @@
                             </button>
                         </form>
                     </div>
+
                 </td>
             </tr>
             @empty

@@ -62,7 +62,6 @@ class PlantelController extends Controller
             ->with('success', 'Sección I guardada. Ahora puedes llenar el resto del formulario.');
     }
 
-
     public function updateUbicacion(Request $request, $id)
     {
         $plantel = Plantel::findOrFail($id);
@@ -176,6 +175,7 @@ class PlantelController extends Controller
 
         return redirect()->back()->with('success', 'Totales de usuarios actualizados correctamente.');
     }
+
     public function updateEstatus(Request $request, $id)
     {
         $plantel = Plantel::findOrFail($id);
@@ -190,9 +190,6 @@ class PlantelController extends Controller
 
         return redirect()->back()->with('success', 'Estatus del plantel actualizado correctamente.');
     }
-
-
-
 
 
     public function asignar(Usuario $usuario)
@@ -242,73 +239,23 @@ class PlantelController extends Controller
     {
         $plantel = Plantel::findOrFail($id);
 
-        // Primero creamos los valores necesarios para validar
-        if ($request->filled('nuevo_municipio')) {
-            $nombreMunicipio = trim(Str::title($request->nuevo_municipio));
-            $municipio = Municipio::firstOrCreate(['nombre_municipio' => $nombreMunicipio]);
-            $request->merge(['id_municipio' => $municipio->id]);
-        }
-
-        if ($request->filled('nuevo_localidad')) {
-            $nombreLocalidad = trim(Str::title($request->nuevo_localidad));
-            $municipio_id = $request->id_municipio; // Asegúrate de que ya se creó antes si es nuevo
-            $localidad = Localidad::firstOrCreate([
-                'nombre_localidad' => $nombreLocalidad,
-                'municipio_id' => $municipio_id,
-            ]);
-            $request->merge(['id_localidad' => $localidad->id]);
-        }
-
-        if ($request->filled('nuevo_corde')) {
-            $nombreCorde = trim(Str::title($request->nuevo_corde));
-            $corde = Corde::firstOrCreate(['nombre_corde' => $nombreCorde]);
-            $request->merge(['id_corde' => $corde->id]);
-        }
-
-        // Ahora validamos con los valores ya creados
-        $request->merge([
-            'accesibilidad_rampas' => $request->has('accesibilidad_rampas') ? 1 : 0,
-            'accesibilidad_banos_adaptados' => $request->has('accesibilidad_banos_adaptados') ? 1 : 0,
-            'accesibilidad_sanaletica_braille' => $request->has('accesibilidad_sanaletica_braille') ? 1 : 0,
-        ]);
-
         // Validación con campos alternativos
-        $validated = $request->validate([
-            'cct' => 'required|unique:planteles,cct,' . $plantel->id,
+        $request->validate([
+            'cct' => 'required|string|max:20|unique:planteles,cct,' . $plantel->id . ',id',
             'nombre_escuela' => 'required|string|max:255',
             'nivel_educativo' => 'required|string|max:255',
             'turno' => 'required|string|max:100',
             'sostenimiento' => 'required|string|max:100',
-            'domicilio_calle_numero' => 'required|string|max:255',
-            'domicilio_colonia' => 'required|string|max:255',
-            'domicilio_cp' => 'required|string|max:10',
-            'latitud' => 'required|string|max:100',
-            'longitud' => 'required|string|max:100',
-            'telefono_plantel' => 'required|string|max:20',
-            'correo_institucional' => 'required|email|max:255',
-            'nombre_director_registrado' => 'required|string|max:255',
-            'id_director_asignado' => 'required|exists:usuarios,id',
-            'accesibilidad_otros' => 'nullable|string|max:255',
-            'total_alumnos' => 'required|integer|min:0',
-            'total_docentes' => 'required|integer|min:0',
-            'total_administrativos' => 'required|integer|min:0',
-            'estatus_plantel' => 'required|in:ACTIVO,INACTIVO,EN_REVISION',
-
-            // Campos combinados para crear o seleccionar
-            'id_municipio' => 'required_without:nuevo_municipio|nullable|exists:municipios,id',
-            'nuevo_municipio' => 'required_without:id_municipio|nullable|string|max:255',
-
-            'id_localidad' => 'required_without:nuevo_localidad|nullable|exists:localidades,id',
-            'nuevo_localidad' => 'required_without:id_localidad|nullable|string|max:255',
-
-            'id_corde' => 'required_without:nuevo_corde|nullable|exists:cordes,id',
-            'nuevo_corde' => 'required_without:id_corde|nullable|string|max:255',
         ]);
 
-        // Crear municipio si es nuevo
-        $plantel->update($request->all());
-
-        return redirect()->route('planteles.index')->with('success', 'Plantel actualizado correctamente.');
+        $plantel->update($request->only([
+            'nombre_escuela',
+            'cct',
+            'nivel_educativo',
+            'turno',
+            'sostenimiento'
+        ]));
+        return redirect()->back()->with('success', 'Sección I actualizada correctamente.');
     }
 
 

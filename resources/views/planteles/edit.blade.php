@@ -4,11 +4,13 @@
 
 @section('content')
 <div class="container mt-4">
-    <div class="card-header bg-white border-bottom">
+
+    <div class="card-header bg-white border-bottom mb-4">
         <a href="{{ route('planteles.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-            <h4 class="mb-4">
+            <h4 class="mb-0">
                 <i class="fas fa-arrow-left "></i>
-                <i class="fas fa-clipboard-list"></i> Registrar/editar plantel: {{ $plantel->nombre_escuela }}</h2>
+                <i class="fas fa-clipboard-list"></i> Guardar/Editar información: {{ $plantel->nombre_escuela }}
+                <small class="text-muted">(CCT: {{ $plantel->cct }})</small>
             </h4>
         </a>
     </div>
@@ -35,14 +37,15 @@
     </div>
 
     <!--Tab panes--->
-    <form action="{{ route('planteles.store') }}" method="POST" class="needs-validation form-ficha-base">
+    <form action="{{ route('planteles.update', $plantel->id) }}" method="POST" class="needs-validation form-ficha-base">
         @csrf
+        @method('PUT')
         <div class="form-section step-section" data-step="0">
             <h4>I. Datos de Identificación</h4>
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label">CCT:</label>
-                    <input type="text" name="cct" class="form-control" value="{{ old('cct', $plantel->cct) }}" readonly>
+                    <input type="text" name="cct" class="form-control" value="{{ old('cct',  $plantel->cct ?? '') }}" readonly>
                     <input type="hidden" name="cct" value="{{$plantel->cct}}">
                 </div>
                 <div class="col-md-8">
@@ -53,15 +56,32 @@
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label for="nivel_educativo" class="form-label">Nivel Educativo:</label>
-                    <input type="text" class="form-control" name="nivel_educativo" value="{{ old('nivel_educativo', $plantel->nivel_educativo ?? '') }}" required>
+                    <select name="nivel_educativo" id="nivel_educativo" class="form-select" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="preescolar" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'preescolar' ? 'selected' : '' }}>Preescolar</option>
+                        <option value="primaria" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'primaria' ? 'selected' : '' }}>Primaria</option>
+                        <option value="secundaria" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'secundaria' ? 'selected' : '' }}>Secundaria</option>
+                        <option value="media superior" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'media superior' ? 'selected' : '' }}>Media Superior</option>
+                        <option value="superior" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'superior' ? 'selected' : '' }}>Superior</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label for="turno" class="form-label">Turno:</label>
-                    <input type="text" class="form-control" name="turno" value="{{ old('turno', $plantel->turno ?? '') }}" required>
+                    <select name="turno" id="turno" class="form-select" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="matutino" {{ old('turno', $plantel->turno ?? '') == 'matutino' ? 'selected' : '' }}>Matutino</option>
+                        <option value="vespertino" {{ old('turno', $plantel->turno ?? '') == 'vespertino' ? 'selected' : '' }}>Vespertino</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label for="sostenimiento" class="form-label">Sostenimiento:</label>
-                    <input type="text" class="form-control" name="sostenimiento" value="{{ old('sostenimiento', $plantel->sostenimiento) }}" required>
+                    <select name="sostenimiento" id="sostenimiento" class="form-select" value="{{ old('sostenimiento', $plantel->sostenimiento) }}" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="federal" {{ old('sostenimiento', $plantel->sostenimiento ?? '') == 'federal' ? 'selected' : '' }}>Federal</option>
+                        <option value="estatal" {{ old('sostenimiento', $plantel->sostenimiento ?? '') == 'estatal' ? 'selected' : '' }}>Estatal</option>
+                        <option value="particular" {{ old('sostenimiento', $plantel->sostenimiento ?? '') == 'particular' ? 'selected' : '' }}>Particular</option>
+                        <option value="municipal" {{ old('sostenimiento', $plantel->sostenimiento ?? '') == 'municipal' ? 'selected' : '' }}>Municipal</option>
+                    </select>
                 </div>
             </div>
 
@@ -131,26 +151,26 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="domicilio_calle_numero" class="form-label">Calle y Número:</label>
-                    <input type="text" class="form-control" name="domicilio_calle_numero" value="{{ old('domicilio_calle_numero', $plantel->domicilio_calle_numero) }}" required>
+                    <input type="text" class="form-control" name="domicilio_calle_numero" value="{{ old('domicilio_calle_numero', $plantel->domicilio_calle_numero) }}" placeholder="Ej. Av. Reforma 123" required>
                 </div>
                 <div class="col-md-4">
                     <label for="domicilio_colonia" class="form-label">Colonia:</label>
-                    <input type="text" class="form-control" name="domicilio_colonia" value="{{ old('domicilio_colonia', $plantel->domicilio_colonia) }}" required>
+                    <input type="text" class="form-control" name="domicilio_colonia" value="{{ old('domicilio_colonia', $plantel->domicilio_colonia) }}" placeholder="Ej. Centro, Roma Norte" required>
                 </div>
                 <div class="col-md-2">
                     <label for="domicilio_cp" class="form-label">C.P.:</label>
-                    <input type="text" class="form-control" name="domicilio_cp" value="{{ old('domicilio_cp', $plantel->domicilio_cp) }}" required>
+                    <input type="text" class="form-control" name="domicilio_cp" value="{{ old('domicilio_cp', $plantel->domicilio_cp) }}" placeholder="06000" required>
                 </div>
             </div>
 
             <div class="row mb-4">
                 <div class="col-md-6">
                     <label for="latitud" class="form-label">Latitud:</label>
-                    <input type="text" class="form-control" name="latitud" value="{{ old('latitud', $plantel->latitud) }}" required>
+                    <input type="text" class="form-control" name="latitud" value="{{ old('latitud', $plantel->latitud) }}" placeholder="Ej. 19.432608" required>
                 </div>
                 <div class="col-md-6">
                     <label for="longitud" class="form-label">Longitud:</label>
-                    <input type="text" class="form-control" name="longitud" value="{{ old('longitud', $plantel->longitud) }}" required>
+                    <input type="text" class="form-control" name="longitud" value="{{ old('longitud', $plantel->longitud) }}" placeholder="Ej. -99.133209" required>
                 </div>
             </div>
 

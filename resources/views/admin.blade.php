@@ -8,7 +8,7 @@
 
 <div class="card-body-custom">
     <p class="lead">¡Bienvenido, {{ session('nombre_completo') }}!</p>
-    <p>Has iniciado sesión como Administrador</p>
+    <p>Has iniciado sesión como <strong>ADMINISTRADOR</strong></p>
     <hr>
     <h6>Acciones Disponibles:</h6>
     <nav class="dashboard-nav">

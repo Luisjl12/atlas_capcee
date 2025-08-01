@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="container mt-4">
-    <div class="card-header bg-white border-bottom">
+    <div class="card-header bg-white border-bottom mb-4">
         <a href="{{ route('planteles.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
             <h4 class="mb-4">
                 <i class="fas fa-arrow-left "></i>
@@ -52,15 +52,32 @@
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label for="nivel_educativo" class="form-label">Nivel Educativo:</label>
-                    <input type="text" class="form-control" name="nivel_educativo" value="{{ old('nivel_educativo') }}" required>
+                    <select name="nivel_educativo" id="nivel_educativo" class="form-select" value="{{ old('nivel_educativo') }}" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="preescolar">Preescolar</option>
+                        <option value="primaria">Primaria</option>
+                        <option value="secundaria">Secundaria</option>
+                        <option value="media superior">Media Superior</option>
+                        <option value="superior">Superior</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label for="turno" class="form-label">Turno:</label>
-                    <input type="text" class="form-control" name="turno" value="{{ old('turno') }}" required>
+                    <select name="turno" id="turno" class="form-select" value="{{ old('turno') }}" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="matutino">Matutino</option>
+                        <option value="vespertino">Vespertino</option>
+                    </select>
                 </div>
                 <div class="col-md-4">
                     <label for="sostenimiento" class="form-label">Sostenimiento:</label>
-                    <input type="text" class="form-control" name="sostenimiento" value="{{ old('sostenimiento') }}" required>
+                    <select name="sostenimiento" id="sostenimiento" class="form-select" value="{{ old('sostenimiento') }}" required>
+                        <option value="">Seleccione una opción</option>
+                        <option value="federal">Federal</option>
+                        <option value="estatal">Estatal</option>
+                        <option value="particular">Particular</option>
+                        <option value="municipal">Municipal</option>
+                    </select>
                 </div>
             </div>
 
@@ -126,31 +143,31 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="domicilio_calle_numero" class="form-label">Calle y Número:</label>
-                    <input type="text" class="form-control" name="domicilio_calle_numero" value="{{ old('domicilio_calle_numero') }}" required>
+                    <input type="text" class="form-control" name="domicilio_calle_numero" value="{{ old('domicilio_calle_numero') }}" placeholder="Ej. Av. Reforma 123" required>
                 </div>
                 <div class="col-md-4">
                     <label for="domicilio_colonia" class="form-label">Colonia:</label>
-                    <input type="text" class="form-control" name="domicilio_colonia" value="{{ old('domicilio_colonia') }}" required>
+                    <input type="text" class="form-control" name="domicilio_colonia" value="{{ old('domicilio_colonia') }}" placeholder="Ej. Centro, Roma Norte" required>
                 </div>
                 <div class="col-md-2">
                     <label for="domicilio_cp" class="form-label">C.P.:</label>
-                    <input type="text" class="form-control" name="domicilio_cp" value="{{ old('domicilio_cp') }}" required>
+                    <input type="text" class="form-control" name="domicilio_cp" value="{{ old('domicilio_cp') }}" placeholder="06000" required>
                 </div>
             </div>
 
             <div class="row mb-4">
                 <div class="col-md-6">
                     <label for="latitud" class="form-label">Latitud:</label>
-                    <input type="text" class="form-control" name="latitud" value="{{ old('latitud') }}" required>
+                    <input type="text" class="form-control" name="latitud" value="{{ old('latitud') }}" placeholder="Ej. 19.432608" required>
                 </div>
                 <div class="col-md-6">
                     <label for="longitud" class="form-label">Longitud:</label>
-                    <input type="text" class="form-control" name="longitud" value="{{ old('longitud') }}" required>
+                    <input type="text" class="form-control" name="longitud" value="{{ old('longitud') }}" placeholder="Ej. -99.133209" required>
                 </div>
             </div>
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Ubicación</button>
+                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Ubicación</button>
             </div>
 
         </div>
@@ -200,7 +217,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Contacto</button>
+                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Contacto</button>
             </div>
         </div>
 
@@ -242,7 +259,7 @@
                     value="{{ old('accesibilidad_otros') }}" placeholder="Especificar...">
             </div>
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Accesibilidad</button>
+                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Accesibilidad</button>
             </div>
         </div>
     </form>
@@ -276,7 +293,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Total Usuarios</button>
+                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Total Usuarios</button>
             </div>
         </div>
     </form>
@@ -307,7 +324,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Estatus Plantel</button>
+                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Estatus Plantel</button>
             </div>
         </div>
     </form>
