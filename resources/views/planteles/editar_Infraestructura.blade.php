@@ -70,6 +70,6 @@
         </div>
     </div>
 
-    <a href="{{ route('infraestructura.mostrar', $plantel->cct) }}" class="btn btn-secondary">Volver</a>
+    <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-secondary">Volver</a>
 </div>
 @endsection

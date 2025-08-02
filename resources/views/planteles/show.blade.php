@@ -5,55 +5,50 @@
 
 @section('content')
 <div class="container mt-4">
-    <div class="d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">
-            <i class="fas fa-school me-2"></i> {{ $plantel->nombre_escuela }}
-            <small class="text-muted">(CCT: {{ $plantel->cct }})</small>
-        </h4>
-        <a href="{{ route('planteles.index') }}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Volver al Listado
+    <div class="card-header bg-white border-bottom mb-4">
+        <a href="{{ route('planteles.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+            <h4 class="mb-0">
+                <i class="fas fa-arrow-left "></i>
+                <i class="fas fa-school me-2"></i> {{ $plantel->nombre_escuela }}
+                <small class="text-muted">(CCT: {{ $plantel->cct }})</small>
+            </h4>
         </a>
+
     </div>
 
-    <ul class="nav nav-tabs mt-4" id="plantelTab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link active" id="ficha-base-tab" data-bs-toggle="tab" href="#ficha-base" role="tab">Ficha Base</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="espacios-tab" data-bs-toggle="tab" href="#espacios" role="tab">Espacios / Áreas</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="servicios-tab" data-bs-toggle="tab" href="#servicios" role="tab">Servicios</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="proteccion_civil-tab" data-bs-toggle="tab" href="#proteccion_civil" role="tab">Protección Civil</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="archivos-tab" data-bs-toggle="tab" href="#archivos" role="tab ">Archivos</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="fotos-tab" data-bs-toggle="tab" href="#fotos" role="tab">Galeria Fotos</a>
-        </li>
-    </ul>
+    <div class="form-navigation nav-tabs-text mb-3">
+        <span class="nav-tab" data-step="0">Ficha Base</span>
+        <span class="nav-tab" data-step="1">Espacios/Areas</span>
+        <span class="nav-tab" data-step="2">Servicios</span>
+        <span class="nav-tab" data-step="3">Proteccion Civil</span>
+        <span class="nav-tab" data-step="4">Archivos</span>
+        <span class="nav-tab" data-step="5">Galerias</span>
+    </div>
 
-    <div class="tab-content mt-3" id="plantelTabContent">
-        <!-- Ficha Base -->
-        <div class="tab-pane fade show active" id="ficha-base" role="tabpanel">
-            <h5 class="text-primary">Información General del Plantel</h5>
-            <div class="row mt-3">
-                <div class="col-md-4"><strong>Nombre Oficial:</strong> {{ $plantel->nombre_escuela }}</div>
-                <div class="col-md-4"><strong>Nivel Educativo:</strong> {{ $plantel->nivel_educativo }}</div>
-                <div class="col-md-4"><strong>Turno:</strong> {{ $plantel->turno }}</div>
-                <div class="col-md-4"><strong>Sostenimiento:</strong> {{ $plantel->sostenimiento }}</div>
+
+    <!-- Ficha Base -->
+    <div class="form-ficha-base">
+
+        <div class="form-section step-section" data-step="0">
+
+            <h4>Información General del Plantel</h4>
+            <div class="data-grid">
+                <div class="data-pair"><label>Nombre Oficial:</label><span> {{ $plantel->nombre_escuela }}</span></div>
+                <div class="data-pair"><label>Nivel Educativo:</label><span> {{ $plantel->nivel_educativo }}</span></div>
+                <div class="data-pair"><label>Turno:</label><span> {{ $plantel->turno }}</span></div>
+                <div class="data-pair"><label>Sostenimiento:</label><span> {{ $plantel->sostenimiento }}</span></div>
             </div>
-            <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-warning mt-3">
-                <i class="fas fa-edit"></i> Editar Ficha Base
+            <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-primary mt-3">
+                <i class=" fas fa-edit"></i> Editar Ficha Base
             </a>
         </div>
 
+
         <!-- Espacios / Áreas -->
-        <div class="tab-pane fade" id="espacios" role="tabpanel">
-            <h5 class="text-primary">Registrar nuevo espacio</h5>
+
+        <div class="form-section step-section d-none" data-step="1">
+            <h4>Inventario de Espacios Físicos</h4>
+            <h5>Agregar nuevo espacio</h5>
             <form action="{{ route('espacios.store') }}" method="POST" class="row g-3 mb-4">
                 @csrf
                 <input type="hidden" name="cct" value="{{ $plantel->cct }}">
@@ -76,22 +71,22 @@
                     </select>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-success w-100">
-                        <i class="fas fa-plus-circle"></i> Agregar
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-plus"></i> Agregar
                     </button>
                 </div>
             </form>
 
             @if ($plantel->espacios->isEmpty())
-            <p>No hay espacios registrados para este plantel</p>
+            <div class="alert alert-info text-center">No hay espcacios registrados.</div>
             @else
-            <div class="table-responsive">
-                <table class="table table-bordered table-striped">
-                    <thead class="table-primary">
+            <div class="table-responsive mt-3">
+                <table class="table data-table">
+                    <thead class="thead-custom">
                         <tr>
-                            <th>Nombre del Espacio</th>
+                            <th>Nombre</th>
                             <th>Cantidad</th>
-                            <th>Estado de Conservación</th>
+                            <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -107,7 +102,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este espacio?')">
-                                        Eliminar
+                                        <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
                             </td>
@@ -119,35 +114,38 @@
             @endif
         </div>
 
+
         <!-- Servicios -->
-        <div class="tab-pane fade" id="servicios" role="tabpanel">
+
+        <div class="form-section step-section d-none" data-step="2">
+            <h4>Infraestructura y Servicios</h4>
             <div class="row mt-3">
                 <div class="col-12 mb-3">
-                    <h5>Hidrosanitaria</h5>
-                    <div class="row">
-                        <div class="col-md-6"><strong>Fuente de Agua:</strong> {{ $hidrosanitario->fuente_agua ?? 'No disponible' }}</div>
-                        <div class="col-md-6"><strong>Tipo Drenaje:</strong> {{ $hidrosanitario->tipo_drenaje ?? 'No disponible' }}</div>
+                    <h5><i class="fas fa-faucet" style="color:var(--color-info);"></i> Hidrosanitaria</h5>
+                    <div class="data-grid">
+                        <div class="data-pair"><label>Fuente de Agua:</label><span> {{ $hidrosanitario->fuente_agua ?? 'No disponible' }}</span></div>
+                        <div class="data-pair"><label>Tipo de Drenaje:</label><span> {{ $hidrosanitario->tipo_drenaje ?? 'No disponible' }}</span></div>
                     </div>
                 </div>
                 <div class="col-12 mb-3">
-                    <h5>Servicios Básicos</h5>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <strong>Contrato Electricidad:</strong>
+                    <h5><i class="fas fa-bolt" style="color:var(--color-amarillo-primario);"></i>Servicios Básicos</h5>
+                    <div class="data-grid">
+                        <div class="data-pair">
+                            <label>Contrato Electricidad:</label>
                             {{
                                 $servicio?->electricidad_contrato === 1 ? 'Sí' :
                                 ($servicio?->electricidad_contrato === 0 ? 'No' : 'No disponible')
                             }}
                         </div>
-                        <div class="col-md-4">
-                            <strong>Telefonía Fija:</strong>
+                        <div class="data-pair">
+                            <label>Telefonía Fija:</label>
                             {{
                                 $servicio?->telefonia_fija === 1 ? 'Sí' :
                                 ($servicio?->telefonia_fija === 0 ? 'No' : 'No disponible')
                             }}
                         </div>
-                        <div class="col-md-4">
-                            <strong>Acceso a Internet:</strong>
+                        <div class="data-pair">
+                            <label>Acceso a Internet:</label>
                             {{
                                 $servicio?->internet_acceso === 1 ? 'Sí' :
                                 ($servicio?->internet_acceso === 0 ? 'No' : 'No disponible')
@@ -157,105 +155,123 @@
                 </div>
             </div>
             <a href="{{ route('infraestructura.editar_completa', $plantel->cct) }}" class="btn btn-primary mt-3">
-                <i class="fas fa-edit"></i> Editar Infraestructura Completa
+                <i class="fas fa-edit"></i> Editar Infraestructura y Servicios
             </a>
         </div>
 
+
         <!-- Protección Civil -->
-        <div class="tab-pane fade" id="proteccion_civil" role="tabpanel">
-            <h5 class="mt-3">Protección Civil</h5>
+
+        <div class="form-section step-section d-none" data-step="3">
+            <h4>Protección Civil</h4>
 
             @php
             $detalle = $plantel->detalleProteccionCivil;
             @endphp
 
             @if($detalle)
-            <div class="row">
-                <div class="col-md-6 mb-2"><strong>CCT:</strong> {{ $detalle->cct }}</div>
-                <div class="col-md-6 mb-2"><strong>Programa Interno PC:</strong> {{ $detalle->programa_interno_pc ? 'Sí' : 'No' }}</div>
-                <div class="col-md-6 mb-2"><strong>Fecha Programa Interno:</strong> {{ $detalle->programa_interno_pc_fecha }}</div>
-                <div class="col-md-6 mb-2"><strong>Alarma Sísmica:</strong> {{ $detalle->alarma_sismica ? 'Sí' : 'No' }}</div>
-                <div class="col-md-6 mb-2"><strong>Alarma Funcional:</strong> {{ $detalle->alarma_sismica_funcional ? 'Sí' : 'No' }}</div>
-                <div class="col-md-6 mb-2"><strong>Señalética Estado:</strong> {{ ucwords(str_replace('_', ' ', strtolower($detalle->senaletica_estado))) }}</div>
-                <div class="col-md-6 mb-2"><strong>Extintores (Cantidad):</strong> {{ $detalle->extintores_cantidad }}</div>
-                <div class="col-md-6 mb-2"><strong>Extintores Vigentes:</strong> {{ $detalle->extintores_vigente ? 'Sí' : 'No' }}</div>
-                <div class="col-md-6 mb-2"><strong>Brigadas Conformadas:</strong> {{ $detalle->brigadas_conformadas ? 'Sí' : 'No' }}</div>
+            <div class="data-grid">
+
+                <div class="data-pair"><label>Programa Interno PC:</label> {{ $detalle->programa_interno_pc ? 'Sí' : 'No' }}</div>
+                <div class="data-pair"><label>Fecha Programa Interno:</label> {{ $detalle->programa_interno_pc_fecha }}</div>
+                <div class="data-pair"><label>Alarma Sísmica:</label> {{ $detalle->alarma_sismica ? 'Sí' : 'No' }}</div>
+                <div class="data-pair"><label>Alarma Funcional:</label> {{ $detalle->alarma_sismica_funcional ? 'Sí' : 'No' }}</div>
+                <div class="data-pair"><label>Señalética Estado:</label> {{ ucwords(str_replace('_', ' ', strtolower($detalle->senaletica_estado))) }}</div>
+                <div class="data-pair"><label># Extintores:</label> {{ $detalle->extintores_cantidad }}</div>
+                <div class="data-pair"><label>Extintores Vigentes:</label> {{ $detalle->extintores_vigente ? 'Sí' : 'No' }}</div>
+                <div class="data-pair"><label>Brigadas Conformadas:</label> {{ $detalle->brigadas_conformadas ? 'Sí' : 'No' }}</div>
             </div>
             @else
             <p>No hay información de Protección Civil disponible para este plantel.</p>
             @endif
 
-            <a href="{{ route('planteles.editar_proteccion_civil', $plantel->id) }}" class="btn btn-warning mt-3">
+            <a href="{{ route('planteles.editar_proteccion_civil', $plantel->id) }}" class="btn btn-primary mt-3">
                 <i class="fas fa-edit"></i> Editar Protección Civil
             </a>
         </div>
+
         <!--Archivos-->
-        <div class="tab-pane fade" id="archivos" role="tabpanel">
+
+        <div class="form-section step-section d-none" data-step="4">
+            <h4>Gestor de Archivos</h4>
+            <h5>Subir Nuevo Archivo
+            </h5>
             <form action="{{route('archivos.store', ['id'=> $plantel->id])}}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" name="cct" value="{{$plantel->cct}}">
                 <input type="hidden" name="id_plantel" value="{{$plantel->id}}">
-                <div class="mb-3">
-                    <label for="archivo" class="form-label">Seleccionar archivo</label>
-                    <input type="file" class="form-control" name="archivo" required>
+                <div class="row">
+                    <div class="mb-3">
+                        <label for="archivo" class="form-label">Seleccionar archivo</label>
+                        <input type="file" class="form-control" name="archivo" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tipo_documento" class="form-label">Tipo de documento</label>
+                        <select name="tipo_documento" id="tipo_documento" class="form-select" required>
+                            <option value="">Seleccione una opcion</option>
+                            <option value="Plano">Plano</option>
+                            <option value="Oficio">Oficio</option>
+                            <option value="Otro">Otro...</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 d-none" id="otro_tipo_container">
+                        <label for="otro_tipo" class="form-label">Especificar otro tipo de documento...</label>
+                        <input type="text" name="otro_tipo" id="otro_tipo" class="form-control">
+                    </div>
                 </div>
                 <div class="mb-3">
-                    <label for="tipo_documento" class="form-label">Tipo documento</label>
-                    <select name="tipo_documento" id="tipo_documento" class="form-select" required>
-                        <option value="">Seleccione una opcion</option>
-                        <option value="Plano">Plano</option>
-                        <option value="Oficio">Oficio</option>
-                        <option value="Otro">Otro...</option>
-                    </select>
-                </div>
-                <div class="mb-3 d-none" id="otro_tipo_container">
-                    <label for="otro_tipo" class="form-label">Especificar otro tipo de documento...</label>
-                    <input type="text" name="otro_tipo" id="otro_tipo" class="form-control">
-                </div>
-                <div class="mb-3">
-                    <label for="descripcion" class="form-label">Descripcion</label>
+                    <label for="descripcion" class="form-label">Descripción</label>
                     <textarea name="descripcion" class="form-control"></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary">Subir Archivo</button>
+                <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i>Subir </button>
             </form>
-            <table class="table">
-                <thread>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Tipo de documento</th>
-                        <th>Descripción</th>
-                        <th>Subido</th>
-                        <th>Acción</th>
-                    </tr>
-                </thread>
-                <tbody>
-                    @foreach($archivos as $archivo)
-                    <tr>
-                        <td>
-                            <a href="{{ route('archivos.descargar', $archivo->id) }}" style="text-decoration: none;">
-                                <i class="fas fa-file-pdf text-danger"></i>
-                                {{ $archivo->nombre_archivo_original }}
-                            </a>
-                        </td>
-                        <td>{{$archivo->tipo_documento}}</td>
-                        <td>{{$archivo->descripcion}}</td>
-                        <td>{{$archivo->fecha_subido}}</td>
-                        <td>
-                            <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este archivo?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm"">
-                                    <i class=" fas fa-trash-alt"></i>Eliminar
-                                </button>
-                            </form>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+            <div class="table-responsive mt-3">
+                @if($archivos->isEmpty())
+                <div class="alert alert-info text-center">No hay archivos subidos para este plantel.</div>
+                @else
+                <table class="table data-table">
+                    <thead class="thead-custom">
+                        <tr>
+                            <th>Archivo</th>
+                            <th>Tipo</th>
+                            <th>Descripción</th>
+                            <th>Subido</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thread>
+                    <tbody>
+                        @foreach($archivos as $archivo)
+                        <tr>
+                            <td>
+                                <a href="{{ route('archivos.descargar', $archivo->id) }}" style="text-decoration: none;">
+                                    <i class="fas fa-file-pdf text-danger"></i>
+                                    {{ $archivo->nombre_archivo_original }}
+                                </a>
+                            </td>
+                            <td>{{$archivo->tipo_documento}}</td>
+                            <td>{{$archivo->descripcion}}</td>
+                            <td>{{$archivo->fecha_subido}}</td>
+                            <td>
+                                <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este archivo?');">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @endif
+            </div>
         </div>
+
+
         <!--Fotos-->
-        <div class="tab-pane fade" id="fotos" role="tabpanel">
+
+        <div class="form-section step-section d-none" data-step="5">
             @include('planteles.galeria.formulario', ['plantel' => $plantel])
 
             @include('planteles.galeria.imagenes', ['fotos' => $fotos])
@@ -272,25 +288,91 @@
             </div>
             @endif
         </div>
+    </div>
 
-        @push('scripts')
-        @include('planteles.galeria.scripts')
-        @endpush
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const tipoSelect = document.getElementById("tipo_documento");
-                const otroTipoContainer = document.getElementById("otro_tipo_container");
 
-                tipoSelect.addEventListener("change", function() {
-                    if (this.value === "Otro") {
-                        otroTipoContainer.classList.remove("d-none");
-                        document.getElementById("otro_tipo").setAttribute("required", true);
+    @push('scripts')
+    @include('planteles.galeria.scripts')
+    @endpush
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const tipoSelect = document.getElementById("tipo_documento");
+            const otroTipoContainer = document.getElementById("otro_tipo_container");
+
+            tipoSelect.addEventListener("change", function() {
+                if (this.value === "Otro") {
+                    otroTipoContainer.classList.remove("d-none");
+                    document.getElementById("otro_tipo").setAttribute("required", true);
+                } else {
+                    otroTipoContainer.classList.add("d-none");
+                    document.getElementById("otro_tipo").removeAttribute("required");
+                }
+            });
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const secciones = document.querySelectorAll('.step-section');
+            const pestañas = document.querySelectorAll('.nav-tab');
+
+            function mostrarSeccion(numero) {
+                for (let i = 0; i < secciones.length; i++) {
+                    if (i === numero) {
+                        secciones[i].classList.add('active');
                     } else {
-                        otroTipoContainer.classList.add("d-none");
-                        document.getElementById("otro_tipo").removeAttribute("required");
+                        secciones[i].classList.remove('active');
+                    }
+                }
+
+                for (let i = 0; i < pestañas.length; i++) {
+                    if (i === numero) {
+                        pestañas[i].classList.add('active');
+                    } else {
+                        pestañas[i].classList.remove('active');
+                    }
+                }
+            }
+
+            // Cuando se hace clic en alguna pestaña
+            for (let i = 0; i < pestañas.length; i++) {
+                pestañas[i].addEventListener('click', function() {
+                    mostrarSeccion(i);
+                });
+            }
+            mostrarSeccion(0);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const secciones = document.querySelectorAll('.step-section');
+            const pestañas = document.querySelectorAll('.nav-tab');
+
+            function mostrarSeccion(numero) {
+                secciones.forEach((seccion, i) => {
+                    if (i === numero) {
+                        seccion.classList.remove('d-none');
+                    } else {
+                        seccion.classList.add('d-none');
                     }
                 });
-            });
-        </script>
 
-        @endsection
+                pestañas.forEach((pestana, i) => {
+                    if (i === numero) {
+                        pestana.classList.add('active');
+                    } else {
+                        pestana.classList.remove('active');
+                    }
+                });
+            }
+
+            pestañas.forEach((pestana, i) => {
+                pestana.addEventListener('click', () => {
+                    mostrarSeccion(i);
+                });
+            });
+
+            // Mostrar la primera al cargar
+            mostrarSeccion(0);
+        });
+    </script>
+    @endsection

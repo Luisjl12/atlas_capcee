@@ -1,4 +1,4 @@
-<h4>Subir foto al plantel (CCT: {{$plantel->cct}})</h4>
+<h4>Galería</h4>
 
 @if (session('foto_subida'))
 <div class="alert alert-success">
@@ -16,6 +16,5 @@
         <label for="descripcion" class=form-label>Descripción</label>
         <input type="text" name="descripcion" id="descripcion" class="form-control">
     </div>
-
-    <button type="submit" class="btn btn-primary">Subir foto</button>
+    <button type="submit" class="btn btn-success"><i class="fas fa-upload"> Subir</i></button>
 </form>
