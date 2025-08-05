@@ -59,7 +59,7 @@ class PlantelController extends Controller
 
         // Redirigir al formulario de edición para continuar llenando
         return redirect()->route('planteles.edit', $plantel->id)
-            ->with('success', 'Sección I guardada. Ahora puedes llenar el resto del formulario.');
+            ->with('success', 'Plantel guardado correctamente.');
     }
 
     public function updateUbicacion(Request $request, $id)
@@ -117,8 +117,7 @@ class PlantelController extends Controller
             'latitud' => $request->input('latitud'),
             'longitud' => $request->input('longitud'),
         ]);
-
-        return back()->with('success', 'Sección II guardada correctamente.');
+        return back()->with('success', 'Datos de ubicacion creados correctamente');
     }
 
     public function updateContacto(Request $request, $id)
@@ -131,8 +130,7 @@ class PlantelController extends Controller
             'nombre_director_registrado' => $request->input('nombre_director_registrado'),
             'id_director_asignado' => $request->input('id_director_asignado'),
         ]);
-
-        return back()->with('success', 'Sección III guardada correctamente.');
+        return back()->with('success', 'Datos de contacto actualizados correctamente');
     }
     public function updateAccesibilidad(Request $request, $id)
     {
@@ -154,7 +152,6 @@ class PlantelController extends Controller
             'accesibilidad_sanaletica_braille' => $request->accesibilidad_sanaletica_braille,
             'accesibilidad_otros' => $request->accesibilidad_otros,
         ]);
-
         return redirect()->back()->with('success', 'Datos de accesibilidad actualizados correctamente.');
     }
     public function updateTotalUsuariosPlanteles(Request $request, $id)
@@ -172,7 +169,6 @@ class PlantelController extends Controller
             'total_docentes' => $request->total_docentes,
             'total_administrativos' => $request->total_administrativos,
         ]);
-
         return redirect()->back()->with('success', 'Totales de usuarios actualizados correctamente.');
     }
 
@@ -187,7 +183,6 @@ class PlantelController extends Controller
         $plantel->update([
             'estatus_plantel' => $request->estatus_plantel,
         ]);
-
         return redirect()->back()->with('success', 'Estatus del plantel actualizado correctamente.');
     }
 
@@ -255,7 +250,7 @@ class PlantelController extends Controller
             'turno',
             'sostenimiento'
         ]));
-        return redirect()->back()->with('success', 'Sección I actualizada correctamente.');
+        return redirect()->back()->with('success', 'Ficha base actualizada correctamente.');
     }
 
 
@@ -316,6 +311,9 @@ class PlantelController extends Controller
         }
         return redirect()->route('planteles.show', $plantel->id)->with('success', 'Proteccion civil guardada correctamente');
     }
+
+    //Controlador para buscador dinamico para planteles 
+
     public function buscar(Request $request)
     {
         $query = Plantel::with(['municipio', 'director']);

@@ -14,6 +14,13 @@
             </h4>
         </a>
     </div>
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    @endif
+
 
     {{-- Mostrar errores de validación --}}
     @if ($errors->any())
@@ -38,6 +45,7 @@
 
     <!--Tab panes--->
     <form action="{{ route('planteles.update', $plantel->id) }}" method="POST" class="needs-validation form-ficha-base">
+
         @csrf
         @method('PUT')
         <div class="form-section step-section" data-step="0">
@@ -85,9 +93,17 @@
                 </div>
             </div>
 
-            <div class="mt-4">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Identificación</button>
+            <div class="mt-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Guardar Identificación
+                </button>
+
+                <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-eye"></i> Ver mas detalles del plantel
+                </a>
             </div>
+
+
 
         </div>
 

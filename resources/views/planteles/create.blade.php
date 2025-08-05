@@ -89,7 +89,7 @@
 
     </form>
     <!--Ubicacion--->
-    <form action="{{ isset($plantel) ? route('planteles.update.ubicacion', $plantel->id) : '#' }}" method="POST" class="needs-validation form-ficha-base">
+    <form action="{{ isset($plantel) ? route('planteles.store', $plantel->id) : '#' }}" method="POST" class="needs-validation form-ficha-base">
         @csrf
         @if(isset($plantel))
         @method('PUT')

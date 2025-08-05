@@ -4,15 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\EspacioArea;
+use App\Models\Plantel;
 
 class EspacioAreaController extends Controller
 {
     public function destroy($id)
     {
         $espacio = EspacioArea::findOrFail($id);
+
+        $plantel = Plantel::where('cct', $espacio->cct)->firstOrFail();
+
         $espacio->delete();
 
-        return redirect()->back()->with('success', 'espacio eliminado correctamente. ');
+        return redirect()->route('planteles.show', ['id' => $plantel->id, 'tab' => 1])
+            ->with('success', 'Espacio eliminado correctamente.');
     }
     public function store(Request $request)
     {
@@ -24,6 +29,7 @@ class EspacioAreaController extends Controller
             'estado_conservacion' => 'required|in:BUENO,REGULAR,MALO,NO_APLICA,EN_PROCESO'
 
         ]);
+        $plantel = Plantel::where('cct', $request->cct)->firstOrFail();
 
         EspacioArea::create([
             'cct' => $request->cct,
@@ -32,6 +38,7 @@ class EspacioAreaController extends Controller
             'estado_conservacion' => $request->estado_conservacion,
         ]);
 
-        return redirect()->back()->with('success', 'Espacio agregado correctamente');
+        return redirect()->route('planteles.show', ['id' => $plantel->id, 'tab' => 1])
+            ->with('success', 'Espacio agregado correctamente.');
     }
 }

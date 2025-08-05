@@ -9,6 +9,6 @@ class Municipio extends Model
     protected $fillable = ['nombre_municipio'];
     public function planteles()
     {
-        return $this->hasMany(Plantel::class);
+        return $this->hasMany(Plantel::class, 'id_municipio');
     }
 }

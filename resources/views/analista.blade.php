@@ -1,6 +1,31 @@
 @extends('layouts.app')
-<!-- Vista del analista-->
 @section('content')
-<h1>ANALISTA</h1>
-<p>Bienvenido, {{ session('nombre_completo') }}</p>
+<!--Vista del dashboard del admistrador -->
+
+<div class="dashboard-welcome card-header-custom">
+    <h2><i class="fas fa-tachometer-alt"></i> Panel Principal</h2>
+</div>
+
+<div class="card-body-custom">
+    <p class="lead">¡Bienvenido,<strong> {{ session('nombre_completo') }}!</strong></p>
+    <p>Has iniciado sesión como <strong>ANALISTA</strong></p>
+    <hr>
+    <h6>Acciones Disponibles:</h6>
+    <nav class="dashboard-nav">
+        <div class="columna-acciones">
+            <div class="columna-acciones">
+                <a href="{{route('perfil')}}" class="accion-card green">
+                    <i class="fas fa-user-edit"></i> Mi Perfil
+                </a>
+                <a href="{{route('reportes.index')}}" class="accion-card green">
+                    <i class="fas fa-chart-bar"></i>Gestión de reportes
+                </a>
+            </div>
+        </div>
+    </nav>
+
+
+</div>
+
+
 @endsection

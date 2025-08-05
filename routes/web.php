@@ -16,6 +16,7 @@ use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\PlantelController;
 use App\Http\Controllers\DetalleProteccionCivilController;
 use App\Http\Controllers\GaleriaFotoController;
+use App\Http\Controllers\ReporteController;
 
 
 //Rutas para ver y acceder al login, accion del logout
@@ -160,3 +161,10 @@ Route::delete('/galeria/{foto}', [GaleriaFotoController::class, 'destroy'])->nam
 
 //Buscadores interactivos de usuarios
 Route::get('/usuarios/buscar', [UsuarioController::class, 'buscar'])->name('usuarios.buscar');
+
+//Ruta para dirigir a la seccion de generar reportes
+Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.index');
+//Ruta para dirigir a la planteles por municipio dentro de la seccion de reportes 
+Route::get('/reportes/municipio', [ReporteController::class, 'reporteMunicipio'])->name('reportes.municipio');
+//Ruta para exportar los reportes a csv
+Route::get('/reportes/municipio/exportar', [ReporteController::class, 'exportarMunicipiosCSV'])->name('reportes.municipios.exportar');

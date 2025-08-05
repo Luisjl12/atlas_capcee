@@ -25,6 +25,9 @@
                 <a href="{{route('perfil')}}" class="accion-card green">
                     <i class="fas fa-user-edit"></i> Mi Perfil
                 </a>
+                <a href="{{route('reportes.index')}}" class="accion-card yellow">
+                    <i class="fas fa-chart-bar"></i>Gestión de reportes
+                </a>
             </div>
         </div>
     </nav>

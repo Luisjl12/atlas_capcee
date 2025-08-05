@@ -23,22 +23,22 @@
 
         <div class="d-flex align-items-center">
             <a href="{{ route('dashboard') }}">
-                <img src="{{ asset('img/logotipo.png') }}" alt="Logo" class="logo-img me-3" style="height: 40px;">
+                <img src="{{ asset('img/logo-atlas.png') }}" alt="Logo" class="logo-img" style="height: 75px;">
             </a>
-            <a class="navbar-brand text-white fw-bold fs-5" href="{{ route('dashboard') }}">ATLAS DE PUEBLA</a>
+            <a class="navbar-brand text-white fw-bold fs-5" href="{{ route('dashboard') }}"></a>
         </div>
 
         <div class="d-flex gap-2">
             <form action="{{ route('perfil') }}" method="GET" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-outline-light">
+                <button type="submit" class="boton-personalizado">
                     <i class="fas fa-user-circle"></i> {{ session('nombre_completo') }}
                 </button>
             </form>
 
             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                 @csrf
-                <button type="submit" class="btn btn-outline-light">
+                <button type="submit" class="boton-personalizado" style="background-color:#e4472e;">
                     <i class="fas fa-sign-out-alt"></i> Salir
                 </button>
             </form>

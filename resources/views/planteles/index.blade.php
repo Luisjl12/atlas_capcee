@@ -2,14 +2,25 @@
 
 @section('title', 'Listado de Planteles')
 
+
+
 @section('content')
+
+
 <div class="container mt-4">
+
     <div class="card-header-custom d-flex justify-content-between align-items-center mb-3">
         <h2><i class="fas fa-school"></i> Gestionar Planteles</h2>
         <a href="{{ route('planteles.create') }}" class="btn btn-success">
             <i class="fas fa-plus"></i> Registrar Nuevo Plantel
         </a>
     </div>
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <strong>¡Éxito!</strong> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    @endif
 
     <div class="search-container mb-4">
         <i class="fas fa-search search-icon"></i>

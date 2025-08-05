@@ -6,101 +6,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar sesión - Atlas de Puebla</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: #641C16;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .login-container {
-            background: #fff;
-            padding: 40px 30px;
-            border-radius: 8px;
-            text-align: center;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .login-container img {
-            width: 50px;
-            margin-bottom: 10px;
-        }
-
-        .title {
-            font-size: 22px;
-            font-weight: 600;
-            color: #641C16;
-            margin-bottom: 20px;
-        }
-
-        .form-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            color: #641C16;
-            margin-bottom: 5px;
-        }
-
-        input[type="email"],
-        input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            outline: none;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 12px;
-            background-color: #641C16;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 10px;
-        }
-
-        .btn:hover {
-            background-color: #4b1511;
-        }
-
-        .alert {
-            background-color: #d1e7dd;
-            color: #0f5132;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-        }
-
-        .footer {
-            position: fixed;
-            bottom: 10px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: #fff;
-            font-size: 12px;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet">
 </head>
 
-<body>
+<body class="login-page-body">
     <div class="login-container">
-        <img src="{{ asset('img/logo.png') }}" alt="Logo" style="width: 120px; height: auto;">
+        <div class="login-logo">
+            <img src="{{ asset('img/logo-atlas.png') }}" alt="Logo" style="width: 120px; height: auto;">
+        </div>
 
-        <div class="title">ATLAS DE PUEBLA</div>
+        <div class="title"></div>
 
         {{-- Mensaje de sesión cerrada exitosamente --}}
         @if (Session::has('success'))
@@ -111,7 +28,7 @@
 
         {{-- Errores de login --}}
         @if ($errors->any())
-        <div class="alert" style="background-color: #f8d7da; color: #842029;">
+        <div class="alert alert-danger"><i class="fas fa-exclamation-triangle"></i>
             @foreach ($errors->all() as $error)
             <div>{{ $error }}</div>
             @endforeach
@@ -119,23 +36,28 @@
         @endif
 
         {{-- Formulario de login --}}
-        <form method="POST" action="{{ route('login') }}">
+        <form method="POST" action="{{ route('login') }}" class="login-form">
             @csrf
             <div class="form-group">
-                <label for="email">Correo Electrónico:</label>
-                <input type="email" name="email" id="email" required autofocus>
+                <label for="email"><i class="fas fa-envelope"></i>Correo Electrónico:</label>
+                <input type="email" name="email" id="email" class="form-control" required autofocus>
             </div>
 
             <div class="form-group">
-                <label for="password">Contraseña:</label>
-                <input type="password" name="password" id="password" required>
+                <label for="password"><i class="fas fa-lock"></i> Contraseña:</label>
+                <input type="password" name="password" id="password" class="form-control" required>
             </div>
 
-            <button type="submit" class="btn">Ingresar</button>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i>
+                    Ingresar</button>
+            </div>
         </form>
     </div>
 
-    <div class="footer">© 2025 ATLAS DE PUEBLA</div>
+    <footer class="login-footer">
+        <div class="footer">© 2025 ATLAS DE PUEBLA</div>
+    </footer>
 </body>
 
 </html>

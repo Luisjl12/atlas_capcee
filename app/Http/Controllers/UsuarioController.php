@@ -15,7 +15,7 @@ class UsuarioController extends Controller
         $usuarios = Usuario::with('rol')->get();
         return view('gestion_usuarios', compact('usuarios'));
     }
-
+    //Controlador para buscar usuarios registrado mediante su nombre o su correo electronico
     public function buscar(Request $request)
     {
         $query = Usuario::with('rol');
