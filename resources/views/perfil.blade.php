@@ -9,7 +9,20 @@ $usuario = \App\Models\Usuario::find(session('id'));
 
 <div class="container mt-4">
     <div class="card-header-custom">
-        <h2><i class="fas fa-user-edit"></i> Mi Perfil</h2>
+        <a href="
+        {{
+        session('role_id') == 1 ? route('dashboard.admin') :
+        (session('role_id') == 2 ? route('dashboard.analista') :
+        (session('role_id') == 3 ? route('dashboard.supervisor') :
+        route('dashboard.director')))
+
+        }}"
+            class="text-decoration-none d-inline-flex align-items-center text-dark">
+            <h2>
+                <i class="fas fa-arrow-left "></i>
+                <i class="fas fa-user-edit"></i> Mi Perfil
+            </h2>
+        </a>
     </div>
 
     @if(session('success'))

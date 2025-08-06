@@ -41,7 +41,7 @@ Route::post('/cambiar-password', [perfilController::class, 'actualizarPassword']
     ->name('perfil.actualizar-password')
     ->middleware('auth.custom');
 
-//Rutas para acceder segun el rol segun el login
+//Rutas para acceder segun el rol desde el login
 Route::middleware(['auth.custom'])->group(function () {
     Route::get('/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
     Route::get('/analista', [DashboardController::class, 'analista'])->name('dashboard.analista');
@@ -168,3 +168,7 @@ Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.ind
 Route::get('/reportes/municipio', [ReporteController::class, 'reporteMunicipio'])->name('reportes.municipio');
 //Ruta para exportar los reportes a csv
 Route::get('/reportes/municipio/exportar', [ReporteController::class, 'exportarMunicipiosCSV'])->name('reportes.municipios.exportar');
+
+
+//Ruta para generar pdf
+Route::get('/reportes/municipios/pdf', [ReporteController::class, 'exportarMunicipioPDF'])->name('reportes.municipio.pdf');

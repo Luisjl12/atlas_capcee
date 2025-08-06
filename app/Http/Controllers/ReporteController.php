@@ -6,6 +6,8 @@ use App\Models\Municipio;
 use App\Models\Plantel;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReporteController extends Controller
 {
@@ -16,32 +18,76 @@ class ReporteController extends Controller
 
     public function reporteMunicipio()
     {
-        $municipios = Municipio::withCount('planteles')->get();
-        $totalGeneral = $municipios->sum('planteles_count');
-        return view('reportes.reporte_municipio', compact('municipios', 'totalGeneral'));
+        $datos = DB::table('planteles')
+            ->join('municipios', 'planteles.id_municipio', '=', 'municipios.id')
+            ->join('localidades', 'planteles.id_localidad', '=', 'localidades.id')
+            ->select(
+                'municipios.nombre_municipio AS municipio',
+                'localidades.nombre_localidad AS localidad',
+                DB::raw('COUNT(planteles.id) AS total_planteles'),
+                DB::raw('GROUP_CONCAT(planteles.nombre_escuela SEPARATOR ", ") AS nombre_planteles')
+            )
+            ->groupBy('municipios.nombre_municipio', 'localidades.nombre_localidad')
+            ->get();
+        $totalGeneral = $datos->sum('total_planteles');
+
+        return view('reportes.reporte_municipio', compact('datos', 'totalGeneral'));
     }
 
     public function exportarMunicipiosCSV()
     {
-        $municipios = Municipio::withCount('planteles')->get();
-        $fileName = 'reporte_municipio.csv';
-        $response = new StreamedResponse(function () use ($municipios) {
+        $datos = DB::table('planteles')
+            ->join('municipios', 'planteles.id_municipio', '=', 'municipios.id')
+            ->join('localidades', 'planteles.id_localidad', '=', 'localidades.id')
+            ->select(
+                'municipios.nombre_municipio AS municipio',
+                'localidades.nombre_localidad AS localidad',
+                DB::raw('COUNT(planteles.id) AS total_planteles'),
+                DB::raw('GROUP_CONCAT(planteles.nombre_escuela SEPARATOR ", ") AS nombres_planteles')
+            )
+            ->groupBy('municipios.nombre_municipio', 'localidades.nombre_localidad')
+            ->get();
+
+        $fileName = 'reporte_municipios_localidades.csv';
+        $response = new StreamedResponse(function () use ($datos) {
             $handle = fopen('php://output', 'w');
 
-            fputcsv($handle, ['Municipio', 'Total de Planteles']);
+            fputcsv($handle, ['Municipio', 'Localidad', 'Nombre de los Planteles ',  'Total de planteles']);
 
-            foreach ($municipios as $municipio) {
+            foreach ($datos as $fila) {
                 fputcsv($handle, [
-                    $municipio->nombre_municipio,
-                    $municipio->planteles_count
+                    $fila->municipio,
+                    $fila->localidad,
+                    $fila->nombres_planteles,
+                    $fila->total_planteles
                 ]);
             }
             fclose($handle);
         });
 
+
         $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename= "' . $fileName . '"');
 
         return $response;
+    }
+
+    public function exportarMunicipioPDF()
+    {
+        $datos = DB::table('planteles')
+            ->join('municipios', 'planteles.id_municipio', '=', 'municipios.id')
+            ->join('localidades', 'planteles.id_localidad', '=', 'localidades.id')
+            ->select(
+                'municipios.nombre_municipio AS municipio',
+                'localidades.nombre_localidad AS localidad',
+                DB::raw('COUNT(planteles.id) AS total_planteles'),
+                DB::raw('GROUP_CONCAT(planteles.nombre_escuela SEPARATOR ", ") AS nombres_planteles')
+            )
+            ->groupBy('municipios.nombre_municipio', 'localidades.nombre_localidad')
+            ->get();
+        $totalGeneral = $datos->sum('total_planteles');
+
+        $pdf = Pdf::loadView('reportes.pdf_municipio', compact('datos', 'totalGeneral'));
+        return $pdf->download('reporte_municipio.pdf');
     }
 }

@@ -15,6 +15,7 @@
                     </h2>
                 </a>
                 <a href="{{route('reportes.municipios.exportar')}}" class="btn btn-success"><i class="fas fa-file-excel"></i> Exportar a CSV</a>
+                <a href="{{route('reportes.municipio.pdf')}}" class="btn btn-danger"><i class="fas fa-file-pdf"></i>Exportar a PDF</a>
 
             </div>
 
@@ -23,29 +24,35 @@
                     <thead class="thead-custom">
                         <tr>
                             <th>Municipio</th>
+                            <th>Localidad</th>
+                            <th>Nombre de los Planteles</th>
                             <th>Total de Planteles Registrados</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{-- Fila de total general --}}
-                        <tr class="table-total-row">
-                            <td><strong>TOTAL GENERAL</strong></td>
-                            <td><strong>{{ $totalGeneral }}</strong></td>
-                        </tr>
 
-                        {{-- Mostrar cada municipio --}}
-                        @foreach($municipios as $municipio)
+                        {{-- Mostrar cada municipio y localidad--}}
+                        @foreach ($datos as $fila)
                         <tr>
-                            <td>{{ $municipio->nombre_municipio }}</td>
-                            <td>{{ $municipio->planteles_count }}</td>
+                            <td>{{$fila->municipio}}</td>
+                            <td>{{$fila->localidad}}</td>
+                            <td>{!! str_replace(', ', '<br>', $fila->nombre_planteles) !!}</td>
+                            <td>{{$fila->total_planteles}}</td>
                         </tr>
                         @endforeach
-
-                        @if($municipios->isEmpty())
+                        @if($datos->isEmpty())
                         <tr>
-                            <td colspan="2" class="text-center">No hay datos disponibles para este reporte.</td>
+                            <td colspan="3" class="text-center">No hay datos disponibles para este reporte.</td>
                         </tr>
                         @endif
+                        {{-- Fila de total general --}}
+                        <tr class="table-total-row">
+                            <td><strong>TOTAL GENERAL</strong></td>
+                            <td><strong>/</strong></td>
+                            <td><strong>/</strong></td>
+                            <td><strong>{{ $totalGeneral }}</strong></td>
+                        </tr>
                     </tbody>
 
                 </table>
