@@ -90,4 +90,76 @@ class ReporteController extends Controller
         $pdf = Pdf::loadView('reportes.pdf_municipio', compact('datos', 'totalGeneral'));
         return $pdf->download('reporte_municipio.pdf');
     }
+
+    public function reporteEstatusPlantel()
+    {
+        $planteles = DB::table('planteles')
+            ->leftJoin('municipios', 'planteles.id_municipio', '=', 'municipios.id')
+            ->leftJoin('localidades', 'planteles.id_localidad', '=', 'localidades.id')
+            ->select(
+                'planteles.cct',
+                'planteles.nombre_escuela',
+                'planteles.estatus_plantel',
+                'municipios.nombre_municipio',
+                'localidades.nombre_localidad',
+                'planteles.domicilio_calle_numero',
+                'planteles.domicilio_colonia',
+                'planteles.domicilio_cp'
+            )
+            ->get();
+
+        return view('reportes.reporte_estatus', compact('planteles'));
+    }
+
+    public function exportarEstatusCSV()
+    {
+        $planteles = DB::table('planteles')
+            ->leftJoin('municipios', 'planteles.id_municipio', '=', 'municipios.id')
+            ->leftJoin('localidades', 'planteles.id_localidad', '=', 'localidades.id')
+            ->select(
+                'planteles.cct',
+                'planteles.nombre_escuela',
+                'planteles.estatus_plantel',
+                'municipios.nombre_municipio',
+                'localidades.nombre_localidad',
+                'planteles.domicilio_calle_numero',
+                'planteles.domicilio_colonia',
+                'planteles.domicilio_cp'
+            )
+            ->get();
+        $fileName = 'reporte_estatus_planteles.csv';
+        $response = new StreamedResponse(function () use ($planteles) {
+            $handle = fopen('php://output', 'w');
+            fputcsv($handle, ['CCT', 'Nombre Plantel', 'Ubicación', 'Estatus']);
+
+            foreach ($planteles as $p) {
+                $ubicacion = ($p->nombre_municipio ?? '') . ', ' . ($p->nombre_localidad ?? '') . ', ' . $p->domicilio_calle_numero . ' ' . $p->domicilio_colonia . ' CP ' . $p->domicilio_cp;
+                fputcsv($handle, [$p->cct, $p->nombre_escuela, $ubicacion, $p->estatus_plantel]);
+            }
+            fclose($handle);
+        });
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $fileName . '"');
+        return $response;
+    }
+
+    public function exportarEstatusPDF()
+    {
+        $planteles = DB::table('planteles')
+            ->leftJoin('municipios', 'planteles.id_municipio', '=', 'municipios.id')
+            ->leftJoin('localidades', 'planteles.id_localidad', '=', 'localidades.id')
+            ->select(
+                'planteles.cct',
+                'planteles.nombre_escuela',
+                'planteles.estatus_plantel',
+                'municipios.nombre_municipio',
+                'localidades.nombre_localidad',
+                'planteles.domicilio_calle_numero',
+                'planteles.domicilio_colonia',
+                'planteles.domicilio_cp'
+            )
+            ->get();
+        $pdf = Pdf::loadView('reportes.pdf_estatus', compact('planteles'));
+        return $pdf->download('reportes_estatus_planteles.pdf');
+    }
 }

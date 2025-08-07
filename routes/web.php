@@ -168,7 +168,12 @@ Route::get('/reportes', [ReporteController::class, 'index'])->name('reportes.ind
 Route::get('/reportes/municipio', [ReporteController::class, 'reporteMunicipio'])->name('reportes.municipio');
 //Ruta para exportar los reportes a csv
 Route::get('/reportes/municipio/exportar', [ReporteController::class, 'exportarMunicipiosCSV'])->name('reportes.municipios.exportar');
-
-
 //Ruta para generar pdf
 Route::get('/reportes/municipios/pdf', [ReporteController::class, 'exportarMunicipioPDF'])->name('reportes.municipio.pdf');
+
+//Ruta para reportes segun el estatus
+Route::get('/reportes/estatus-plantel', [ReporteController::class, 'reporteEstatusPlantel'])->name('reportes.estatus');
+//Ruta para generar csv para reportes segun el estatus
+Route::get('/reportes/estatus-plantel/csv', [ReporteController::class, 'exportarEstatusCSV'])->name('reportes.estatus.csv');
+//Ruta para generar pdf para reportes segun el estatus
+Route::get('/reportes/estatus-plantel/pdf', [ReporteController::class, 'exportarEstatusPDF'])->name('reportes.estatus.pdf');

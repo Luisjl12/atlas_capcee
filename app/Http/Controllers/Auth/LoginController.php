@@ -25,6 +25,11 @@ class LoginController extends Controller
 
         if ($usuario && password_verify($request->password, $usuario->password_hash)) {
 
+            //Verificar si el usuario este inactivo
+            if ($usuario->estado != 'activo') {
+                return redirect()->back()->withErrors(['error' => 'Tu cuenta actualmente esta inactiva.']);
+            }
+
 
             Session::put('loggedin', true);
             Session::put('id', $usuario->id);

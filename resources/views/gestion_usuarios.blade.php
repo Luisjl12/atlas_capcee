@@ -17,7 +17,12 @@
 
 <div class="container mt-4">
     <div class="card-header-custom d-flex justify-content-between align-items-center mb-3">
-        <h2><i class="fas fa-users-cog me-2"></i> Gestión de Usuarios</h2>
+        <a href="{{route('dashboard.admin')}}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+            <h4 class="mb-4">
+                <i class="fas fa-arrow-left "></i>
+                <i class="fas fa-users-cog me-2"></i> Gestión de Usuarios
+            </h4>
+        </a>
         <a href="{{ route('usuarios.create') }}" class="btn btn-success">
             <i class="fas fa-plus"></i> Agregar Usuario
         </a>

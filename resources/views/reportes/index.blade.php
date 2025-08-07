@@ -35,14 +35,14 @@
                         </div>
                     </div>
 
-                    <div class="report-item disabled">
+                    <div class="report-item ">
                         <div class="report-icon">
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="report-info">
                             <h4>Reporte de Estatus de Planteles</h4>
                             <p>Cuenta cuántos planteles están Activos, Inactivos o En Revisión.</p>
-                            <a href="#" class="btn btn-secondary disabled-link" title="Próximamente">Ver Reporte</a>
+                            <a href="{{route('reportes.estatus')}}" class="btn btn-primary " title="Próximamente">Ver Reporte</a>
                         </div>
                     </div>
 
