@@ -20,7 +20,7 @@
             </div>
 
             <div class="table-responsive mt-3 data-table-container">
-                <table class="table table-striped table-bordered table-hover data-table">
+                <table class="table data-table">
                     <thead class="thead-custom">
                         <tr>
                             <th>Municipio</th>

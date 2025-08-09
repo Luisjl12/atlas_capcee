@@ -45,7 +45,7 @@
                 <td>
                     {{ ($p->nombre_municipio ?? '').', '.($p->nombre_localidad ?? '').', '.$p->domicilio_calle_numero.' '.$p->domicilio_colonia.' CP '.$p->domicilio_cp }}
                 </td>
-                <td>{{ $p->estatus_plantel }}</td>
+                <td>{{str_replace('_', ' ',  $p->estatus_plantel )}}</td>
             </tr>
             @endforeach
         </tbody>

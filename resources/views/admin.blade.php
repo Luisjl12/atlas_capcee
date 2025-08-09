@@ -12,7 +12,7 @@
     <hr>
     <h6>Acciones Disponibles:</h6>
     <nav class="dashboard-nav">
-        <div class="contenedor-acciones-grid">
+        <div class="contenedor-acciones">
             <div class="columna-acciones">
                 <a href="{{route('gestion.usuarios')}}" class="accion-card red">
                     <i class="fas fa-users-cog"></i> Gestión de Usuarios

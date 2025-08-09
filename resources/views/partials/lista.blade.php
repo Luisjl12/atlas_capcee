@@ -1,5 +1,5 @@
 <div class="table-responsive mt-3 data-table-container">
-    <table class="table table-striped table-bordered table-hover data-table">
+    <table class="table data-table">
         <thead class="thead-custom">
             <tr>
                 <th>CCT</th>
@@ -10,20 +10,20 @@
                 <th>Acciones</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody id="tbody-js">
             @forelse ($planteles as $plantel)
-            <tr>
-                <td data-label="CCT">{{ $plantel->cct }}</td>
+            <tr class="fila-usuario">
+                <td data-label="CCT" class="info-extra">{{ $plantel->cct }}</td>
                 <td data-label="Nombre">{{ $plantel->nombre_escuela }}</td>
-                <td data-label="Municipio">{{ $plantel->municipio->nombre_municipio ?? 'N/D' }}</td>
-                <td data-label="Director">{{ $plantel->nombre_director_registrado ?? 'No asignado' }}</td>
-                <td data-label="Estatus">
+                <td data-label="Municipio" class="info-extra">{{ $plantel->municipio->nombre_municipio ?? 'N/D' }}</td>
+                <td data-label="Director" class="info-extra">{{ $plantel->nombre_director_registrado ?? 'No asignado' }}</td>
+                <td data-label="Estatus" class="info-extra">
                     <span class="badge status-{{ strtolower($plantel->estatus_plantel) }}">
                         {{ $plantel->estatus_plantel }}
                     </span>
                 </td>
 
-                <td data-label="Acciones">
+                <td data-label="Acciones" class="info-extra">
 
                     <div class="acciones-btns d-flex align-items-center gap-1 flex-nowrap">
 
@@ -33,15 +33,11 @@
                         <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-sm btn-primary" title="Editar Ficha Base">
                             <i class="fas fa-edit"></i>
                         </a>
+                        <button type="button" class="btn btn-sm btn-danger"
+                            onclick="mostrarModalConfirmacion('¿Seguro que quieres eliminar a este plantel?', '{{ route('planteles.destroy', $plantel->id) }}')">
+                            <i class="fas fa-trash"></i>
+                        </button>
 
-                        <form action="{{ route('planteles.destroy', $plantel->id) }}" method="POST" style="display:inline-block;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-sm btn-danger" title="Eliminar Plantel"
-                                onclick="return confirm('¿Estás seguro de eliminar este plantel?')">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </form>
                     </div>
 
                 </td>

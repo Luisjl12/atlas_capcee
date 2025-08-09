@@ -36,6 +36,19 @@
         @include('partials.lista', ['planteles' => $planteles])
     </div>
 </div>
+
+<!--Mostrar modal para confirmacion de eliminar plantel-->
+<div id="modalConfirmacion" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <h3><i class="fas fa-exclamation-triangle"></i> Confirmación</h3>
+        <p id="mensajeConfirmacion">¿Estás seguro de continuar?</p>
+        <div class="modal-actions">
+            <button id="btnCancelar" class="btn-cancelar">Cancelar</button>
+            <a id="btnEliminar" class="btn btn-danger">Eliminar</a>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @push('scripts')
@@ -52,4 +65,53 @@
             .catch(error => console.error('Error en la búsqueda:', error));
     });
 </script>
+
+<script>
+    function mostrarModalConfirmacion(mensaje, url) {
+        document.getElementById("mensajeConfirmacion").innerText = mensaje;
+        document.getElementById("btnEliminar").onclick = function() {
+            // Crear un formulario dinámicamente para enviar el método DELETE
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = url;
+
+            const token = document.createElement('input');
+            token.type = 'hidden';
+            token.name = '_token';
+            token.value = '{{ csrf_token() }}';
+
+            const method = document.createElement('input');
+            method.type = 'hidden';
+            method.name = '_method';
+            method.value = 'DELETE';
+
+            form.appendChild(token);
+            form.appendChild(method);
+            document.body.appendChild(form);
+            form.submit();
+        };
+
+        document.getElementById("modalConfirmacion").style.display = "flex";
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        document.getElementById("btnCancelar").addEventListener("click", function() {
+            document.getElementById("modalConfirmacion").style.display = "none";
+        });
+    });
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const filas = document.querySelectorAll('.fila-usuario');
+        filas.forEach(fila => {
+            fila.addEventListener('click', function() {
+                fila.classList.toggle('activa');
+            });
+        });
+
+    });
+</script>
+
+
 @endpush

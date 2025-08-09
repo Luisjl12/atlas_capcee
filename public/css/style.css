@@ -16,13 +16,13 @@
 
     --color-exito: #28a745;
     --color-error: #dc3545;
-    --color-advertencia: #ffc107;
     --color-info: #17a2b8;
 
     --font-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --border-radius-base: 0.25rem;
     --box-shadow-ligero: 0 2px 8px rgba(0, 0, 0, 0.05);
     --box-shadow-medio: 0 5px 20px rgba(0, 0, 0, 0.1);
+    --border-bottom-base: 1px solid #e0e0e0;
 
 
     /*COLORES INSTITUCIONALES*/
@@ -37,12 +37,15 @@
 
 }
 
+
+
+
 html {
     box-sizing: border-box;
 }
 
 *,
-*:before,
+logo *:before,
 *:after {
     box-sizing: inherit;
 }
@@ -83,14 +86,18 @@ body {
     font-weight: bold;
 }
 
-.logo-container a {
-    font-size: 1.4rem;
+.logo-container {
     display: flex;
     align-items: center;
+    padding: 0.3rem 0;
 }
 
-.logo-container i {
-    margin-right: 0.5rem;
+.logo-img {
+    height: 40px;
+    width: auto;
+    display: block;
+    object-fit: contain;
+    padding-left: 0.5rem;
 }
 
 .user-nav a {
@@ -111,6 +118,18 @@ body {
 .user-nav i {
     margin-right: 0.3rem;
 }
+
+.btn-profile {
+    margin-top: 1rem;
+    background-color: var(--color-vino-secundario1);
+    border: none;
+    border-radius: 8px;
+}
+
+.btn-profile:hover {
+    background-color: var(--color-vino-secundario);
+}
+
 
 .btn-logout {
     /* background-color: var(--color-vino-claro); */
@@ -148,15 +167,6 @@ body {
     background-size: cover;
     border-top: 4px solid #fff;
 }
-
-/* .login-page-body {
-    background: linear-gradient(90deg, #7e1e2b, #c14e4f);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-} */
 
 .login-page-body {
     background: linear-gradient(90deg, #7e1e2b, #c14e4f);
@@ -478,31 +488,22 @@ body {
 }
 
 /* -- Estilos para los botones del Dashboard --*/
-
-/*
 .contenedor-acciones {
     display: flex;
-    justify-content: center;
-    /* Distribuye columnas uniformemente 
+    justify-content: space-between;
+    /* Distribuye columnas uniformemente */
+    align-items: flex-start;
     gap: 2rem;
     flex-wrap: wrap;
-    padding: 2rem 1rem;
     width: 100%;
-}*/
-.contenedor-acciones-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    padding: 2rem 1rem;
-    width: 100%;
-  
 }
 
 .columna-acciones {
+    flex: 1;
+    min-width: 250px;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    min-width: 250px;
+    gap: 0.7rem;
 }
 
 .columna-acciones h5 {
@@ -515,29 +516,28 @@ body {
 .accion-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 1rem 1.5rem;
+    gap: 0.75rem;
+    padding: 0.8rem 1rem;
     background-color: var(--color-fondo-tarjeta);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+    border-radius: 5px;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 500;
     color: var(--color-texto-terciario);
-    transition: all 0.2s ease-in-out;
+    transition: transform 0.2s;
 }
 
 .accion-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
 }
 
 .accion-card i {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     color: white;
     border-radius: 50%;
-    padding: 0.7rem;
-    width: 45px;
-    height: 45px;
+    padding: 0.6rem;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -560,49 +560,94 @@ body {
 /* Espacio para contenido debajo de la navegación del dashboard */
 
 /* --- Estilos para Tablas de Datos --- */
+/* Contenedor */
 .data-table-container {
     background-color: var(--color-fondo-tarjeta);
     padding: 1rem;
     border-radius: var(--border-radius-base);
     box-shadow: var(--box-shadow-medio);
-    overflow-x: auto;
-    /* Para responsividad en tablas anchas */
+    overflow-x: auto; /* Para responsividad en tablas anchas */
 }
 
-.data-table {
+/* Tabla base */
+table.data-table {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.9rem;
 }
 
-.data-table th,
-.data-table td {
+/* Celdas */
+table.data-table th,
+table.data-table td {
     padding: 0.75rem 1rem;
     text-align: left;
     border-bottom: 1px solid var(--color-bordes);
     vertical-align: middle;
 }
 
-.data-table thead.thead-custom th {
-    /* thead-custom aplicado al <thead> */
+/* Encabezado personalizado */
+table.data-table thead.thead-custom th {
     background-color: var(--color-vino-secundario);
     color: var(--color-texto-sobre-vino);
     font-weight: 600;
     border-bottom-width: 2px;
-    /* Borde más grueso para el header de la tabla */
 }
 
-.data-table tbody tr:hover {
-    background-color: rgba(154, 42, 42, 0.05);
-    /* Un hover vino muy sutil */
+/* Alternado de filas — forzar sobre Bootstrap */
+table.data-table tbody tr:nth-child(odd) td,
+table.data-table tbody tr:nth-child(odd) th {
+    background-color: var(--color-fondo-tarjeta) !important;
 }
 
-.data-table tbody tr:last-child td {
+table.data-table tbody tr:nth-child(even) td,
+table.data-table tbody tr:nth-child(even) th {
+    background-color: rgba(154, 42, 42, 0.05) !important;
+}
+
+/* Hover */
+table.data-table tbody tr:hover td,
+table.data-table tbody tr:hover th {
+    background-color: rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Quitar borde a última fila */
+table.data-table tbody tr:last-child td {
     border-bottom: none;
 }
 
+/* Centrado opcional */
 .data-table .text-center {
     text-align: center;
+}
+
+
+/*---- Miniatura de la imagen en plantel detalle ----*/
+.archivo-preview {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    max-width: 220px;
+    word-break: break-all;
+}
+
+.miniatura-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 4px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    transition: transform 0.2s ease;
+}
+
+.miniatura-img:hover {
+    transform: scale(1.1);
+}
+
+.archivo-nombre {
+    font-size: 0.85rem;
+    color: #333;
+    word-break: break-all;
 }
 
 /* --- Estilos para Badges de Estatus --- */
@@ -620,17 +665,19 @@ body {
 
 }
 
-.status-activo {
-    background-color: var(--color-exito);
+.status-activo, .status-bueno {
+    background-color: #d1fae5;
+    color: #047857;
 }
 
-.status-inactivo {
-    background-color: var(--color-error);
+.status-inactivo, .status-malo {
+    background-color: #fee2e2;
+    color: #b91c1c;
 }
 
-.status-en_revision {
-    background-color: var(--color-advertencia);
-    color: var(--color-texto-principal);
+.status-en_revision, .status-regular {
+    background-color: #ffe8b3;
+    color: #d97706;
 }
 
 /* Texto oscuro para contraste */
@@ -649,19 +696,19 @@ body {
     /* Un fondo ligeramente diferente para la sección */
 }
 
-.form-ficha-base .form-section:last-of-type {
-    margin-bottom: 0;
+/* .form-ficha-base .form-section:last-of-type {
+    margin-bottom: 0; */
     /* Quitar margen inferior de la última sección */
-}
+/* } */
 
 .form-ficha-base h4 {
     /* Títulos de sección del formulario */
-    color: var(--color-vino-secundario);
+    color: var(--color-vino-terciario);
     margin-top: 0;
     /* Quitar margen superior si el padding de la sección ya lo da */
     margin-bottom: 1.25rem;
     font-size: 1.2rem;
-    border-bottom: 2px solid var(--color-vino-principal);
+    border-bottom:  var(--border-bottom-base);
     padding-bottom: 0.5rem;
 }
 
@@ -674,11 +721,7 @@ body {
 }
 
 .form-ficha-base .form-group {
-    /* Grupo de label + input */
     margin-bottom: 1rem;
-    /* padding-left: 10px; */
-    /* Gutter */
-    /* padding-right: 10px; */
 }
 
 .form-ficha-base .col-md-2,
@@ -737,7 +780,7 @@ body {
     font-size: .9rem;
     line-height: 1.5;
     color: var(--color-texto-principal);
-    background-color: #fff;
+    background-color: #f9f9f9;
     background-clip: padding-box;
     border: 1px solid var(--color-bordes-input);
     border-radius: var(--border-radius-base);
@@ -919,25 +962,21 @@ p i {
     .form-ficha-base .col-md-8 {
         width: 50%;
     }
-
-    /* En pantallas grandes, dos columnas */
-    .profile-container {
-        grid-template-columns: 1fr 1fr;
-    }
 }
 
 @media (max-width: 768px) {
 
     /* Móviles */
+    
     .main-header {
         flex-direction: column;
         padding: 0.8rem 1rem;
     }
-
+    
     .logo-container {
         margin-bottom: 0.5rem;
     }
-
+    
     .user-nav {
         width: 100%;
         display: flex;
@@ -966,16 +1005,30 @@ p i {
     .main-container {
         padding: 1rem;
     }
-
+    
     .data-table {
         border-collapse: collapse;
         width: 100%;
     }
+    
+    /* Alternar colores de fila en móviles */
+    table.data-table tbody tr:nth-child(odd) {
+        background-color: #ffffff !important;
+    }
 
+    table.data-table tbody tr:nth-child(even) {
+        background-color: #f5f5f5 !important;
+    }
+
+    /* Hover en móviles */
+    table.data-table tbody tr:hover {
+        background-color: #e6e6e6 !important;
+    }
+        
     .data-table thead {
         display: none;
     }
-
+        
     .data-table tbody tr {
         display: grid;
         grid-template-columns: 1fr 1fr;
@@ -985,7 +1038,7 @@ p i {
         border-top: 1px solid #ddd;
         border-bottom: 1px solid #ddd;
     }
-
+        
     .data-table td {
         display: flex;
         flex-direction: column;
@@ -995,7 +1048,7 @@ p i {
         word-break: break-word;
         white-space: normal;
     }
-
+        
     .data-table td::before {
         content: attr(data-label) ":";
         font-weight: 600;
@@ -1062,7 +1115,6 @@ p i {
         font-weight: 900;
         position: absolute;
         top: 1rem;
-        /* Fijado arriba, no centrado */
         right: 12px;
         font-size: 1rem;
         color: #666;
@@ -1074,6 +1126,20 @@ p i {
         transform: rotate(180deg);
         color: #000;
     }
+}
+
+/* Alternar colores en pantallas grandes */
+table.data-table tbody tr:nth-child(odd) {
+    background-color: #ffffff !important;
+}
+
+table.data-table tbody tr:nth-child(even) {
+    background-color: #f5f5f5 !important;
+}
+
+/* Hover en pantallas grandes */
+table.data-table tbody tr:hover {
+    background-color: #e6e6e6 !important;
 }
 
 @media (max-width: 450px) {
@@ -1096,9 +1162,7 @@ p i {
         text-align: center;
     }
 
-
     .card-header-custom h2 {
-        /* color: #333; */
         font-size: 1.2rem;
         width: 100%;
         text-align: center;
@@ -1117,7 +1181,20 @@ p i {
     .form-inline-espacios button {
         padding: 0.5rem 1rem !important;
     }
+
+    .login-container {
+        max-width: 350px;
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .login-page-body {
+        min-height: auto;
+        padding: 4rem 1rem;
+        justify-content: center;
+    }
 }
+
 
 
 /* --- Añadir a css/style.css --- */
@@ -1277,11 +1354,9 @@ p i {
     grid-template-columns: 1fr;
     /* Una columna por defecto */
     gap: 2rem;
-    /* Espacio entre las tarjetas */
 }
 
 @media (min-width: 992px) {
-
     /* En pantallas grandes, dos columnas */
     .profile-container {
         grid-template-columns: 1fr 1fr;
@@ -1290,17 +1365,74 @@ p i {
 
 .profile-card {
     background-color: var(--color-fondo-tarjeta);
-    padding: 1.5rem 2rem;
-    border-radius: var(--border-radius-base);
+    padding: 2rem;
+    border-radius: 12px;
     box-shadow: var(--box-shadow-medio);
+    margin-bottom: 2rem;
 }
 
-.profile-card h4 {
-    margin-top: 0;
-    color: var(--color-vino-principal);
-    border-bottom: 2px solid var(--color-bordes);
-    padding-bottom: 0.75rem;
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: var(--border-bottom-base);
     margin-bottom: 1.5rem;
+    padding: 0 0 0.5rem 0;
+}
+
+.card-header h3 {
+    margin: 0;
+    color: var(--color-vino-terciario);
+}
+
+.btn-edit {
+    background: #f4f4f4;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: 0.2s ease;
+    color: var(--color-vino-terciario);
+}
+
+.btn-edit:hover {
+    background-color: #e0e0e0;
+}
+
+.info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+}
+
+.info-row + .info-row {
+    margin-top: 1.5rem;
+}
+
+.form-group {
+    flex: 1;
+    min-width: 220px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full {
+    flex: 100%;
+}
+
+.profile-card .form-group label {
+    margin-bottom: 0.4rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.form-group input {
+    padding: 0.6rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+    font-size: 1rem;
 }
 
 /* Estilo para el input con botón pegado (para validar teléfono) */
@@ -1310,7 +1442,8 @@ p i {
 
 .input-group .form-control {
     flex-grow: 1;
-    /* Redondear solo las esquinas izquierdas */
+    min-width: 0;
+     /* Redondear solo las esquinas izquierdas */
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
 }
@@ -1321,62 +1454,8 @@ p i {
     border-bottom-left-radius: 0;
 }
 
+
 /* --- Añadir a css/style.css --- */
-
-/* Estilos para Pestañas (Tabs) */
-
- .tab-nav {
-    overflow: hidden;
-    border: 1px solid var(--color-bordes);
-    background-color: #f1f1f1;
-    border-radius: var(--border-radius-base) var(--border-radius-base) 0 0;
-    display: flex;
-    flex-wrap: wrap;
-    /* Para que las pestañas se ajusten en pantallas pequeñas */
-}  
-
-
- .tab-nav button.tab-link {
-    background-color: inherit;
-    border: none;
-    outline: none;
-    cursor: pointer;
-    padding: 14px 16px;
-    transition: background-color 0.3s;
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--color-texto-secundario);
-    border-right: 1px solid var(--color-bordes);
-}
-
-.tab-nav button.tab-link:last-child {
-    border-right: none;
-}
-
-.tab-nav button.tab-link:hover {
-    background-color: #ddd;
-}
-
-.tab-nav button.tab-link.active {
-    background-color: var(--color-vino-principal);
-    color: var(--color-texto-sobre-vino);
-}
-
-.tab-content {
-    display: none;
-    padding: 2rem;
-    border: 1px solid var(--color-bordes);
-    border-top: none;
-    background-color: var(--color-fondo-tarjeta);
-}
-
-.tab-content h3 {
-    margin-top: 0;
-    color: var(--color-vino-secundario);
-} 
-
-
-/* Formulario en línea (plantel_detalle) seccion2 */
 
 .form-inline-espacios,
 .form-inline-search {
@@ -1409,7 +1488,8 @@ p i {
 }
 
 .form-inline-espacios .form-control:focus,
-.form-inline-search .form-control:focus {
+.form-inline-search .form-control:focus,
+.form-group .form-control:focus {
     outline: none;
     box-shadow: 0 0 0 0.2rem rgba(154, 42, 42, 0.2);
 }
@@ -1459,7 +1539,7 @@ p i {
     padding: 0.75rem;
     border-radius: var(--border-radius-base);
     /* border-left: 4px solid var(--color-vino-principal); */
-     border-left: 4px solid var(--color-verde-primario);
+    border-left: 4px solid var(--color-verde-primario);
 }
 
 .data-pair label {
@@ -1630,6 +1710,60 @@ p {
     justify-content: space-between;
 }
 
+/*---- Modal imagen ----*/
+.modal-custom {
+  display: none;
+  position: fixed;
+  z-index: 9999;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  backdrop-filter: blur(6px);
+  background-color: rgba(0, 0, 0, 0.6);
+  justify-content: center;
+  align-items: center;
+  animation: fadeIn 0.3s ease;
+}
+
+.modal-contenido {
+  position: relative;
+  max-width: 90%;
+  max-height: 90%;
+  background-color: white;
+  padding: 0.75rem;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+  animation: zoomIn 0.3s ease;
+}
+
+.modal-contenido img {
+  max-width: 100%;
+  max-height: 80vh;
+  display: block;
+  border-radius: 8px;
+}
+
+.cerrar-modal {
+  position: absolute;
+  top: 6px;
+  right: 10px;
+  background: #fff;
+  color: #c00;
+  border: none;
+  font-size: 1.4rem;
+  font-weight: bold;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.2);
+  transition: background 0.2s ease;
+}
+
+.cerrar-modal:hover {
+  background: #f8d7da;
+}
+
 .btn-cancelar {
     padding: 0.6rem 1.2rem;
     border: none;
@@ -1729,6 +1863,74 @@ p {
 .nav-tab.active::after {
     width: 100%;
 }
+
+
+/*NAVEGACION POR PAGINACION*/
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    list-style: none;
+    padding-left: 0;
+    margin-top: 2rem;
+}
+
+.page-item {
+    display: flex;
+}
+
+.page-link {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid #ccc;
+    color: var(--color-vino-principal);
+    text-decoration: none;
+    font-weight: 500;
+    background-color: #fff;
+    transition: all 0.3s ease;
+}
+
+.page-item.active .page-link {
+    background-color: var(--color-verde-terciario);
+    color: white;
+    border-color: var(--color-verde-terciario);
+}
+
+.page-link:hover {
+    background-color: var(--color-verde-terciario);
+    color: white;
+    border-color: var(--color-verde-terciario);
+}
+
+/* Botón personalizado para Next Page */
+.next-page {
+    padding: 0.5rem 1rem;
+    border-radius: 999px;
+    border: 2px solid #5f35f3;
+    background: transparent;
+    color: #5f35f3;
+    font-weight: 600;
+    margin-left: 1rem;
+    transition: 0.3s ease;
+    text-decoration: none;
+}
+
+.next-page:hover {
+    background: #5f35f3;
+    color: white;
+}
+
+
+
+/*
+    Secciones agregadas por Mi 
+*/
 .search-container {
     position: relative;
     width: 100%;
@@ -1793,6 +1995,15 @@ p {
 .boton-personalizado:hover {
     background-color: #5e0026;    /* tono más oscuro al pasar el mouse */
 }
+
+
+
+
+
+
+
+
+
 
 
 
