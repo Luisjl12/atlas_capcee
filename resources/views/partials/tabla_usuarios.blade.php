@@ -46,5 +46,15 @@
                 @endforelse
             </tbody>
         </table>
+        {{-- Paginación --}}
+        @if(method_exists($usuarios, 'links'))
+        <nav class="pagination-container" aria-label="Navegación de páginas">
+            <ul class="pagination">
+                <li class="page-item ">
+                    {{ $usuarios->links('vendor.pagination.mi_paginacion') }}
+                </li>
+            </ul>
+        </nav>
+        @endif
     </div>
 </main>

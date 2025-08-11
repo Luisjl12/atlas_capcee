@@ -1349,18 +1349,32 @@ table.data-table tbody tr:hover {
 /* --- Añadir a css/style.css --- */
 
 /* Estilos para la página de Mi Perfil */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
 .profile-container {
     display: grid;
     grid-template-columns: 1fr;
-    /* Una columna por defecto */
     gap: 2rem;
+    width: 100%;
 }
+
+
 
 @media (min-width: 992px) {
     /* En pantallas grandes, dos columnas */
-    .profile-container {
+   .profile-container {
         grid-template-columns: 1fr 1fr;
+        max-width: 100%;
     }
+
+    .profile-card {
+        min-width: 600px;
+    }
+
 }
 
 .profile-card {
@@ -1370,6 +1384,7 @@ table.data-table tbody tr:hover {
     box-shadow: var(--box-shadow-medio);
     margin-bottom: 2rem;
 }
+
 
 .card-header {
     display: flex;
@@ -1412,13 +1427,14 @@ table.data-table tbody tr:hover {
 
 .form-group {
     flex: 1;
-    min-width: 220px;
+    min-width: 250px;
     display: flex;
     flex-direction: column;
 }
 
 .form-group.full {
-    flex: 100%;
+     flex: 1 1 100%;
+
 }
 
 .profile-card .form-group label {
@@ -1882,31 +1898,33 @@ p {
 }
 
 .page-link {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid #ccc;
-    color: var(--color-vino-principal);
-    text-decoration: none;
-    font-weight: 500;
-    background-color: #fff;
-    transition: all 0.3s ease;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 50% !important;
+    border: 1px solid #ccc !important;
+    color: var(--color-vino-principal) !important;
+    text-decoration: none !important;
+    font-weight: 500 !important;
+    background-color: #fff !important;
+    transition: all 0.3s ease !important;
+    padding: 0 !important;
 }
 
 .page-item.active .page-link {
-    background-color: var(--color-verde-terciario);
-    color: white;
-    border-color: var(--color-verde-terciario);
+    background-color: var(--color-verde-terciario) !important;
+    color: white !important;
+    border-color: var(--color-verde-terciario) !important;
 }
 
 .page-link:hover {
-    background-color: var(--color-verde-terciario);
-    color: white;
-    border-color: var(--color-verde-terciario);
+    background-color: var(--color-verde-terciario) !important;
+    color: white !important;
+    border-color: var(--color-verde-terciario) !important;
 }
+
 
 /* Botón personalizado para Next Page */
 .next-page {

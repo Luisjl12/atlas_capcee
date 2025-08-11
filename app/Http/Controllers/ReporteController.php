@@ -162,4 +162,99 @@ class ReporteController extends Controller
         $pdf = Pdf::loadView('reportes.pdf_estatus', compact('planteles'));
         return $pdf->download('reportes_estatus_planteles.pdf');
     }
+
+    public function infraestructura()
+    {
+        $infraestructura = DB::table('planteles')
+            ->leftJoin('detalle_hidrosanitario', 'planteles.cct', '=', 'detalle_hidrosanitario.cct')
+            ->leftJoin('detalle_servicios', 'planteles.cct', '=', 'detalle_servicios.cct')
+            ->select(
+                'planteles.cct',
+                'planteles.nombre_escuela',
+                'detalle_hidrosanitario.fuente_agua',
+                'detalle_hidrosanitario.tipo_drenaje',
+                'detalle_servicios.electricidad_contrato',
+                'detalle_servicios.telefonia_fija',
+                'detalle_servicios.internet_acceso'
+
+            )
+            ->get();
+        return view('reportes.reporte_infraestructura', compact('infraestructura'));
+    }
+
+    public function exportarInfraestructuraCSV()
+    {
+        $infraestructura = DB::table('planteles')
+            ->leftJoin('detalle_hidrosanitario', 'planteles.cct', '=', 'detalle_hidrosanitario.cct')
+            ->leftJoin('detalle_servicios', 'planteles.cct', '=', 'detalle_servicios.cct')
+            ->select(
+                'planteles.cct',
+                'planteles.nombre_escuela',
+                'detalle_hidrosanitario.fuente_agua',
+                'detalle_hidrosanitario.tipo_drenaje',
+                'detalle_servicios.electricidad_contrato',
+                'detalle_servicios.telefonia_fija',
+                'detalle_servicios.internet_acceso'
+            )
+            ->get();
+
+        $fileName = 'reporte_infraestructura.csv';
+
+        $response = new StreamedResponse(function () use ($infraestructura) {
+            $handle = fopen('php://output', 'w');
+
+            fprintf($handle, chr(0xEF) . chr(0xBB) . chr(0xBF));
+
+            // Encabezados del CSV
+            fputcsv($handle, [
+                'CCT',
+                'Nombre de la Escuela',
+                'Fuente de Agua',
+                'Tipo de Drenaje',
+                'Contrato de Electricidad',
+                'Telefonía Fija',
+                'Acceso a Internet'
+            ]);
+
+            // Filas
+            foreach ($infraestructura as $item) {
+                fputcsv($handle, [
+                    $item->cct,
+                    $item->nombre_escuela,
+                    $item->fuente_agua ?? 'No registrado',
+                    $item->tipo_drenaje ?? 'No registrado',
+                    $item->electricidad_contrato == 1 ? 'Sí' : 'No',
+                    $item->telefonia_fija == 1 ? 'Sí' : 'No',
+                    $item->internet_acceso == 1 ? 'Sí' : 'No'
+                ]);
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment;filename="' . $fileName . '"');
+
+        return $response;
+    }
+
+    public function exportarInfraestructuraPDF()
+    {
+        $infraestructura = DB::table('planteles')
+            ->leftjoin('detalle_hidrosanitario', 'planteles.cct', '=', 'detalle_hidrosanitario.cct')
+            ->leftjoin('detalle_servicios', 'planteles.cct', '=', 'detalle_servicios.cct')
+            ->select(
+                'planteles.cct',
+                'planteles.nombre_escuela',
+                'detalle_hidrosanitario.fuente_agua',
+                'detalle_hidrosanitario.tipo_drenaje',
+                'detalle_servicios.electricidad_contrato',
+                'detalle_servicios.telefonia_fija',
+                'detalle_servicios.internet_acceso'
+            )
+            ->get();
+        $pdf = Pdf::loadView('reportes.infraestructura_pdf', compact('infraestructura'))
+            ->setPaper('a4', 'landscape');
+        return $pdf->download('reportes_infraestructura.pdf');
+    }
 }

@@ -47,7 +47,7 @@
     </nav>
 
     {{-- Contenido principal --}}
-    <main class="container my-4">
+    <main class="container-fluid mt-4">
         <div class="content-box bg-white text-dark rounded p-4 shadow">
             @yield('content')
         </div>

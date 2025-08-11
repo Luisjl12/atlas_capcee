@@ -46,14 +46,14 @@
                         </div>
                     </div>
 
-                    <div class="report-item disabled">
+                    <div class="report-item ">
                         <div class="report-icon">
                             <i class="fas fa-tools"></i>
                         </div>
                         <div class="report-info">
                             <h4>Reporte de Infraestructura</h4>
                             <p>Muestra un resumen del estado de conservación de los espacios.</p>
-                            <a href="#" class="btn btn-secondary disabled-link" title="Próximamente">Ver Reporte</a>
+                            <a href="{{route('reportes.infraestructura')}}" class="btn btn-primary" title="Próximamente">Ver Reporte</a>
                         </div>
                     </div>
 

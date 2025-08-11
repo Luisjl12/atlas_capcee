@@ -27,9 +27,9 @@
     </div>
     @endif
 
-    <div class="search-container mb-4">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="buscar" class="form-control" placeholder="    Buscar por CCT o Nombre...">
+    <div class="position-relative mb-4">
+        <i class="fas fa-search position-absolute" style="top: 50%; left: 15px; transform: translateY(-50%); color: var(--color-vino-primario);"></i>
+        <input type="text" id="buscar" class="form-control ps-5" placeholder="Buscar por CCT o Nombre...">
     </div>
 
     <div id="resultados">

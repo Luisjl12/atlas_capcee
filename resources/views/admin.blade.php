@@ -2,11 +2,15 @@
 @section('content')
 <!--Vista del dashboard del admistrador -->
 
-<div class="dashboard-welcome card-header-custom">
-    <h2><i class="fas fa-tachometer-alt"></i> Panel Principal</h2>
+<div class="container mt-4">
+
+    <div class="dashboard-welcome card-header-custom">
+        <h2><i class="fas fa-tachometer-alt"></i> Panel Principal</h2>
+    </div>
 </div>
 
-<div class="card-body-custom">
+<div class="container mt-4">
+
     <p class="lead">¡Bienvenido,<strong> {{ session('nombre_completo') }}!</strong></p>
     <p>Has iniciado sesión como <strong>ADMINISTRADOR</strong></p>
     <hr>

@@ -177,3 +177,11 @@ Route::get('/reportes/estatus-plantel', [ReporteController::class, 'reporteEstat
 Route::get('/reportes/estatus-plantel/csv', [ReporteController::class, 'exportarEstatusCSV'])->name('reportes.estatus.csv');
 //Ruta para generar pdf para reportes segun el estatus
 Route::get('/reportes/estatus-plantel/pdf', [ReporteController::class, 'exportarEstatusPDF'])->name('reportes.estatus.pdf');
+
+//Ruta para reportes segun la infraestructura
+Route::get('/reportes/infraestructura', [ReporteController::class, 'infraestructura'])->name('reportes.infraestructura');
+//Ruta para exportar a csv detalles de infraestructura
+Route::get('/reportes/infraestructura/exportar', [ReporteController::class, 'exportarInfraestructuraCSV'])
+    ->name('reportes.infraestructura.exportar');
+//Ruta para exportar a pdf detalle de infraestructura
+Route::get('reportes/infraestructura/pdf', [ReporteController::class, 'exportarInfraestructuraPDF'])->name('reportes.infraestructura.pdf');

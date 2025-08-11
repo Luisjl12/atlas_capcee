@@ -31,7 +31,7 @@
                             <i class="fas fa-eye"></i>
                         </a>
                         <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-sm btn-primary" title="Editar Ficha Base">
-                            <i class="fas fa-edit"></i>
+                            <i class="fas fa-pen"></i>
                         </a>
                         <button type="button" class="btn btn-sm btn-danger"
                             onclick="mostrarModalConfirmacion('¿Seguro que quieres eliminar a este plantel?', '{{ route('planteles.destroy', $plantel->id) }}')">
@@ -54,7 +54,12 @@
     @if(method_exists($planteles, 'links'))
     <nav class="pagination-container" aria-label="Navegación de páginas">
         <ul class="pagination">
-            {{ $planteles->links() }}
+            <li class="page-item ">
+
+                {{ $planteles->links('vendor.pagination.mi_paginacion') }}
+
+
+            </li>
         </ul>
     </nav>
     @endif

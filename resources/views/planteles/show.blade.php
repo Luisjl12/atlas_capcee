@@ -4,6 +4,7 @@
 
 
 @section('content')
+
 <div class="container mt-4">
     <div class="card-header bg-white border-bottom mb-4">
         <a href="{{ route('planteles.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
@@ -95,15 +96,24 @@
                         <tr>
                             <td>{{ $espacio->nombre_espacio }}</td>
                             <td>{{ $espacio->cantidad }}</td>
-                            <td>{{ ucwords(str_replace('_', ' ', strtolower($espacio->estado_conservacion))) }}</td>
+                            <td>
+                                <span class="badge status-{{ ucwords(str_replace('_', ' ', strtolower($espacio->estado_conservacion))) }}">
+                                    {{($espacio->estado_conservacion)}}
+                                </span>
+                            </td>
+
 
                             <td>
                                 <form action="{{ route('espacios.destroy', $espacio->id) }}" method="POST" style="display:inline;">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este espacio?')">
+
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                        onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este espacio?', '{{ route('espacios.destroy', $espacio->id) }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
+
+
                                 </form>
                             </td>
                         </tr>
@@ -112,6 +122,7 @@
                 </table>
             </div>
             @endif
+
         </div>
 
 
@@ -255,7 +266,8 @@
                                 <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este archivo?');">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm">
+                                    <button type="button" class="btn btn-danger btn-sm"
+                                        onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este archivo?', '{{ route('archivos.destroy', $archivo->id) }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </form>
@@ -291,8 +303,11 @@
     </div>
 
 
+
+
     @push('scripts')
     @include('planteles.galeria.scripts')
+
     @endpush
     <script>
         document.addEventListener("DOMContentLoaded", function() {
@@ -375,6 +390,51 @@
             mostrarSeccion(0);
         });
     </script>
+    <!--Script para confirmar eliminacion-->
+    <script>
+        function mostrarModalConfirmacion(mensaje, url) {
+            document.getElementById("mensajeConfirmacion").innerText = mensaje;
+            document.getElementById("btnEliminar").onclick = function() {
+                // Crear un formulario dinámicamente para enviar el método DELETE
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = url;
 
+                const token = document.createElement('input');
+                token.type = 'hidden';
+                token.name = '_token';
+                token.value = '{{ csrf_token() }}';
+
+                const method = document.createElement('input');
+                method.type = 'hidden';
+                method.name = '_method';
+                method.value = 'DELETE';
+
+                form.appendChild(token);
+                form.appendChild(method);
+                document.body.appendChild(form);
+                form.submit();
+            };
+
+            document.getElementById("modalConfirmacion").style.display = "flex";
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("btnCancelar").addEventListener("click", function() {
+                document.getElementById("modalConfirmacion").style.display = "none";
+            });
+        });
+    </script>
 
     @endsection
+    <!--Modal para confirmación-->
+    <div id="modalConfirmacion" class="modal-overlay" style="display:none;">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-triangle"></i> Confirmación</h3>
+            <p id="mensajeConfirmacion">¿Estás seguro de continuar?</p>
+            <div class="modal-actions">
+                <button id="btnCancelar" class="btn-cancelar">Cancelar</button>
+                <a id="btnEliminar" class="btn btn-danger">Eliminar</a>
+            </div>
+        </div>
+    </div>

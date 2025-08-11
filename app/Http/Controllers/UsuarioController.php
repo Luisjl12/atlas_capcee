@@ -12,7 +12,7 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        $usuarios = Usuario::with('rol')->get();
+        $usuarios = Usuario::with('rol')->paginate(10);
         return view('gestion_usuarios', compact('usuarios'));
     }
     //Controlador para buscar usuarios registrado mediante su nombre o su correo electronico

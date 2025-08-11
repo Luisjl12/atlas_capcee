@@ -15,11 +15,15 @@
 @includeIf('usuarios.partials.searcher')
 @includeIf('usuarios.partials.modal_eliminar')
 
+
+
 <div class="container mt-4">
+
+    {{-- Encabezado con botón de regreso y agregar --}}
     <div class="card-header-custom d-flex justify-content-between align-items-center mb-3">
-        <a href="{{route('dashboard.admin')}}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+        <a href="{{ route('dashboard.admin') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
             <h4 class="mb-4">
-                <i class="fas fa-arrow-left "></i>
+                <i class="fas fa-arrow-left"></i>
                 <i class="fas fa-users-cog me-2"></i> Gestión de Usuarios
             </h4>
         </a>
@@ -28,17 +32,25 @@
         </a>
     </div>
 
-    {{-- Buscador con diseño --}}
-    <div class="search-container mb-4">
-        <i class="fas fa-search search-icon"></i>
-        <input type="text" id="buscar" class="form-control" placeholder="    Buscar usuario por nombre o correo...">
+    {{-- Mensaje de éxito --}}
+    @if(session('success'))
+    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+        <strong>¡Éxito!</strong> {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+    </div>
+    @endif
+
+    {{-- Buscador --}}
+    <div class="position-relative mt-3">
+        <i class="fas fa-search position-absolute" style="top: 50%; left: 15px; transform: translateY(-50%); color: var(--color-vino-primario);"></i>
+        <input type="text" id="buscar" class="form-control ps-5" placeholder="Buscar usuario por nombre o correo...">
     </div>
 
-
-    {{-- Contenedor que será reemplazado vía AJAX --}}
+    {{-- Contenedor dinámico --}}
     <div id="tabla-usuarios">
         @include('partials.tabla_usuarios', ['usuarios' => $usuarios])
     </div>
+
 </div>
 
 <!--Modal para confirmación-->
