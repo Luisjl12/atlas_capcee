@@ -17,6 +17,7 @@ use App\Http\Controllers\PlantelController;
 use App\Http\Controllers\DetalleProteccionCivilController;
 use App\Http\Controllers\GaleriaFotoController;
 use App\Http\Controllers\ReporteController;
+use App\Http\Controllers\BusquedaController;
 
 
 //Rutas para ver y acceder al login, accion del logout
@@ -185,3 +186,7 @@ Route::get('/reportes/infraestructura/exportar', [ReporteController::class, 'exp
     ->name('reportes.infraestructura.exportar');
 //Ruta para exportar a pdf detalle de infraestructura
 Route::get('reportes/infraestructura/pdf', [ReporteController::class, 'exportarInfraestructuraPDF'])->name('reportes.infraestructura.pdf');
+
+
+//Ruta para el buscador avanzado
+Route::get('/busqueda-avanzada', [BusquedaController::class, 'index'])->name('busqueda.avanzada');

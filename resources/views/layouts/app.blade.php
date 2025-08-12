@@ -55,7 +55,6 @@
 
     {{-- Pie de página --}}
     <footer class="main-footer text-center text-muted py-3">
-
         © 2025 ATLAS DE PUEBLA. Todos los derechos reservados.
     </footer>
 

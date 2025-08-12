@@ -30,7 +30,12 @@
                     <i class="fas fa-user-edit"></i> Mi Perfil
                 </a>
                 <a href="{{route('reportes.index')}}" class="accion-card yellow">
-                    <i class="fas fa-chart-bar"></i>Gestión de reportes
+                    <i class="fas fa-chart-bar"></i> Gestión de reportes
+                </a>
+            </div>
+            <div class="columna-acciones">
+                <a href="{{route('busqueda.avanzada')}}" class="accion-card green">
+                    <i class="fas fa-search"></i> Buscador Avanzado
                 </a>
             </div>
         </div>
