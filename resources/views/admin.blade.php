@@ -37,6 +37,9 @@
                 <a href="{{route('busqueda.avanzada')}}" class="accion-card green">
                     <i class="fas fa-search"></i> Buscador Avanzado
                 </a>
+                <a href="{{route('panel.supervision')}}" class="accion-card yellow">
+                    <i class="fas fa-tasks"></i> Panel de Supervisión
+                </a>
             </div>
         </div>
     </nav>

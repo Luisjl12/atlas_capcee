@@ -18,6 +18,7 @@ use App\Http\Controllers\DetalleProteccionCivilController;
 use App\Http\Controllers\GaleriaFotoController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\BusquedaController;
+use App\Http\Controllers\SupervicionController;
 
 
 //Rutas para ver y acceder al login, accion del logout
@@ -190,3 +191,9 @@ Route::get('reportes/infraestructura/pdf', [ReporteController::class, 'exportarI
 
 //Ruta para el buscador avanzado
 Route::get('/busqueda-avanzada', [BusquedaController::class, 'index'])->name('busqueda.avanzada');
+
+
+//Ruta para seccion de panel de supervicion 
+Route::get('/panel-supervision', [SupervicionController::class, 'index'])->name('panel.supervision');
+//Ruta para la accion de "ver" en el panel de supervicion
+Route::get('/panel-supervision/show/{id}', [SupervicionController::class, 'show'])->name('supervision.show');
