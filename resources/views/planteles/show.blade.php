@@ -309,54 +309,10 @@
     @include('planteles.galeria.scripts')
 
     @endpush
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const tipoSelect = document.getElementById("tipo_documento");
-            const otroTipoContainer = document.getElementById("otro_tipo_container");
+    <!--Script para elegir tipo de documento-->
+    <script src="{{ asset('js/documento_tipo.js') }}"></script>
 
-            tipoSelect.addEventListener("change", function() {
-                if (this.value === "Otro") {
-                    otroTipoContainer.classList.remove("d-none");
-                    document.getElementById("otro_tipo").setAttribute("required", true);
-                } else {
-                    otroTipoContainer.classList.add("d-none");
-                    document.getElementById("otro_tipo").removeAttribute("required");
-                }
-            });
-        });
-    </script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const secciones = document.querySelectorAll('.step-section');
-            const pestañas = document.querySelectorAll('.nav-tab');
-
-            function mostrarSeccion(numero) {
-                for (let i = 0; i < secciones.length; i++) {
-                    if (i === numero) {
-                        secciones[i].classList.add('active');
-                    } else {
-                        secciones[i].classList.remove('active');
-                    }
-                }
-
-                for (let i = 0; i < pestañas.length; i++) {
-                    if (i === numero) {
-                        pestañas[i].classList.add('active');
-                    } else {
-                        pestañas[i].classList.remove('active');
-                    }
-                }
-            }
-
-            // Cuando se hace clic en alguna pestaña
-            for (let i = 0; i < pestañas.length; i++) {
-                pestañas[i].addEventListener('click', function() {
-                    mostrarSeccion(i);
-                });
-            }
-            mostrarSeccion(0);
-        });
-    </script>
+    <!--Script para paginacion de navs o pestañas-->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const secciones = document.querySelectorAll('.step-section');
@@ -364,67 +320,36 @@
 
             function mostrarSeccion(numero) {
                 secciones.forEach((seccion, i) => {
-                    if (i === numero) {
-                        seccion.classList.remove('d-none');
-                    } else {
-                        seccion.classList.add('d-none');
-                    }
+                    seccion.classList.toggle('active', i === numero);
+                    seccion.classList.toggle('d-none', i !== numero);
                 });
 
                 pestañas.forEach((pestana, i) => {
-                    if (i === numero) {
-                        pestana.classList.add('active');
-                    } else {
-                        pestana.classList.remove('active');
-                    }
+                    pestana.classList.toggle('active', i === numero);
                 });
+
+                // Guardar el paso activo
+                localStorage.setItem('pasoActivo', numero);
             }
 
+            // Recuperar el paso guardado o usar 0 por defecto
+            const pasoGuardado = parseInt(localStorage.getItem('pasoActivo')) || 0;
+            mostrarSeccion(pasoGuardado);
+
+            // Asignar eventos a las pestañas
             pestañas.forEach((pestana, i) => {
                 pestana.addEventListener('click', () => {
                     mostrarSeccion(i);
                 });
             });
-
-            // Mostrar la primera al cargar
-            mostrarSeccion(0);
         });
     </script>
+
     <!--Script para confirmar eliminacion-->
     <script>
-        function mostrarModalConfirmacion(mensaje, url) {
-            document.getElementById("mensajeConfirmacion").innerText = mensaje;
-            document.getElementById("btnEliminar").onclick = function() {
-                // Crear un formulario dinámicamente para enviar el método DELETE
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = url;
-
-                const token = document.createElement('input');
-                token.type = 'hidden';
-                token.name = '_token';
-                token.value = '{{ csrf_token() }}';
-
-                const method = document.createElement('input');
-                method.type = 'hidden';
-                method.name = '_method';
-                method.value = 'DELETE';
-
-                form.appendChild(token);
-                form.appendChild(method);
-                document.body.appendChild(form);
-                form.submit();
-            };
-
-            document.getElementById("modalConfirmacion").style.display = "flex";
-        }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            document.getElementById("btnCancelar").addEventListener("click", function() {
-                document.getElementById("modalConfirmacion").style.display = "none";
-            });
-        });
+        const CSRF_TOKEN = "{{ csrf_token() }}";
     </script>
+    <script src="{{ asset('js/modal-confirmacion.js') }}"></script>
 
     @endsection
     <!--Modal para confirmación-->

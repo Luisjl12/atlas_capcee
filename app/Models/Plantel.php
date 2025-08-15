@@ -39,6 +39,7 @@ class Plantel extends Model
         'total_administrativos',
         'estatus_plantel',
 
+
     ];
 
     public function municipio()

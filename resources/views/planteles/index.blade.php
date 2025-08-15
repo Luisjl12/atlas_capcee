@@ -53,65 +53,24 @@
 
 @push('scripts')
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    document.getElementById('buscar').addEventListener('keyup', function() {
-        const buscar = this.value;
-
-        fetch(`{{ route('planteles.buscar') }}?buscar=${encodeURIComponent(buscar)}`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('resultados').innerHTML = data.html;
-            })
-            .catch(error => console.error('Error en la búsqueda:', error));
-    });
-</script>
 
 <script>
-    function mostrarModalConfirmacion(mensaje, url) {
-        document.getElementById("mensajeConfirmacion").innerText = mensaje;
-        document.getElementById("btnEliminar").onclick = function() {
-            // Crear un formulario dinámicamente para enviar el método DELETE
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = url;
-
-            const token = document.createElement('input');
-            token.type = 'hidden';
-            token.name = '_token';
-            token.value = '{{ csrf_token() }}';
-
-            const method = document.createElement('input');
-            method.type = 'hidden';
-            method.name = '_method';
-            method.value = 'DELETE';
-
-            form.appendChild(token);
-            form.appendChild(method);
-            document.body.appendChild(form);
-            form.submit();
-        };
-
-        document.getElementById("modalConfirmacion").style.display = "flex";
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-        document.getElementById("btnCancelar").addEventListener("click", function() {
-            document.getElementById("modalConfirmacion").style.display = "none";
-        });
-    });
+    const RUTA_BUSCAR_PLANTELES = "{{ route('planteles.buscar') }}";
 </script>
+<script src="{{ asset('js/buscador_planteles.js') }}"></script>
+
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const filas = document.querySelectorAll('.fila-usuario');
-        filas.forEach(fila => {
-            fila.addEventListener('click', function() {
-                fila.classList.toggle('activa');
-            });
-        });
-
-    });
+    const CSRF_TOKEN = "{{ csrf_token() }}";
 </script>
+<script src="{{ asset('js/modal-confirmacion.js') }}"></script>
 
+<!--Script para menu expandible-->
+<script src="{{ asset('js/tabla-expandible.js') }}"></script>
+
+<!--Limpia los datos de la accion "ver"-->
+<script>
+    localStorage.removeItem('pasoActivo');
+</script>
 
 @endpush

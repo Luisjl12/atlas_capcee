@@ -33,7 +33,10 @@ class SupervicionController extends Controller
         $planteles = Plantel::where('id_corde', $id)
             ->select('cct', 'nombre_escuela', 'porcentaje_avance_captura', 'fecha_ultima_actualizacion_general')
             ->get();
-
-        return view('panel_supervision.detalle', compact('corde', 'planteles'));
+        $labels_grafica = $planteles->pluck('cct')->toArray();
+        $data_grafica = $planteles->pluck('porcentaje_avance_captura')->map(function ($valor) {
+            return round($valor, 2);
+        })->toArray();
+        return view('panel_supervision.detalle', compact('corde', 'planteles', 'labels_grafica', 'data_grafica'));
     }
 }

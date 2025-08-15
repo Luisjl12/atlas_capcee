@@ -6,7 +6,12 @@
     <main class="main-container">
         <div class="container mt-4">
             <div class="card-header-custom">
-                <h2><i class="fas fa-tasks"></i> Panel de Supervisión</h2>
+                <a href="{{route('dashboard.admin')}}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+                    <h4>
+                        <i class="fas fa-arrow-left "></i>
+                        <i class="fas fa-tasks"></i> Panel de Supervisión
+                    </h4>
+                </a>
             </div>
             <div class="card-body-custom p-4">
                 <p>A continuación se muestra el resumen del avance de captura de información por cada CORDE.</p>

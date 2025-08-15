@@ -332,38 +332,8 @@
 </div>
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const secciones = document.querySelectorAll('.step-section');
-        const pestañas = document.querySelectorAll('.nav-tab');
 
-        function mostrarSeccion(numero) {
-            for (let i = 0; i < secciones.length; i++) {
-                if (i === numero) {
-                    secciones[i].classList.add('active');
-                } else {
-                    secciones[i].classList.remove('active');
-                }
-            }
-
-            for (let i = 0; i < pestañas.length; i++) {
-                if (i === numero) {
-                    pestañas[i].classList.add('active');
-                } else {
-                    pestañas[i].classList.remove('active');
-                }
-            }
-        }
-
-        // Cuando se hace clic en alguna pestaña
-        for (let i = 0; i < pestañas.length; i++) {
-            pestañas[i].addEventListener('click', function() {
-                mostrarSeccion(i);
-            });
-        }
-        mostrarSeccion(0);
-    });
-</script>
+<!--Navegacion por pestañas nav-->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const secciones = document.querySelectorAll('.step-section');
@@ -371,109 +341,38 @@
 
         function mostrarSeccion(numero) {
             secciones.forEach((seccion, i) => {
-                if (i === numero) {
-                    seccion.classList.remove('d-none');
-                } else {
-                    seccion.classList.add('d-none');
-                }
+                seccion.classList.toggle('active', i === numero);
+                seccion.classList.toggle('d-none', i !== numero);
             });
 
             pestañas.forEach((pestana, i) => {
-                if (i === numero) {
-                    pestana.classList.add('active');
-                } else {
-                    pestana.classList.remove('active');
-                }
+                pestana.classList.toggle('active', i === numero);
             });
+
+            // Guardar el paso activo
+            localStorage.setItem('pasoActivo', numero);
         }
 
+        // Recuperar el paso guardado o usar 0 por defecto
+        const pasoGuardado = parseInt(localStorage.getItem('pasoActivo')) || 0;
+        mostrarSeccion(pasoGuardado);
+
+        // Asignar eventos a las pestañas
         pestañas.forEach((pestana, i) => {
             pestana.addEventListener('click', () => {
                 mostrarSeccion(i);
             });
         });
-
-        // Mostrar la primera al cargar
-        mostrarSeccion(0);
     });
 </script>
-<script>
-    function toggleInput(selectId, inputId) {
-        const select = document.getElementById(selectId);
-        const input = document.getElementById(inputId);
 
-        select.addEventListener("change", function() {
-            if (this.value === "nuevo") {
-                input.classList.remove("d-none");
-                input.required = true;
-            } else {
-                input.classList.add("d-none");
-                input.required = false;
-                input.value = '';
-            }
+<!--crear un nuevo muncipio y localidad-->
+<script src="{{ asset('js/ubicacion.js') }}"></script>
 
 
-            // Si se seleccionó un municipio, hacer solicitud AJAX para obtener localidades
-            if (selectId === "id_municipio" && this.value !== "" && this.value !== "nuevo") {
-                fetch(`/municipios/${this.value}/localidades`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const localidadSelect = document.getElementById("select_localidad");
-                        localidadSelect.innerHTML = '<option value="">Seleccione una localidad</option>';
-                        localidadSelect.disabled = false;
+<!--editar municipio-->
+<script src="{{ asset('js/editar_ubicacion.js') }}"></script>
 
-                        data.forEach(localidad => {
-                            const option = document.createElement("option");
-                            option.value = localidad.id;
-                            option.textContent = localidad.nombre_localidad;
-                            localidadSelect.appendChild(option);
-                        });
-                        const otroOption = document.createElement("option");
-                        otroOption.value = "nuevo";
-                        otroOption.textContent = "Otro...";
-                        localidadSelect.appendChild(otroOption);
-
-                    })
-                    .catch(error => console.error("Error al cargar localidades:", error));
-            }
-        });
-    }
-
-    // Aplica la función a cada combo
-    toggleInput("id_municipio", "input_nuevo_municipio");
-    toggleInput("select_localidad", "input_nuevo_localidad");
-    toggleInput("select_corde", "input_nuevo_corde");
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        const municipioSelect = document.getElementById("id_municipio");
-        const inputNuevoMunicipio = document.getElementById("input_nuevo_municipio");
-        const localidadSelect = document.getElementById("select_localidad");
-
-        function actualizarEstadoLocalidad() {
-            const seleccion = municipioSelect.value;
-
-            // Si seleccionó un municipio válido o seleccionó "nuevo" y escribió algo
-            const municipioValido = (
-                seleccion !== "" && seleccion !== "nuevo"
-            ) || (
-                seleccion === "nuevo" && inputNuevoMunicipio.value.trim() !== ""
-            );
-
-            // Habilita o deshabilita el select de localidad
-            localidadSelect.disabled = !municipioValido;
-        }
-
-        // Escucha cambios en el select de municipio
-        municipioSelect.addEventListener("change", actualizarEstadoLocalidad);
-
-        // Escucha cambios en el input de nuevo municipio
-        inputNuevoMunicipio.addEventListener("input", actualizarEstadoLocalidad);
-
-        // Ejecuta una vez al cargar
-        actualizarEstadoLocalidad();
-    });
-</script>
 @endpush
 
 

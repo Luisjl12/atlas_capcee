@@ -3,8 +3,18 @@
 @section('content')
 <div class="container mt-4">
     <div class="card-header-custom">
-        <h2><i class="fas fa-chart-line"></i> Detalle de Supervisión: CORDE {{ $corde->nombre_corde }}</h2>
-
+        <a href="{{route('panel.supervision')}}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+            <h4>
+                <i class="fas fa-arrow-left "></i>
+                <i class="fas fa-chart-line"></i> Detalle de Supervisión: CORDE {{ $corde->nombre_corde }}
+            </h4>
+        </a>
+    </div>
+    <div class="card-body-custom p-4 mt-3">
+        <h6>Gráfica de Avance por Plantel </h6>
+        <div class="chart-container">
+            <canvas id="graficaAvanceCorde"></canvas>
+        </div>
     </div>
     <table class="table table-hover data-table">
         <thead class="thead-custom">
@@ -20,7 +30,7 @@
             <tr>
                 <td>{{ $plantel->cct }}</td>
                 <td> {{ $plantel->nombre_escuela }}</td>
-                <td>{{ number_format($plantel->porcentaje_avance_captuta, 2) }}</td>
+                <td>{{ number_format($plantel->porcentaje_avance_captura, 2) }}</td>
                 <td>{{ \Carbon\Carbon::parse($plantel->fecha_ultima_actualizacion_general)->format('d/m/Y') }}</td>
             </tr>
             @empty
@@ -31,4 +41,67 @@
         </tbody>
     </table>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('graficaAvanceCorde')?.getContext('2d');
+        if (ctx) {
+            const labels = @json($labels_grafica);
+            const data = @json($data_grafica);
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: '% Avance',
+                        data: data,
+                        backgroundColor: 'rgba(154, 42, 42, 0.7)',
+                        borderColor: 'rgba(100, 30, 22, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'CCT del plantel',
+                                font: {
+                                    size: 14,
+                                    weight: 'bold'
+                                }
+                            }
+                        },
+
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            ticks: {
+                                callback: (v) => v + '%'
+                            },
+                            tittle: {
+                                display: true,
+                                text: 'Porcentaje de Avance'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: (c) => (c.dataset.label || '') + ': ' + c.parsed.y.toFixed(2) + '%'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    });
+</script>
+
 @endsection

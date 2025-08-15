@@ -5,8 +5,13 @@
 @section('content')
 
 <div class="container mt-4">
-    <div class="card-header ">
-        <h4><i class="fas fa-search"></i><strong> Buscador Avanzado de Planteles</strong></h4>
+    <div class="card-header-custom">
+        <a href="{{route('dashboard.admin')}}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+            <h4>
+                <i class="fas fa-arrow-left "></i>
+                <i class="fas fa-search"></i><strong> Buscador Avanzado de Planteles</strong>
+            </h4>
+        </a>
     </div>
     <div class="card">
         <div class="card-body">
@@ -101,10 +106,7 @@
 @endsection
 
 @push('scripts')
-<script>
-    document.getElementById("toggleFiltros").addEventListener("click", function() {
-        const panel = document.getElementById("panelFiltros");
-        panel.style.display = (panel.style.display === "none" || panel.style.display === "") ? "block" : "none";
-    });
-</script>
+
+<script src="{{ asset('js/filtro.js') }}"></script>
+
 @endpush

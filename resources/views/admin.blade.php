@@ -26,19 +26,20 @@
                 </a>
             </div>
             <div class="columna-acciones">
-                <a href="{{route('perfil')}}" class="accion-card green">
-                    <i class="fas fa-user-edit"></i> Mi Perfil
-                </a>
+
                 <a href="{{route('reportes.index')}}" class="accion-card yellow">
                     <i class="fas fa-chart-bar"></i> Gestión de reportes
+                </a>
+                <a href="{{route('panel.supervision')}}" class="accion-card yellow">
+                    <i class="fas fa-tasks"></i> Panel de Supervisión
                 </a>
             </div>
             <div class="columna-acciones">
                 <a href="{{route('busqueda.avanzada')}}" class="accion-card green">
                     <i class="fas fa-search"></i> Buscador Avanzado
                 </a>
-                <a href="{{route('panel.supervision')}}" class="accion-card yellow">
-                    <i class="fas fa-tasks"></i> Panel de Supervisión
+                <a href="{{route('perfil')}}" class="accion-card green">
+                    <i class="fas fa-user-edit"></i> Mi Perfil
                 </a>
             </div>
         </div>
