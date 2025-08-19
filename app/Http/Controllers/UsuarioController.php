@@ -82,7 +82,7 @@ class UsuarioController extends Controller
             'telefono_contacto' => 'required|string|max:20',
             'role_id' => 'required|exists:roles,id',
             'estado' => 'required|in:ACTIVO, INACTIVO',
-            'password' => 'nullable|string||min:6',
+            'password' => 'nullable|string|min:6',
         ]);
 
         $datos = ([

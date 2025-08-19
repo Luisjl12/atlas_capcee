@@ -32,13 +32,7 @@
         </a>
     </div>
 
-    {{-- Mensaje de éxito --}}
-    @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        <strong>¡Éxito!</strong> {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-    </div>
-    @endif
+
 
     {{-- Buscador --}}
     <div class="position-relative mt-3">
@@ -50,6 +44,19 @@
     <div id="tabla-usuarios">
         @include('partials.tabla_usuarios', ['usuarios' => $usuarios])
     </div>
+
+    @if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+    @endif
+
+    @if (session('error'))
+    <div class="alert alert-danger">
+        {{ session('error') }}
+    </div>
+    @endif
+
 
 </div>
 
