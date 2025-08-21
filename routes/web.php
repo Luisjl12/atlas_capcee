@@ -19,7 +19,7 @@ use App\Http\Controllers\GaleriaFotoController;
 use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\BusquedaController;
 use App\Http\Controllers\SupervicionController;
-
+use App\Http\Controllers\ImportarDatosController;
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -197,3 +197,9 @@ Route::get('/busqueda-avanzada', [BusquedaController::class, 'index'])->name('bu
 Route::get('/panel-supervision', [SupervicionController::class, 'index'])->name('panel.supervision');
 //Ruta para la accion de "ver" en el panel de supervicion
 Route::get('/panel-supervision/show/{id}', [SupervicionController::class, 'show'])->name('supervision.show');
+
+
+//Ruta para la seccion de importar datos
+Route::get('/importar-datos', [ImportarDatosController::class, 'index'])->name('importarDatos.show');
+//Ruta para importar los archivos 
+Route::post('/importar-archivos', [ImportarDatosController::class, 'store'])->name('importarDatos.store');

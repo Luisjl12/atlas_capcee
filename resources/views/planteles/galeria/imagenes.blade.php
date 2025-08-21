@@ -3,14 +3,15 @@
     <div class="col-md-3 mb-4 position-relative">
         <div class="card shadow-sm rounded">
             {{-- Botón de eliminar --}}
-            <form action="{{ route('galeria.destroy', $foto->id) }}" method="POST" class="position-absolute top-0 end-0 m-1">
+            <form action="{{ route('galeria.destroy', $foto->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar esta foto?');">
                 @csrf
                 @method('DELETE')
-                <button type="submit" class="btn btn-sm btn-danger"
-                    onclick="return confirm('¿Estás seguro de que deseas eliminar esta foto?')">
-                    &times;
+                <button type="button" class="btn btn-danger btn-sm"
+                    onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar esta foto?', '{{ route('galeria.destroy', $foto->id) }}')">
+                    <i class="fas fa-trash"></i>
                 </button>
             </form>
+
 
             @php
 

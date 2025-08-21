@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <!--Vista del dashboard del admistrador -->
-
+<!--Cabecera y footers estan el layout-->
 <div class="container mt-4">
 
     <div class="dashboard-welcome card-header-custom">
@@ -32,6 +32,9 @@
                 </a>
                 <a href="{{route('panel.supervision')}}" class="accion-card yellow">
                     <i class="fas fa-tasks"></i> Panel de Supervisión
+                </a>
+                <a href="{{route('importarDatos.show')}}" class="accion-card green">
+                    <i class="fas fa-upload"></i> Importar Datos
                 </a>
             </div>
             <div class="columna-acciones">

@@ -5,6 +5,7 @@
 
 @section('content')
 
+
 <div class="container mt-4">
     <div class="card-header bg-white border-bottom mb-4">
         <a href="{{ route('planteles.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
@@ -25,6 +26,18 @@
         <span class="nav-tab" data-step="4">Archivos</span>
         <span class="nav-tab" data-step="5">Galerias</span>
     </div>
+
+    @if (session('success'))
+    <div class="alert alert-success">
+        {{session('success')}}
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="alert alert-danger">
+        {{session('error')}}
+    </div>
+    @endif
 
 
     <!-- Ficha Base -->
@@ -301,9 +314,6 @@
             @endif
         </div>
     </div>
-
-
-
 
     @push('scripts')
     @include('planteles.galeria.scripts')
