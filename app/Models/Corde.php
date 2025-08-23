@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Corde extends Model
 {
     protected $table = 'cordes';
+    protected $fillable = ['nombre_corde'];
 
     public function planteles()
     {
