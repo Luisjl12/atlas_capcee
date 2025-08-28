@@ -153,6 +153,8 @@ Route::get('/planteles/{id}', [ArchivoPlantelController::class, 'show'])->name('
 Route::get('/archivos/{archivo}/descargar', [ArchivoPlantelController::class, 'descargar'])->name('archivos.descargar');
 //Eliminar achivo
 Route::delete('/archivods{id}', [ArchivoPlantelController::class, 'destroy'])->name('archivos.destroy');
+//Ruta para visualizar archivo 
+Route::get('/archivos-plantel/{id}/visualizar', [ArchivoPlantelController::class, 'visualizar'])->name('archivos-plantel.visualizar');
 
 //Rutas para acceder a la galeria de fotos
 Route::get('/planteles/{cct}/galeria', [GaleriaFotoController::class, 'create'])->name('galeria.fotos');

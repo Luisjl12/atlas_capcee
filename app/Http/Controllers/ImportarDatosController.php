@@ -6,6 +6,7 @@ use App\Models\ArchivosPlantel;
 use App\Models\Plantel;
 use App\Models\Municipio;
 use App\Models\Corde;
+use App\Models\Localidad;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -101,10 +102,35 @@ class ImportarDatosController extends Controller
             $nombreMunicipio = ucwords(strtolower(trim($datos['NOMBRE_MUNICIPIO'] ?? '')));
             $nombreCorde = ucwords(strtolower(trim($datos['NOMBRE_CORDE'] ?? '')));
 
+            //Localidad/no obligatorio 
+            $nombreLocalidad = ucwords(strtolower(trim($datos['NOMBRE_LOCALIDAD'] ?? '')));
+
             // Normalizar campos opcionales
             $nivelRaw = strtolower(trim($datos['NIVEL_EDUCATIVO'] ?? ''));
             $turnoRaw = strtolower(trim($datos['TURNO'] ?? ''));
             $sostenimientoRaw = strtolower(trim($datos['SOSTENIMIENTO'] ?? ''));
+
+            $rampasRaw = strtolower(trim($datos['RAMPAS'] ?? ''));
+            $accesibilidadRampas = match ($rampasRaw) {
+                'si' => 1,
+                'no' => 0,
+                default => 0,
+            };
+
+            $banosAdaptadosRaw = strtolower(trim($datos['BANOS_ADAPTADOS'] ?? ''));
+            $accesibilidadBanosAdaptados = match ($banosAdaptadosRaw) {
+                'si' => 1,
+                'no' => 0,
+                default => 0,
+            };
+
+            $senaleticaBraileRaw = strtolower(trim($datos['SANALETICA_BRAILE'] ?? ''));
+            $accesibilidadSenaleticaBraile = match ($senaleticaBraileRaw) {
+                'si' => 1,
+                'no' => 0,
+                default => 0,
+            };
+
 
             $nivelEductivo = $nivelMap[$nivelRaw] ?? null;
             $turno = $turnoMap[$turnoRaw] ?? null;
@@ -125,6 +151,9 @@ class ImportarDatosController extends Controller
             $totalAlumnos = trim($datos['TOTAL_ALUMNOS'] ?? '');
             $totalDocentes = trim($datos['TOTAL_DOCENTES'] ?? '');
             $totalAdministrativos = trim($datos['TOTAL_ADMINISTRATIVOS'] ?? '');
+
+            //Comentarios en accesibilidad 
+            $AccesibilidadOtros = trim($datos['OTROS_ACCESIBILIDAD'] ?? '');
 
 
 
@@ -168,9 +197,31 @@ class ImportarDatosController extends Controller
                 continue;
             }
 
+            if ($rampasRaw && !in_array($rampasRaw, ['si', 'no'])) {
+                $errores[] = "Línea " . ($index + 1) . ": valor inválido en RAMPAS: '$rampasRaw'. Solo se permite 'si' o 'no'.";
+                continue;
+            }
+
+            if ($banosAdaptadosRaw && !in_array($banosAdaptadosRaw, ['si', 'no'])) {
+                $errores[] = "Linea " . ($index + 1) . ": valor invalido en baños adaptados '$banosAdaptadosRaw'. Solo se permite 'si' o 'no'.";
+                continue;
+            }
+
+            if ($senaleticaBraileRaw && !in_array($senaleticaBraileRaw, ['si', 'no'])) {
+                $errores[] = "Linea " . ($index + 1) . ": valor invalido en señaletica braile '$senaleticaBraileRaw'. Solo se permite 'si' o 'no'.";
+                continue;
+            }
+
+
 
             // Buscar o crear municipio y corde
             $municipio = Municipio::firstOrCreate(['nombre_municipio' => $nombreMunicipio]);
+
+            //Buscar o crear localidad 
+            $localidad = Localidad::firstOrCreate([
+                'nombre_localidad' => $nombreLocalidad,
+                'municipio_id' => $municipio->id,
+            ]);
 
 
             // Crear o actualizar plantel
@@ -194,7 +245,11 @@ class ImportarDatosController extends Controller
                     'total_alumnos' => is_numeric($totalAlumnos) ? intval($totalAlumnos) : 0,
                     'total_docentes' => is_numeric($totalDocentes) ? intval($totalDocentes) : 0,
                     'total_administrativos' => is_numeric($totalAdministrativos) ? intval($totalAdministrativos) : 0,
-
+                    'id_localidad' => $localidad->id,
+                    'accesibilidad_rampas' => $accesibilidadRampas,
+                    'accesibilidad_banos_adaptados' => $accesibilidadBanosAdaptados,
+                    'accesibilidad_sanaletica_braille' => $accesibilidadSenaleticaBraile,
+                    'accesibilidad_otros' => $AccesibilidadOtros,
                 ]
             );
 
@@ -209,6 +264,14 @@ class ImportarDatosController extends Controller
         $tipoDocumento = $request->tipo_documento === 'Otro'
             ? $request->otro_tipo
             : $request->tipo_documento;
+
+        $cctArchivo = trim($csv[1][array_search('CCT', $encabezados)] ?? '');
+
+        if (empty($cctArchivo)) {
+            return redirect()->back()->withErrors([
+                'archivo' => 'No se puede registrar el archivo porque el campo CCT está vacío en la primera fila.'
+            ]);
+        }
 
         ArchivosPlantel::create([
             'cct' => $csv[1][array_search('CCT', $encabezados)],

@@ -20,6 +20,7 @@ class ArchivoPlantelController extends Controller
         ]);
 
         $archivo = $request->file('archivo');
+        $mimeType = $archivo->getClientMimeType();
 
         $nombreOriginal = $archivo->getClientOriginalName();
         $tipoDocumento = $request->tipo_documento === 'Otro'
@@ -29,7 +30,7 @@ class ArchivoPlantelController extends Controller
         $tamano = $archivo->getSize();
         $nombreSistema = uniqid() . '_' . $nombreOriginal;
 
-        $ruta = $archivo->storeAs('public/archivos_plantel', $nombreSistema);
+        $ruta = $archivo->storeAs('archivos_plantel', $nombreSistema, 'public');
 
         ArchivosPlantel::create([
             'cct' => $request->cct,
@@ -66,6 +67,26 @@ class ArchivoPlantelController extends Controller
 
         return Storage::download($archivo->ruta_archivo, $archivo->nombre_archivo_original);
     }
+
+    public function visualizar($id)
+    {
+
+        $archivo = ArchivosPlantel::findOrFail($id);
+        $ruta = Storage::disk('public')->path($archivo->ruta_archivo);
+        $visualizables = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif'];
+        $mime = mime_content_type($ruta);
+        $disposicion = in_array($mime, $visualizables) ? 'inline' : 'attachment';
+
+
+        if (!file_exists($ruta)) {
+            return redirect()->back()->with('error', 'Archivo no encontrado en el sistema');
+        }
+
+        return response()->file($ruta, [
+            'Content-Type' => $mime,
+            'Content-Disposition' => $disposicion . '; filename="' . $archivo->nombre_archivo_original . '"'
+        ]);
+    }
     public function destroy($id)
     {
         $archivo = ArchivosPlantel::findOrFail($id);
@@ -76,6 +97,6 @@ class ArchivoPlantelController extends Controller
 
         $archivo->delete();
 
-        return redirect()->back()->with('success', 'Archivo eliminador correctamente');
+        return redirect()->back()->with('success', 'Archivo eliminado correctamente');
     }
 }

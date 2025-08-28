@@ -4,6 +4,22 @@
 
 
 @section('content')
+@php
+function obtenerIconoArchivo($nombreArchivo) {
+$extension = strtolower(pathinfo($nombreArchivo, PATHINFO_EXTENSION));
+
+return match($extension) {
+'pdf' => ['fas fa-file-pdf', 'text-danger'],
+'doc', 'docx' => ['fas fa-file-word', 'text-primary'],
+'xls', 'xlsx' => ['fas fa-file-excel', 'text-success'],
+'jpg', 'jpeg', 'png', 'gif' => ['fas fa-file-image', 'text-warning'],
+'zip', 'rar' => ['fas fa-file-archive', 'text-muted'],
+'txt' => ['fas fa-file-alt', 'text-secondary'],
+default => ['fas fa-file', 'text-dark'],
+};
+}
+@endphp
+
 
 
 <div class="container mt-4">
@@ -215,7 +231,6 @@
         </div>
 
         <!--Archivos-->
-
         <div class="form-section step-section d-none" data-step="4">
             <h4>Gestor de Archivos</h4>
             <h5>Subir Nuevo Archivo
@@ -265,12 +280,34 @@
                         </thread>
                     <tbody>
                         @foreach($archivos as $archivo)
+                        @php
+                        $esImagen = Str::startsWith($archivo->mime_type, 'image/');
+                        @endphp
+
                         <tr>
                             <td>
-                                <a href="{{ route('archivos.descargar', $archivo->id) }}" style="text-decoration: none;">
-                                    <i class="fas fa-file-pdf text-danger"></i>
+                                @php [$icono, $color] = obtenerIconoArchivo($archivo->nombre_archivo_original); @endphp
+
+                                @if($esImagen)
+                                <a href="javascript:void(0);" onclick="verDetallesFoto(
+                                  '{{ e(Storage::url($archivo->ruta_archivo)) }}',
+                                 '{{ e($archivo->cct) }}',
+                                 '{{ e($plantel->nombre_escuela) }}',
+                                 '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
+                                 '{{ e($archivo->descripcion) }}',
+                                   '{{ e($archivo->fecha_subido) }}'
+                                    )" style="text-decoration: none;">
+                                    <i class="{{ $icono }} {{ $color }}"></i>
                                     {{ $archivo->nombre_archivo_original }}
                                 </a>
+                                @else
+                                <a href="{{ route('archivos-plantel.visualizar', $archivo->id) }}" target="_blank" style="text-decoration: none;">
+                                    <i class="{{ $icono }} {{ $color }}"></i>
+                                    {{ $archivo->nombre_archivo_original }}
+                                </a>
+                                @endif
+
+
                             </td>
                             <td>{{$archivo->tipo_documento}}</td>
                             <td>{{$archivo->descripcion}}</td>
@@ -298,10 +335,8 @@
 
         <div class="form-section step-section d-none" data-step="5">
             @include('planteles.galeria.formulario', ['plantel' => $plantel])
-
             @include('planteles.galeria.imagenes', ['fotos' => $fotos])
-
-            @include ('planteles.galeria.modal')
+            @include('planteles.galeria.modal')
 
             @if ($errors->any())
             <div class="alert alert-danger mt-3">
@@ -314,6 +349,7 @@
             @endif
         </div>
     </div>
+
 
     @push('scripts')
     @include('planteles.galeria.scripts')
@@ -354,6 +390,37 @@
             });
         });
     </script>
+    <!--Ver foto-->
+    <script>
+        function verDetallesFoto(src, cct, nombreEscuela, nombreUsuario, descripcion, fechaSubida) {
+            document.getElementById('modalFoto').src = src;
+            document.getElementById('modalCCT').innerText = cct;
+            document.getElementById('modalEscuela').innerText = nombreEscuela;
+            document.getElementById('modalUsuario').innerText = nombreUsuario;
+            document.getElementById('modalDescripcion').innerText = descripcion;
+            document.getElementById('modalFecha').innerText = fechaSubida;
+
+            const modalBootstrap = new bootstrap.Modal(document.getElementById('fotoModal'));
+            modalBootstrap.show();
+        }
+
+        function activarPantallaCompleta() {
+            const img = document.getElementById('modalFoto');
+            if (img.requestFullscreen) {
+                img.requestFullscreen();
+            } else if (img.webkitRequestFullscreen) {
+                img.webkitRequestFullscreen();
+            } else if (img.msRequestFullscreen) {
+                img.msRequestFullscreen();
+            }
+        }
+
+        document.addEventListener('fullscreenchange', () => {
+            const btn = document.querySelector('[onclick="activarPantallaCompleta()"]');
+            btn.style.display = document.fullscreenElement ? 'none' : 'block';
+        });
+    </script>
+
 
     <!--Script para confirmar eliminacion-->
     <script>
@@ -373,3 +440,34 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="fotoModal" tabindex="-1" aria-labelledby="fotoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-contenido">
+
+                {{-- Encabezado con botones --}}
+                {{-- Botón pantalla completa a la izquierda --}}
+                <button id="btnPantallaCompleta" class="btn btn-outline-light" onclick="togglePantallaCompleta()" title="Pantalla completa">
+                    <i id="iconPantallaCompleta" class="fas fa-expand"></i>
+                </button>
+
+                {{-- Botón cerrar a la derecha --}}
+                {{-- Botón cerrar personalizado --}}
+                <button class="cerrar-modal" onclick="cerrarModal()">✕</button>
+
+                {{-- Cuerpo del modal --}}
+                <div class="modal-body text-center">
+                    <img id="modalFoto" src="" class="img-fluid rounded shadow" style="max-height:80vh; object-fit:contain;">
+                    <hr class="bg-secondary">
+                    <p><strong>CCT:</strong> <span id="modalCCT"></span></p>
+                    <p><strong>Plantel:</strong> <span id="modalEscuela"></span></p>
+                    <p><strong>Subido por el usuario:</strong> <span id="modalUsuario"></span></p>
+                    <p><strong>Descripción:</strong> <span id="modalDescripcion"></span></p>
+                    <p><strong>Fecha de subida:</strong> <span id="modalFecha"></span></p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
