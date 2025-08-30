@@ -272,6 +272,7 @@ class PlantelController extends Controller
         return redirect()->route('planteles.index')->with('success', 'Plantel eliminado correctamente');
     }
 
+    //Editar proteccion civil
     public function editarProteccionCivil($id)
     {
         $plantel = Plantel::with('detalleProteccionCivil')->findOrFail($id);
@@ -283,7 +284,7 @@ class PlantelController extends Controller
         ];
         return view('planteles.edit_proteccionCivil', compact('plantel', 'estadosProteccionCivil'));
     }
-
+    //Guardar cambios en proteccion civil
     public function guardarProteccionCivil(Request $request, $cct)
     {
 
@@ -292,15 +293,23 @@ class PlantelController extends Controller
         $detalle = $plantel->detalleProteccionCivil;
 
         $data = $request->validate([
-            'programa_interno_pc' => 'required|boolean',
+            'programa_interno_pc' => 'nullable|boolean',
+            'alarma_sismica' => 'nullable|boolean',
+            'alarma_sismica_funcional' => 'nullable|boolean',
+            'brigadas_conformadas' => 'nullable|boolean',
+            'botiquin_existencia' => 'nullable|boolean',
+            'senaletica_estado' => 'required|string',
+            'extintores_cantidad' => 'required|integer|min:0',
+            'extintores_vigentes' => 'required|integer|min:0',   // ← corregido
+            'simulacros_ultimo_anio' => 'required|integer|min:0',
+            'extintores_ultima_recarga' => 'nullable|date',
             'programa_interno_pc_fecha' => 'nullable|date',
-            'alarma_sismica' => 'required|boolean',
-            'alarma_sismica_funcional' => 'required|boolean',
-            'senaletica_estado' => 'required',
-            'extintores_cantidad' => 'required|string|max:255',
-            'extintores_vigente' => 'required|boolean',
-            'brigadas_conformadas' => 'required|boolean',
+            'botiquin_estado' => 'nullable|string',
+            'simulacros_ultimo_anio' => 'nullable|integer|min:0',
+            'observaciones' => 'nullable|string|max:2000',
+
         ]);
+
 
         if (!$detalle) {
             $data['cct'] = $cct;
@@ -309,6 +318,8 @@ class PlantelController extends Controller
         } else {
             $detalle->update($data);
         }
+
+
         return redirect()->route('planteles.show', $plantel->id)->with('success', 'Proteccion civil guardada correctamente');
     }
 

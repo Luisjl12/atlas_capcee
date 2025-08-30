@@ -12,15 +12,18 @@ class DetalleProteccionCivil extends Model
     public $incrementing = false;
     protected $keyType = 'string';
     protected $fillable = [
-        'cct',
         'programa_interno_pc',
         'programa_interno_pc_fecha',
         'alarma_sismica',
         'alarma_sismica_funcional',
         'senaletica_estado',
         'extintores_cantidad',
-        'extintores_vigentes',
+        'extintores_vigentes',  // <-- asegurarse que esté aquí
+        'extintores_ultima_recarga',
         'brigadas_conformadas',
+        'observaciones',
+        'botiquin_existencia',
+        'simulacros_ultimo_anio',
     ];
 
     public function plantel()

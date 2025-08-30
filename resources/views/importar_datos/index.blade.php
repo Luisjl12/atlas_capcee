@@ -12,6 +12,12 @@
                     <i class="fas fa-file-upload"></i> Importar Datos
                 </h4>
             </a>
+            <a href="{{ asset('plantillas/guia_importar_datos.pdf') }}" download class="btn btn-danger">
+                <i class="fas fa-file-pdf"></i> Guia de Uso para Importar Datos
+            </a>
+            <a href="{{ asset('plantillas/plantilla_datos.csv') }}" download class="btn btn-success">
+                <i class="fas fa-file-excel"></i> Descargar Plantilla CSV
+            </a>
         </div>
         @if(session('success'))
         <div class="alert alert-success mt-3">
@@ -40,23 +46,23 @@
             </ul>
         </div>
         @endif
-
-
         <div class="card-body-custom p-4 mt-3">
             <p>Esta herramienta permite importar datos de planteles desde un archivo CSV. Asegúrese de que el archivo tenga los encabezados correctos:</p>
 
             <ul>
                 <li><strong>CCT</strong> (obligatorio)</li>
                 <li><strong>NOMBRE_ESCUELA</strong> (obligatorio)</li>
-                <li><strong>ID_MUNICIPIO</strong></li>
-                <li><strong>ID_CORDE</strong></li>
-            </ul>
-        </div>
+                <li><strong>NOMBRE MUNICIPIO</strong></li>
+                <li><strong>NOMBRE CORDE</strong></li>
 
+            </ul>
+
+        </div>
 
 
         <form action="{{ route('importarDatos.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
+
             <div class="form-group">
                 <label for="archivo">Seleccionar archivo CSV:</label>
                 <input type="file" name="archivo" id="archivo" class="form-control-file" required>

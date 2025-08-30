@@ -218,7 +218,7 @@ default => ['fas fa-file', 'text-dark'],
                 <div class="data-pair"><label>Alarma Funcional:</label> {{ $detalle->alarma_sismica_funcional ? 'Sí' : 'No' }}</div>
                 <div class="data-pair"><label>Señalética Estado:</label> {{ ucwords(str_replace('_', ' ', strtolower($detalle->senaletica_estado))) }}</div>
                 <div class="data-pair"><label># Extintores:</label> {{ $detalle->extintores_cantidad }}</div>
-                <div class="data-pair"><label>Extintores Vigentes:</label> {{ $detalle->extintores_vigente ? 'Sí' : 'No' }}</div>
+                <div class="data-pair"><label>Extintores Vigentes:</label> {{ $detalle->extintores_vigentes  }}</div>
                 <div class="data-pair"><label>Brigadas Conformadas:</label> {{ $detalle->brigadas_conformadas ? 'Sí' : 'No' }}</div>
             </div>
             @else

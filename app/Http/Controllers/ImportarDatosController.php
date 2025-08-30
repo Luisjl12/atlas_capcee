@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ImportarDatosController extends Controller
 {
@@ -23,32 +24,39 @@ class ImportarDatosController extends Controller
     {
         // Validación del archivo
         $request->validate([
-            'archivo' => 'required|file|mimes:csv,txt|max:10240',
+            'archivo' => 'required|file|mimes:csv,txt,xlsx,xls|max:10240',
         ]);
 
         // Datos del archivo
         $archivo = $request->file('archivo');
         $nombreOriginal = $archivo->getClientOriginalName();
         $nombreSistema = uniqid() . '_' . $nombreOriginal;
-        $ruta = $archivo->storeAs('public/archivos_plantel', $nombreSistema);
+        $ruta = $archivo->storeAs('archivos_plantel', $nombreSistema, 'public');
         $mimeType = $archivo->getClientMimeType();
         $tamano = $archivo->getSize();
 
         // Leer contenido CSV
-        $contenido = file_get_contents($archivo->getRealPath());
-        if (substr($contenido, 0, 3) === "\xEF\xBB\xBF") {
-            $contenido = substr($contenido, 3);
-        }
-        $contenido = mb_convert_encoding($contenido, 'UTF-8', 'auto');
-        $lineas = array_filter(explode(PHP_EOL, $contenido), fn($linea) => trim($linea) !== '');
-        $csv = array_map('str_getcsv', $lineas);
+        $extension = $archivo->getClientOriginalExtension();
 
-        if (empty($csv) || count($csv) < 2) {
+        if (in_array($extension, ['xlsx', 'xls'])) {
+            $data = Excel::toArray([], $archivo)[0]; // Primera hoja
+        } else {
+            $contenido = file_get_contents($archivo->getRealPath());
+            if (substr($contenido, 0, 3) === "\xEF\xBB\xBF") {
+                $contenido = substr($contenido, 3);
+            }
+            $contenido = mb_convert_encoding($contenido, 'UTF-8', 'auto');
+            $lineas = array_filter(explode(PHP_EOL, $contenido), fn($linea) => trim($linea) !== '');
+            $data = array_map('str_getcsv', $lineas);
+        }
+
+
+        if (empty($data) || count($data) < 2) {
             return redirect()->back()->withErrors(['archivo' => 'El archivo CSV está vacío o mal formado.']);
         }
 
         // Validar encabezados
-        $encabezados = $csv[0];
+        $encabezados = $data[0];
         $camposEsperados = ['CCT', 'NOMBRE_ESCUELA', 'NOMBRE_MUNICIPIO', 'NOMBRE_CORDE'];
         $faltantes = array_diff($camposEsperados, $encabezados);
 
@@ -62,6 +70,8 @@ class ImportarDatosController extends Controller
         $nivelesValidos = ['preescolar', 'primaria', 'secundaria', 'media superior', 'superior'];
         $turnosValidos = ['matutino', 'vespertino'];
         $sostenimientosValidos = ['federal', 'municipal', 'local', 'particular'];
+        $estatusValidos = ['activo', 'inactividad', 'en_revision'];
+        $estatusPorDefecto = 'en_revision';
 
         $nivelMap = [
             'preescolar' => 'preescolar',
@@ -93,7 +103,7 @@ class ImportarDatosController extends Controller
         $nuevos = [];
         $actualizados = [];
 
-        foreach ($csv as $index => $fila) {
+        foreach ($data as $index => $fila) {
             if ($index === 0) continue;
 
             $datos = array_combine($encabezados, $fila);
@@ -155,6 +165,10 @@ class ImportarDatosController extends Controller
             //Comentarios en accesibilidad 
             $AccesibilidadOtros = trim($datos['OTROS_ACCESIBILIDAD'] ?? '');
 
+            //Estatus
+            $estatusRaw = strtolower(trim($datos['ESTATUS'] ?? ''));
+            $estatusPlantel = in_array($estatusRaw, $estatusValidos) ? $estatusRaw : $estatusPorDefecto;
+
 
 
             // Validar campos obligatorios
@@ -212,6 +226,11 @@ class ImportarDatosController extends Controller
                 continue;
             }
 
+            if ($estatusRaw && !in_array($estatusRaw, $estatusValidos)) {
+                $errores[] = "Linea " . ($index + 1) . ": estatus inválido: '$estatusRaw'. Solo se permite: activo, inactivo, en_revision.";
+                continue;
+            }
+
 
 
             // Buscar o crear municipio y corde
@@ -250,6 +269,7 @@ class ImportarDatosController extends Controller
                     'accesibilidad_banos_adaptados' => $accesibilidadBanosAdaptados,
                     'accesibilidad_sanaletica_braille' => $accesibilidadSenaleticaBraile,
                     'accesibilidad_otros' => $AccesibilidadOtros,
+                    'estatus_plantel' => $estatusPlantel,
                 ]
             );
 
@@ -265,7 +285,7 @@ class ImportarDatosController extends Controller
             ? $request->otro_tipo
             : $request->tipo_documento;
 
-        $cctArchivo = trim($csv[1][array_search('CCT', $encabezados)] ?? '');
+        $cctArchivo = trim($data[1][array_search('CCT', $encabezados)] ?? '');
 
         if (empty($cctArchivo)) {
             return redirect()->back()->withErrors([
@@ -274,7 +294,7 @@ class ImportarDatosController extends Controller
         }
 
         ArchivosPlantel::create([
-            'cct' => $csv[1][array_search('CCT', $encabezados)],
+            'cct' => $data[1][array_search('CCT', $encabezados)],
             'nombre_archivo_original' => $nombreOriginal,
             'nombre_archivo_sistema' => $nombreSistema,
             'ruta_archivo' => $ruta,
