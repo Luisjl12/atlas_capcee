@@ -168,6 +168,7 @@ class ReporteController extends Controller
         $infraestructura = DB::table('planteles')
             ->leftJoin('detalle_hidrosanitario', 'planteles.cct', '=', 'detalle_hidrosanitario.cct')
             ->leftJoin('detalle_servicios', 'planteles.cct', '=', 'detalle_servicios.cct')
+            ->leftJoin('espacios_areas', 'planteles.cct', '=', 'espacios_areas.cct')
             ->select(
                 'planteles.cct',
                 'planteles.nombre_escuela',
@@ -175,12 +176,20 @@ class ReporteController extends Controller
                 'detalle_hidrosanitario.tipo_drenaje',
                 'detalle_servicios.electricidad_contrato',
                 'detalle_servicios.telefonia_fija',
-                'detalle_servicios.internet_acceso'
-
+                'detalle_servicios.internet_acceso',
+                'espacios_areas.estado_conservacion'
             )
             ->get();
-        return view('reportes.reporte_infraestructura', compact('infraestructura'));
+
+        // Ejemplo: contar cuántos planteles tienen cada tipo de fuente de agua
+        $labels = $infraestructura->pluck('fuente_agua')->unique()->values();
+        $espacios = $labels->map(function ($label) use ($infraestructura) {
+            return $infraestructura->where('fuente_agua', $label)->count();
+        });
+
+        return view('reportes.reporte_infraestructura', compact('infraestructura', 'labels', 'espacios'));
     }
+
 
     public function exportarInfraestructuraCSV()
     {

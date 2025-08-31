@@ -1964,7 +1964,7 @@ p {
 
 
 /*
-    Secciones agregadas por Mi 
+    Secciones agregadas por Mi (Luis)
 */
 .search-container {
     position: relative;
@@ -2029,6 +2029,13 @@ p {
 
 .boton-personalizado:hover {
     background-color: #5e0026;    /* tono más oscuro al pasar el mouse */
+}
+
+.separador{
+    height: 2px;
+    background: linear-gradient(to right,#E2BE96);
+    border-radius: 1px;
+    margin: 20px 0; 
 }
 
 

@@ -3,7 +3,6 @@
 <!--Vista del dashboard del admistrador -->
 <!--Cabecera y footers estan el layout-->
 <div class="container mt-4">
-
     <div class="dashboard-welcome card-header-custom">
         <h2><i class="fas fa-tachometer-alt"></i> Panel Principal</h2>
     </div>
@@ -13,7 +12,7 @@
 
     <p class="lead">¡Bienvenido,<strong> {{ session('nombre_completo') }}!</strong></p>
     <p>Has iniciado sesión como <strong>ADMINISTRADOR</strong></p>
-    <hr>
+    <div class="separador"></div>
     <h6>Acciones Disponibles:</h6>
     <nav class="dashboard-nav">
         <div class="contenedor-acciones">
