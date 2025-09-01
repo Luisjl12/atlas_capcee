@@ -5,8 +5,11 @@
 <body>
     <main class="main-container">
         <div class="container mt-4">
+            @php
+            use App\Helpers\RoleHelper;
+            @endphp
             <div class="card-header-custom">
-                <a href="{{route('dashboard.admin')}}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+                <a href="{{ RoleHelper::gestionSupervision(session('role_id')) }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
                     <h4>
                         <i class="fas fa-arrow-left "></i>
                         <i class="fas fa-tasks"></i> Panel de Supervisión

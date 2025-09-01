@@ -21,7 +21,7 @@
 
         {{-- Mensaje de sesión cerrada exitosamente --}}
         @if (Session::has('success'))
-        <div class="alert">
+        <div class="alert alert-success"><i class="fas fa-check-circle"></i>
             {{ Session::get('success') }}
         </div>
         @endif

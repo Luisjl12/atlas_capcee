@@ -17,8 +17,8 @@
     <nav class="dashboard-nav">
         <div class="contenedor-acciones">
             <div class="columna-acciones">
-                <a href="{{route('panel.supervision')}}" class="accion-card yellow">
-                    <i class="fas fa-tasks"></i> Panel de Supervisión
+                <a href="{{route('reportes.index')}}" class="accion-card yellow">
+                    <i class="fas fa-chart-bar"></i> Gestión de reportes
                 </a>
             </div>
             <div class="columna-acciones">

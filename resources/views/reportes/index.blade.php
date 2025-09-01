@@ -7,8 +7,11 @@
 <body>
     <main class="main-container">
         <div class="container mt-4">
+            @php
+            use App\Helpers\RoleHelper;
+            @endphp
             <div class="card-header-custom">
-                <a href="{{ session('role_id') == 1 ? route('dashboard.admin') : route('dashboard.analista') }}"
+                <a href="{{ RoleHelper::gestionReportes(session('role_id')) }}"
                     class="text-decoration-none d-inline-flex align-items-center text-dark">
                     <h4 class="mb-4">
                         <i class="fas fa-arrow-left "></i>

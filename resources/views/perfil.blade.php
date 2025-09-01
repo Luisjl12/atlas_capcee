@@ -12,16 +12,11 @@ $usuario = \App\Models\Usuario::find(session('id'));
 
 
     <div class="">
+        @php
+        use App\Helpers\RoleHelper;
+        @endphp
         <div class="card-header-custom">
-            <a href="
-        {{
-        session('role_id') == 1 ? route('dashboard.admin') :
-        (session('role_id') == 2 ? route('dashboard.analista') :
-        (session('role_id') == 3 ? route('dashboard.supervisor') :
-        route('dashboard.director')))
-
-        }}"
-                class="text-decoration-none d-inline-flex align-items-center text-dark">
+            <a href="{{ RoleHelper::dashboardRoute(session('role_id')) }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
                 <h2>
                     <i class="fas fa-arrow-left "></i>
                     <i class="fas fa-user-edit"></i> Mi Perfil

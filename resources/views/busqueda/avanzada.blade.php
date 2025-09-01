@@ -5,8 +5,11 @@
 @section('content')
 
 <div class="container mt-4">
+    @php
+    use App\Helpers\RoleHelper;
+    @endphp
     <div class="card-header-custom">
-        <a href="{{route('dashboard.admin')}}" class="text-decoration-none d-inline-flex align-items-center text-dark">
+        <a href="{{ RoleHelper::dashboardRoute(session('role_id')) }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
             <h4>
                 <i class="fas fa-arrow-left "></i>
                 <i class="fas fa-search"></i><strong> Buscador Avanzado de Planteles</strong>
@@ -21,7 +24,7 @@
             <form method="GET" action="{{ route('busqueda.avanzada') }}">
                 <div class="filter-panel" id="panelFiltros" style="display: none;">
                     <div class="filter-grid">
-                        <!-- Aquí van tus campos de filtro -->
+                        <!-- Aquí van campos de filtro -->
                         <div class="filter-group">
                             <label for="busqueda"> Nombre o CCT:</label>
                             <input type="text" id="busqueda" name="busqueda" value="{{ request('busqueda') }}"
