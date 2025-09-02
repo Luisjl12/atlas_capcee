@@ -35,7 +35,7 @@ Route::get('/perfil', function () {
 Route::get('/cambiar-password', [perfilController::class, 'formCambiarPassword'])
     ->name('perfil.cambiar-password')
     ->middleware('auth.custom');
-//Ruta para actusalizar datos personales
+//Ruta para actualizar datos personales
 Route::post('/perfil/actualizar-datos', [PerfilController::class, 'actualizarDatosPersonales'])->name('perfil.actualizarDatos');
 
 //Rutas para actualizar el password
@@ -49,6 +49,7 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::get('/analista', [DashboardController::class, 'analista'])->name('dashboard.analista');
     Route::get('/director', [DashboardController::class, 'director'])->name('dashboard.director');
     Route::get('/supervisor', [DashboardController::class, 'supervisor'])->name('dashboard.supervisor');
+    Route::get('/capturista', [DashboardController::class, 'capturista'])->name('dashboard.capturista');
 });
 
 //Rutas para acceder al dashboard desde la barra superior 
@@ -76,6 +77,8 @@ Route::get('/dashboard', function () {
             return redirect()->route('dashboard.supervisor');
         case 'DIRECTOR':
             return redirect()->route('dashboard.director');
+        case 'CAPTURISTA':
+            return redirect()->route('dashboard.capturista');
         default:
             abort(403, 'Rol no válido');
     }
@@ -101,6 +104,9 @@ Route::middleware(['auth.custom'])->prefix('usuarios')->group(function () {
 
 //Rutas para planteles y buscador interactivo de plantel 
 Route::get('/planteles/buscar', [PlantelController::class, 'buscar'])->name('planteles.buscar');
+
+//Ruta para filtro 
+Route::get('/planteles/filtrar', [PlantelController::class, 'filtrarEstatus'])->name('planteles.filtrar');
 
 Route::resource('planteles', PlantelController::class);
 

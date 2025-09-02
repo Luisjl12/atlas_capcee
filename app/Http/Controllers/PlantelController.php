@@ -19,6 +19,7 @@ class PlantelController extends Controller
     /**
      * Display a listing of the resource.
      */
+    //Funcion para el index
     public function index()
     {
         $planteles = Plantel::with(['municipio', 'director'])->paginate(10);
@@ -28,6 +29,8 @@ class PlantelController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
+    //Funcion para crear planteles
     public function create()
     {
         $municipios = Municipio::all();
@@ -324,7 +327,6 @@ class PlantelController extends Controller
     }
 
     //Controlador para buscador dinamico para planteles 
-
     public function buscar(Request $request)
     {
         $query = Plantel::with(['municipio', 'director']);
@@ -342,5 +344,23 @@ class PlantelController extends Controller
         return response()->json([
             'html' => view('partials.lista', compact('planteles'))->render()
         ]);
+    }
+
+    //Filtro de planteles segun el estatus 
+    public function filtrarEstatus(Request $request)
+    {
+        $estatus = $request->input('estatus');
+
+        //Validar si el estado es valido
+        if (!in_array($estatus, ['ACTIVO', 'INACTIVO', 'EN_REVISION'])) {
+            return redirect()->route('planteles.index')
+                ->with('error', 'Estatus no valido');
+        }
+
+        $planteles = Plantel::with('municipio', 'director')
+            ->where('estatus_plantel', $estatus)
+            ->paginate(10);
+
+        return view('planteles.index', compact('planteles', 'estatus'));
     }
 }

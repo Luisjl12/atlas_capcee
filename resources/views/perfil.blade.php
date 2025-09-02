@@ -10,7 +10,6 @@ $usuario = \App\Models\Usuario::find(session('id'));
 
 <body>
 
-
     <div class="">
         @php
         use App\Helpers\RoleHelper;

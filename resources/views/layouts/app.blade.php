@@ -12,6 +12,7 @@
     {{-- Estilos personalizados --}}
     <link href="{{ asset('css/style.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 
 </head>
@@ -47,8 +48,8 @@
     </nav>
 
     {{-- Contenido principal --}}
-    <main class="container-fluid mt-4">
-        <div class="content-box bg-white text-dark rounded p-4 shadow">
+    <main class="main-container">
+        <div class="container mt-4">
             @yield('content')
         </div>
     </main>

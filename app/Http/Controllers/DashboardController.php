@@ -25,4 +25,9 @@ class DashboardController extends Controller
     {
         return view('director');
     }
+
+    public function capturista()
+    {
+        return view('capturista');
+    }
 }

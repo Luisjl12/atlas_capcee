@@ -1,44 +1,29 @@
 :root {
-    --color-vino-principal: #641E16;
+     --color-vino-principal: #641E16;
     --color-vino-secundario: #9A2A2A;
-    --color-vino-claro: #C0392B;
-
     --color-texto-sobre-vino: #FDFEFE;
-    --color-fondo-claro: #f4f6f9;
     --color-fondo-tarjeta: #FFFFFF;
-
     --color-texto-principal: #2C3E50;
     --color-texto-secundario: #5D6D7E;
-    --color-texto-terciario: #333;
-
     --color-bordes: #D5DBDB;
     --color-bordes-input: #CED4DA;
-
     --color-exito: #28a745;
     --color-error: #dc3545;
     --color-info: #17a2b8;
-
     --font-principal: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     --border-radius-base: 0.25rem;
     --box-shadow-ligero: 0 2px 8px rgba(0, 0, 0, 0.05);
     --box-shadow-medio: 0 5px 20px rgba(0, 0, 0, 0.1);
     --border-bottom-base: 1px solid #e0e0e0;
-
-
     /*COLORES INSTITUCIONALES*/
-    --color-vino-principal1: #5F1B2D;
     --color-vino-secundario1: #861E34;
     --color-vino-terciario: #AF1731;
     --color-amarillo-primario: #E2BE96;
     --color-verde-primario: #3D9B84;
-    --color-verde-segundario: #246257;
+    --color-verde-secundario: #246257;
     --color-verde-terciario: #007C7A;
-    --color-gris-secundario: #ECECEC;
 
 }
-
-
-
 
 html {
     box-sizing: border-box;
@@ -2036,6 +2021,15 @@ p {
     background: linear-gradient(to right,#E2BE96);
     border-radius: 1px;
     margin: 20px 0; 
+}
+
+.acciones-box {
+    background-color: var(--color-fondo-tarjeta);
+    border: 1px solid var(--color-bordes);
+    border-radius: var(--border-radius-base);
+    box-shadow: var(--box-shadow-ligero);
+    padding: 1.5rem;
+    margin-top: 2rem;
 }
 
 

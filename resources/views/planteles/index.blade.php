@@ -30,6 +30,16 @@
     </div>
     @endif
 
+    <form action="{{ route('planteles.filtrar') }}" method="GET">
+        <select name="estatus" onchange="this.form.submit()">
+            <option value="">-- Filtrar por estatus --</option>
+            <option value="ACTIVO" {{ request('estatus') == 'ACTIVO' ? 'selected' : '' }}>Activo</option>
+            <option value="INACTIVO" {{ request('estatus') == 'INACTIVO' ? 'selected' : '' }}>Inactivo</option>
+            <option value="EN_REVISION" {{ request('estatus') == 'EN_REVISION' ? 'selected' : '' }}>En revisión</option>
+        </select>
+    </form>
+
+
     <div class="position-relative mb-4">
         <i class="fas fa-search position-absolute" style="top: 50%; left: 15px; transform: translateY(-50%); color: var(--color-vino-primario);"></i>
         <input type="text" id="buscar" class="form-control ps-5" placeholder="Buscar por CCT o Nombre...">
