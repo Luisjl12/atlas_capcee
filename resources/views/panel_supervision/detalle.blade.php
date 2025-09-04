@@ -27,17 +27,43 @@
         </thead>
         <tbody>
             @forelse($planteles as $plantel)
-            <tr>
+            <!-- Fila principal visible solo en móvil -->
+            <tr class="plantel-row d-table-row d-md-none">
+                <td colspan="4" class="plantel-cct position-relative" style="cursor: pointer;">
+                    <div>
+                        <i class="fas fa-school text-primary me-2"></i>
+                        {{ $plantel->cct }}
+                    </div>
+                    <div class="toggle-icon position-absolute top-0 end-0 p-2">
+                        <i class="fas fa-chevron-down text-muted"></i>
+                    </div>
+                </td>
+            </tr>
+
+            <!-- Fila completa visible solo en escritorio -->
+            <tr class="d-none d-md-table-row">
                 <td>{{ $plantel->cct }}</td>
-                <td> {{ $plantel->nombre_escuela }}</td>
+                <td>{{ $plantel->nombre_escuela }}</td>
                 <td>{{ number_format($plantel->porcentaje_avance_captura, 2) }}</td>
                 <td>{{ \Carbon\Carbon::parse($plantel->fecha_ultima_actualizacion_general)->format('d/m/Y') }}</td>
             </tr>
+
+            <!-- Detalles expandibles solo en móvil -->
+            <tr class="plantel-detalle d-none d-md-none">
+                <td colspan="4">
+                    <div class="detalle-container d-flex flex-column gap-2">
+                        <div><strong>Nombre Escuela:</strong> {{ $plantel->nombre_escuela }}</div>
+                        <div><strong>Avance (%):</strong> {{ number_format($plantel->porcentaje_avance_captura, 2) }}</div>
+                        <div><strong>Última Actualización:</strong> {{ \Carbon\Carbon::parse($plantel->fecha_ultima_actualizacion_general)->format('d/m/Y') }}</div>
+                    </div>
+                </td>
+            </tr>
             @empty
             <tr>
-                <td colspan="3">Este CORDE no tiene planteles asignados.</td>
+                <td colspan="4">Este CORDE no tiene planteles asignados.</td>
             </tr>
             @endforelse
+
         </tbody>
     </table>
 </div>
@@ -103,5 +129,7 @@
         }
     });
 </script>
+
+<script src="{{ asset('js/tabla-expandible-detalle-supervision.js')}}"></script>
 
 @endsection

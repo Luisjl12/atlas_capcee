@@ -359,7 +359,7 @@ class PlantelController extends Controller
 
         $planteles = Plantel::with('municipio', 'director')
             ->where('estatus_plantel', $estatus)
-            ->paginate(10);
+            ->get();
 
         return view('planteles.index', compact('planteles', 'estatus'));
     }

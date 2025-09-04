@@ -75,7 +75,6 @@ default => ['fas fa-file', 'text-dark'],
 
 
         <!-- Espacios / Áreas -->
-
         <div class="form-section step-section d-none" data-step="1">
             <h4>Inventario de Espacios Físicos</h4>
             <h5>Agregar nuevo espacio</h5>
@@ -122,41 +121,74 @@ default => ['fas fa-file', 'text-dark'],
                     </thead>
                     <tbody>
                         @foreach ($plantel->espacios as $espacio)
-                        <tr>
+
+                        <!-- Fila principal visible solo en móvil -->
+                        <tr class="espacio-row d-table-row d-md-none">
+                            <td colspan="4" class="espacio-nombre position-relative" style="cursor: pointer;">
+                                <div>
+                                    <i class="fas fa-door-open text-primary me-2"></i>
+                                    {{ $espacio->nombre_espacio }}
+                                </div>
+                                <div class="toggle-icon position-absolute top-0 end-0 p-2">
+                                    <i class="fas fa-chevron-down text-muted"></i>
+                                </div>
+                            </td>
+                        </tr>
+
+
+                        <!-- Fila completa visible solo en escritorio -->
+                        <tr class="d-none d-md-table-row">
                             <td>{{ $espacio->nombre_espacio }}</td>
                             <td>{{ $espacio->cantidad }}</td>
                             <td>
                                 <span class="badge status-{{ ucwords(str_replace('_', ' ', strtolower($espacio->estado_conservacion))) }}">
-                                    {{($espacio->estado_conservacion)}}
+                                    {{ $espacio->estado_conservacion }}
                                 </span>
                             </td>
-
-
                             <td>
                                 <form action="{{ route('espacios.destroy', $espacio->id) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-
+                                    @csrf @method('DELETE')
                                     <button type="button" class="btn btn-sm btn-danger"
                                         onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este espacio?', '{{ route('espacios.destroy', $espacio->id) }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
-
-
                                 </form>
                             </td>
                         </tr>
+
+                        <!-- Detalles expandibles solo en móvil -->
+                        <tr class="espacio-detalle d-none d-md-none">
+                            <td colspan="4">
+                                <div class="detalle-container d-flex flex-wrap justify-content-between gap-3">
+                                    <div class="detalle-bloque flex-grow-1" style="min-width: 250px;">
+                                        <strong>Cantidad:</strong> {{ $espacio->cantidad }}<br>
+                                        <strong>Estado:</strong>
+                                        <span class="badge status-{{ ucwords(str_replace('_', ' ', strtolower($espacio->estado_conservacion))) }}">
+                                            {{ $espacio->estado_conservacion }}
+                                        </span>
+                                    </div>
+                                    <div class="w-100 mt-2">
+                                        <form action="{{ route('espacios.destroy', $espacio->id) }}" method="POST">
+                                            @csrf @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este espacio?', '{{ route('espacios.destroy', $espacio->id) }}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
                         @endforeach
+
                     </tbody>
                 </table>
             </div>
             @endif
-
         </div>
 
 
         <!-- Servicios -->
-
         <div class="form-section step-section d-none" data-step="2">
             <h4>Infraestructura y Servicios</h4>
             <div class="row mt-3">
@@ -233,12 +265,13 @@ default => ['fas fa-file', 'text-dark'],
         <!--Archivos-->
         <div class="form-section step-section d-none" data-step="4">
             <h4>Gestor de Archivos</h4>
-            <h5>Subir Nuevo Archivo
-            </h5>
-            <form action="{{route('archivos.store', ['id'=> $plantel->id])}}" method="POST" enctype="multipart/form-data">
+            <h5>Subir Nuevo Archivo</h5>
+
+            <form action="{{ route('archivos.store', ['id' => $plantel->id]) }}" method="POST" enctype="multipart/form-data">
                 @csrf
-                <input type="hidden" name="cct" value="{{$plantel->cct}}">
-                <input type="hidden" name="id_plantel" value="{{$plantel->id}}">
+                <input type="hidden" name="cct" value="{{ $plantel->cct }}">
+                <input type="hidden" name="id_plantel" value="{{ $plantel->id }}">
+
                 <div class="row">
                     <div class="mb-3">
                         <label for="archivo" class="form-label">Seleccionar archivo</label>
@@ -247,7 +280,7 @@ default => ['fas fa-file', 'text-dark'],
                     <div class="mb-3">
                         <label for="tipo_documento" class="form-label">Tipo de documento</label>
                         <select name="tipo_documento" id="tipo_documento" class="form-select" required>
-                            <option value="">Seleccione una opcion</option>
+                            <option value="">Seleccione una opción</option>
                             <option value="Plano">Plano</option>
                             <option value="Oficio">Oficio</option>
                             <option value="Otro">Otro...</option>
@@ -258,45 +291,82 @@ default => ['fas fa-file', 'text-dark'],
                         <input type="text" name="otro_tipo" id="otro_tipo" class="form-control">
                     </div>
                 </div>
+
                 <div class="mb-3">
                     <label for="descripcion" class="form-label">Descripción</label>
                     <textarea name="descripcion" class="form-control"></textarea>
                 </div>
-                <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i>Subir </button>
+
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-upload"></i> Subir
+                </button>
             </form>
+
             <div class="table-responsive mt-3">
                 @if($archivos->isEmpty())
                 <div class="alert alert-info text-center">No hay archivos subidos para este plantel.</div>
                 @else
                 <table class="table data-table">
                     <thead class="thead-custom">
-                        <tr>
+                        <tr class="d-none d-md-table-row">
                             <th>Archivo</th>
                             <th>Tipo</th>
                             <th>Descripción</th>
                             <th>Subido</th>
                             <th>Acciones</th>
                         </tr>
-                        </thread>
+                    </thead>
                     <tbody>
                         @foreach($archivos as $archivo)
                         @php
                         $esImagen = Str::startsWith($archivo->mime_type, 'image/');
+                        [$icono, $color] = obtenerIconoArchivo($archivo->nombre_archivo_original);
                         @endphp
 
-                        <tr>
-                            <td>
-                                @php [$icono, $color] = obtenerIconoArchivo($archivo->nombre_archivo_original); @endphp
+                        <!-- Fila principal visible solo en móvil -->
+                        <tr class="archivo-row d-table-row d-md-none">
+                            <td colspan="5" class="archivo-nombre position-relative" style="cursor: pointer;">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        @if($esImagen)
+                                        <a href="javascript:void(0);" onclick="verDetallesFoto(
+                                     '{{ e(Storage::url($archivo->ruta_archivo)) }}',
+                                     '{{ e($archivo->cct) }}',
+                                     '{{ e($plantel->nombre_escuela) }}',
+                                     '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
+                                     '{{ e($archivo->descripcion) }}',
+                                     '{{ e($archivo->fecha_subido) }}'
+                                      )" style="text-decoration: none;">
+                                            <i class="{{ $icono }} {{ $color }} me-2"></i>
+                                            {{ $archivo->nombre_archivo_original }}
+                                        </a>
+                                        @else
+                                        <a href="{{ route('archivos-plantel.visualizar', $archivo->id) }}" target="_blank">
+                                            <i class="{{ $icono }} {{ $color }}"></i>
+                                            {{ $archivo->nombre_archivo_original }}
+                                        </a>
+                                        @endif
+                                    </div>
+                                    <div class="toggle-icon position-absolute top-0 end-0 p-2">
+                                        <i class="fas fa-chevron-down text-muted"></i>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
 
+
+                        <!-- Detalles visibles solo en escritorio -->
+                        <tr class="d-none d-md-table-row">
+                            <td>
                                 @if($esImagen)
                                 <a href="javascript:void(0);" onclick="verDetallesFoto(
-                                  '{{ e(Storage::url($archivo->ruta_archivo)) }}',
-                                 '{{ e($archivo->cct) }}',
-                                 '{{ e($plantel->nombre_escuela) }}',
-                                 '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
-                                 '{{ e($archivo->descripcion) }}',
-                                   '{{ e($archivo->fecha_subido) }}'
-                                    )" style="text-decoration: none;">
+                            '{{ e(Storage::url($archivo->ruta_archivo)) }}',
+                            '{{ e($archivo->cct) }}',
+                            '{{ e($plantel->nombre_escuela) }}',
+                            '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
+                            '{{ e($archivo->descripcion) }}',
+                            '{{ e($archivo->fecha_subido) }}'
+                        )" style="text-decoration: none;">
                                     <i class="{{ $icono }} {{ $color }}"></i>
                                     {{ $archivo->nombre_archivo_original }}
                                 </a>
@@ -306,16 +376,13 @@ default => ['fas fa-file', 'text-dark'],
                                     {{ $archivo->nombre_archivo_original }}
                                 </a>
                                 @endif
-
-
                             </td>
-                            <td>{{$archivo->tipo_documento}}</td>
-                            <td>{{$archivo->descripcion}}</td>
-                            <td>{{$archivo->fecha_subido}}</td>
+                            <td>{{ $archivo->tipo_documento }}</td>
+                            <td>{{ $archivo->descripcion }}</td>
+                            <td>{{ $archivo->fecha_subido }}</td>
                             <td>
-                                <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST" onsubmit="return confirm('¿Estás seguro de que deseas eliminar este archivo?');">
-                                    @csrf
-                                    @method('DELETE')
+                                <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST">
+                                    @csrf @method('DELETE')
                                     <button type="button" class="btn btn-danger btn-sm"
                                         onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este archivo?', '{{ route('archivos.destroy', $archivo->id) }}')">
                                         <i class="fas fa-trash"></i>
@@ -323,9 +390,60 @@ default => ['fas fa-file', 'text-dark'],
                                 </form>
                             </td>
                         </tr>
+
+                        <!-- Detalles expandibles solo en móvil -->
+                        <tr class="archivo-detalle d-none d-md-none">
+                            <td colspan="5">
+                                <div class="detalle-container d-flex flex-wrap justify-content-between gap-3">
+                                    <!-- Columna izquierda: nombre + descripción -->
+                                    <div class="detalle-bloque flex-grow-1" style="min-width: 250px;">
+                                        <strong>Archivo:</strong>
+                                        @if($esImagen)
+                                        <a href="javascript:void(0);" onclick="verDetallesFoto(
+                                      '{{ e(Storage::url($archivo->ruta_archivo)) }}',
+                                      '{{ e($archivo->cct) }}',
+                                      '{{ e($plantel->nombre_escuela) }}',
+                                      '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
+                                      '{{ e($archivo->descripcion) }}',
+                                      '{{ e($archivo->fecha_subido) }}'
+                                        )" class="text-decoration-none">
+                                            <i class="{{ $icono }} {{ $color }}"></i>
+                                            {{ $archivo->nombre_archivo_original }}
+                                        </a>
+                                        @else
+                                        <a href="{{ route('archivos-plantel.visualizar', $archivo->id) }}" target="_blank" class="text-decoration-none">
+                                            <i class="{{ $icono }} {{ $color }}"></i>
+                                            {{ $archivo->nombre_archivo_original }}
+                                        </a>
+                                        @endif
+                                        <br>
+                                        <strong>Descripción:</strong> {{ $archivo->descripcion }}
+                                    </div>
+
+                                    <!-- Columna derecha: tipo + subido -->
+                                    <div class="detalle-bloque flex-grow-1" style="min-width: 250px;">
+                                        <strong>Tipo:</strong> {{ $archivo->tipo_documento }}<br>
+                                        <strong>Subido:</strong> {{ $archivo->fecha_subido }}
+                                    </div>
+
+                                    <!-- Acciones -->
+                                    <div class="w-100 mt-2">
+                                        <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST">
+                                            @csrf @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-sm"
+                                                onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este archivo?', '{{ route('archivos.destroy', $archivo->id) }}')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </td>
+                        </tr>
                         @endforeach
                     </tbody>
                 </table>
+
                 @endif
             </div>
         </div>
@@ -390,6 +508,7 @@ default => ['fas fa-file', 'text-dark'],
             });
         });
     </script>
+
     <!--Ver foto-->
     <script>
         function verDetallesFoto(src, cct, nombreEscuela, nombreUsuario, descripcion, fechaSubida) {
@@ -428,7 +547,14 @@ default => ['fas fa-file', 'text-dark'],
     </script>
     <script src="{{ asset('js/modal-confirmacion.js') }}"></script>
 
+    <!---Script para menu expandible de archivos-->
+    <script src="{{ asset('js/tabla-expandible-archivos.js')}}"></script>
+
+    <!---Script para menu expandible de espacios-->
+    <script src="{{ asset('js/tabla-expandible-espacios.js')}}"></script>
+
     @endsection
+
     <!--Modal para confirmación-->
     <div id="modalConfirmacion" class="modal-overlay" style="display:none;">
         <div class="modal-content">

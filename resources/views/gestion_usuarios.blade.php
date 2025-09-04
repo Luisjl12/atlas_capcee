@@ -1,4 +1,5 @@
 @extends('layouts.app')
+<!--Interfaz para la gestion de usuarios-->
 
 @section('title', 'Gestionar Usuarios')
 

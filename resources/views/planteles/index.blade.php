@@ -30,24 +30,35 @@
     </div>
     @endif
 
-    <form action="{{ route('planteles.filtrar') }}" method="GET">
-        <select name="estatus" onchange="this.form.submit()">
-            <option value="">-- Filtrar por estatus --</option>
-            <option value="ACTIVO" {{ request('estatus') == 'ACTIVO' ? 'selected' : '' }}>Activo</option>
-            <option value="INACTIVO" {{ request('estatus') == 'INACTIVO' ? 'selected' : '' }}>Inactivo</option>
-            <option value="EN_REVISION" {{ request('estatus') == 'EN_REVISION' ? 'selected' : '' }}>En revisión</option>
-        </select>
-    </form>
+    <div class="d-flex align-items-center gap-3 mb-4">
+        {{-- Barra de búsqueda --}}
+        <div class="position-relative flex-grow-1">
+            <i class="fas fa-search position-absolute" style="top: 50%; left: 15px; transform: translateY(-50%); color: var(--color-vino-primario);"></i>
+            <input type="text" id="buscar" class="form-control ps-5" placeholder="Buscar por CCT o Nombre...">
+        </div>
 
+        {{-- Filtro de estatus --}}
+        <form action="{{ route('planteles.filtrar') }}" method="GET">
+            <select name="estatus" class="form-select" onchange="this.form.submit()">
+                <option value="">Todos</option>
+                <option value="ACTIVO" {{ request('estatus') == 'ACTIVO' ? 'selected' : '' }}>Activo</option>
+                <option value="INACTIVO" {{ request('estatus') == 'INACTIVO' ? 'selected' : '' }}>Inactivo</option>
+                <option value="EN_REVISION" {{ request('estatus') == 'EN_REVISION' ? 'selected' : '' }}>En revisión</option>
+            </select>
+        </form>
 
-    <div class="position-relative mb-4">
-        <i class="fas fa-search position-absolute" style="top: 50%; left: 15px; transform: translateY(-50%); color: var(--color-vino-primario);"></i>
-        <input type="text" id="buscar" class="form-control ps-5" placeholder="Buscar por CCT o Nombre...">
+        {{-- Borrar filtro --}}
+        <button type="button" class="btn-limpiador" onclick="limpiarBusqueda()">
+            <i class="fas fa-eraser"></i>
+        </button>
     </div>
+
 
     <div id="resultados">
         @include('partials.lista', ['planteles' => $planteles])
     </div>
+
+
 </div>
 
 <!--Mostrar modal para confirmacion de eliminar plantel-->
@@ -85,5 +96,30 @@
 <script>
     localStorage.removeItem('pasoActivo');
 </script>
+
+<script>
+    function limpiarBusqueda() {
+        // Limpiar el campo de búsqueda si existe
+        const inputBusqueda = document.getElementById('buscar');
+        if (inputBusqueda) {
+            inputBusqueda.value = '';
+        }
+
+        // Limpiar el filtro de estatus si existe
+        const selectEstatus = document.querySelector('select[name="estatus"]');
+        if (selectEstatus) {
+            selectEstatus.value = '';
+        }
+
+        // Enviar el formulario de filtro (si existe)
+        const formulario = selectEstatus?.form;
+        if (formulario) {
+            formulario.submit();
+        }
+    }
+</script>
+
+<!--Tabla expandible para versiones moviles--->
+<script src="{{asset('js/tabla-expandible-planteles.js')}}"></script>
 
 @endpush

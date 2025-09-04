@@ -1,9 +1,9 @@
 
 document.addEventListener('DOMContentLoaded', function() {
-    const filas = document.querySelectorAll('.usuario-nombre');
+    const filas = document.querySelectorAll('.plantel-cct');
     filas.forEach((fila, index) => {
-        fila.addEventListener('click', function() {
-            const detalle = document.querySelectorAll('.usuario-detalle')[index];
+         fila.addEventListener('click', function() {
+            const detalle = document.querySelectorAll('.plantel-detalle')[index];
             const icono = fila.querySelector('.toggle-icon i');
 
             detalle.classList.toggle('d-none');
@@ -18,4 +18,3 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-

@@ -67,7 +67,7 @@
             @csrf
 
             <div class="form-group">
-                <label for="archivo">Seleccionar archivo CSV:</label>
+                <label for="archivo">Seleccionar archivo CSV, EXCEL o TXT:</label>
                 <input type="file" name="archivo" id="archivo" class="form-control-file" required>
             </div>
             <button type="submit" class="btn btn-primary mt-3">
