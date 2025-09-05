@@ -211,8 +211,31 @@ class PlantelController extends Controller
         $estadosConservacion = ['BUENO', 'REGULAR', 'MALO', 'NO_APLICA', 'EN_PROCESO'];
         $archivos = ArchivosPlantel::where('cct', $plantel->cct)->get();
         $fotos = GaleriaFotos::with(['usuario', 'plantel'])->where('cct', $plantel->cct)->get();
-        return view('planteles.show', compact('plantel', 'hidrosanitario', 'servicio', 'estadosConservacion', 'archivos', 'fotos'));
+
+        $mapData = [
+            'lat' => $plantel->latitud,
+            'lng' => $plantel->longitud,
+            'nombre' => $plantel->nombre_escuela,
+            'cct' => $plantel->cct
+        ];
+
+        // Agregamos los planteles para el mapa
+        $planteles = Plantel::select('nombre_escuela', 'latitud', 'longitud')
+            ->whereNotNull('latitud')->whereNotNull('longitud')
+            ->get();
+
+        return view('planteles.show', compact(
+            'plantel',
+            'hidrosanitario',
+            'servicio',
+            'estadosConservacion',
+            'archivos',
+            'fotos',
+            'planteles', // lo mandamos a la vista
+            'mapData',
+        ));
     }
+
 
     /**
      * Show the form for editing the specified resource.

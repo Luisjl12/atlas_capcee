@@ -21,6 +21,10 @@
                     <a href="{{route('planteles.index')}}" class="accion-card red">
                         <i class="fas fa-school"></i> Gestionar Planteles
                     </a>
+
+                    <a href="{{route('planteles.mapa')}}" class="accion-card red">
+                        <i class="fas fa-map"></i> Mapa de planteles
+                    </a>
                 </div>
                 <div class="columna-acciones">
 
@@ -42,6 +46,7 @@
                         <i class="fas fa-user-edit"></i> Mi Perfil
                     </a>
                 </div>
+
             </div>
         </nav>
     </div>

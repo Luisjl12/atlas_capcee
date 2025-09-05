@@ -41,6 +41,7 @@ default => ['fas fa-file', 'text-dark'],
         <span class="nav-tab" data-step="3">Proteccion Civil</span>
         <span class="nav-tab" data-step="4">Archivos</span>
         <span class="nav-tab" data-step="5">Galerias</span>
+        <span class="nav-tab" data-step="6">Mapas</span>
     </div>
 
     @if (session('success'))
@@ -450,7 +451,6 @@ default => ['fas fa-file', 'text-dark'],
 
 
         <!--Fotos-->
-
         <div class="form-section step-section d-none" data-step="5">
             @include('planteles.galeria.formulario', ['plantel' => $plantel])
             @include('planteles.galeria.imagenes', ['fotos' => $fotos])
@@ -466,13 +466,38 @@ default => ['fas fa-file', 'text-dark'],
             </div>
             @endif
         </div>
+
+        <!--Mapas-->
+        <div class="form-section step-section d-none" data-step="6">
+            <div class="container mt-4">
+                <h3 class="mb-3">Mapa de Planteles</h3>
+                <div id="map" style="height: 500px; border-radius: 8px;"></div>
+            </div>
+        </div>
+
     </div>
 
 
+    {{-- Estilos de Leaflet --}}
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+
+    {{-- Script de Leaflet --}}
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     @push('scripts')
     @include('planteles.galeria.scripts')
 
+    <script>
+        var plantelData = @json($mapData);
+    </script>
+
+    <script src="{{ asset('js/mapa_plantel.js') }}"></script>
+
     @endpush
+
+
+
+
+
     <!--Script para elegir tipo de documento-->
     <script src="{{ asset('js/documento_tipo.js') }}"></script>
 
@@ -552,6 +577,9 @@ default => ['fas fa-file', 'text-dark'],
 
     <!---Script para menu expandible de espacios-->
     <script src="{{ asset('js/tabla-expandible-espacios.js')}}"></script>
+
+
+
 
     @endsection
 

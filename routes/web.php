@@ -20,6 +20,7 @@ use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\BusquedaController;
 use App\Http\Controllers\SupervicionController;
 use App\Http\Controllers\ImportarDatosController;
+use App\Http\Controllers\MapaController;
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -211,3 +212,7 @@ Route::get('/panel-supervision/show/{id}', [SupervicionController::class, 'show'
 Route::get('/importar-datos', [ImportarDatosController::class, 'index'])->name('importarDatos.show');
 //Ruta para importar los archivos 
 Route::post('/importar-archivos', [ImportarDatosController::class, 'store'])->name('importarDatos.store');
+
+
+//Ruta para visualizar mapas
+Route::get('/mapa-planteles', [MapaController::class, 'mapa'])->name('planteles.mapa');
