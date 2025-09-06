@@ -21,22 +21,45 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-    var map = L.map('map').setView([19.0414, -98.2063], 9);
+    document.addEventListener('DOMContentLoaded', function() {
+        var map = L.map('map').setView([19.0414, -98.2063], 9);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
 
-    var planteles = @json($planteles);
+        var planteles = @json($planteles);
+        var markers = []; // ← Aquí sí se declara correctamente
 
+        planteles.forEach(function(plantel) {
+            var marker = L.marker([plantel.lat, plantel.lng])
+                .addTo(map)
+                .bindPopup("<b>" + plantel.nombre + "</b><br>CCT: " + plantel.cct);
 
-    planteles.forEach(function(plantel) {
-        L.marker([plantel.lat, plantel.lng])
-            .addTo(map)
-            .bindPopup("<b>" + plantel.nombre +
-                "</b><br>CCT: " + plantel.cct + "</b>"
+            markers.push({
+                cct: plantel.cct.toLowerCase(),
+                nombre: plantel.nombre.toLowerCase(),
+                marker: marker
+            });
+        });
+
+        const buscador = document.getElementById('buscadorPlantel');
+        buscador.addEventListener('input', function() {
+            const texto = buscador.value.toLowerCase().trim();
+
+            if (texto.length < 3) return;
+
+            const resultado = markers.find(p =>
+                p.cct.includes(texto) || p.nombre.includes(texto)
             );
 
+            if (resultado) {
+                map.setView(resultado.marker.getLatLng(), 15);
+                resultado.marker.openPopup();
+            }
+        });
     });
 </script>
+
+
 @endsection
