@@ -1,4 +1,5 @@
 <!-- Modal de detalles de foto -->
+<!--
 <div class="modal fade" id="fotoModal" tabindex="-1" aria-labelledby="fotoModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
@@ -17,3 +18,4 @@
         </div>
     </div>
 </div>
+-->

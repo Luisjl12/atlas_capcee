@@ -53,9 +53,17 @@
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label">CCT:</label>
-                    <input type="text" name="cct" class="form-control" value="{{ old('cct',  $plantel->cct ?? '') }}" readonly>
-                    <input type="hidden" name="cct" value="{{$plantel->cct}}">
+
+                    @if(strtoupper(session('rol')) === 'DIRECTOR')
+                    <input type="text" name="cct" class="form-control"
+                        value="{{ old('cct', $plantel->cct ?? '') }}">
+                    @else
+                    <input type="text" class="form-control"
+                        value="{{ $plantel->cct }}" readonly>
+                    <input type="hidden" name="cct" value="{{ $plantel->cct }}">
+                    @endif
                 </div>
+
                 <div class="col-md-8">
                     <label for="nombre_escuela" class="form-label">Nombre de la Escuela:</label>
                     <input type="text" class="form-control" name="nombre_escuela" value="{{ old('nombre_escuela', $plantel->nombre_escuela ?? '') }}" required>

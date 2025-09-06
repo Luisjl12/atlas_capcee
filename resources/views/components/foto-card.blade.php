@@ -14,12 +14,19 @@ $nombreUsuarioJs = addslashes($nombreUsuario);
 $descripcionJs = addslashes($descripcion);
 @endphp
 
-<div class="col-md-3 mb-4 position-relative">
-    <div class="card shadow-sm rounded">
-        {{-- Botón de eliminar --}}
-        <button type="button" class="btn btn-danger btn-sm position-absolute top-0 start-0 m-2 z-3"
+{{-- Contenedor con ID único para manipulación desde JS --}}
+<div class="col-md-3 mb-4 position-relative" id="foto-{{ $foto->id }}">
+    <div class="card shadow-sm rounded" style="border-top: 3px solid #ccc;">
+
+        {{-- Checkbox de selección --}}
+        <div class="form-check position-absolute top-0 start-0 m-2">
+            <input class="form-check-input galeria-checkbox" type="checkbox" value="{{ $foto->id }}" name="fotosSeleccionadas[]">
+        </div>
+
+        {{-- Botón de eliminar individual --}}
+        <button type="button" class="galeria-delete-btn"
             onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar esta foto?', '{{ route('galeria.destroy', $foto->id) }}')">
-            <i class="fas fa-trash"></i>
+            <i class="fas fa-times-circle"></i>
         </button>
 
         {{-- Imagen clickeable que abre el modal --}}

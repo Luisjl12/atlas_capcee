@@ -48,4 +48,24 @@ class GaleriaFotoController extends Controller
 
         return back()->with('success', 'Foto eliminada correctamente. ');
     }
+
+    public function eliminarSeleccionadas(Request $request)
+    {
+        $ids = $request->input('ids');
+
+        if (!is_array($ids) || empty($ids)) {
+            return response()->json(['success' => false, 'message' => 'No se recibieron IDs válidos']);
+        }
+
+        $fotos = GaleriaFotos::whereIn('id', $ids)->get();
+
+        foreach ($fotos as $foto) {
+            if (Storage::disk('public')->exists($foto->ruta_foto)) {
+                Storage::disk('public')->delete($foto->ruta_foto);
+            }
+            $foto->delete();
+        }
+
+        return response()->json(['success' => true, 'message' => 'Fotos eliminadas correctamente']);
+    }
 }

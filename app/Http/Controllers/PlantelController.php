@@ -260,24 +260,40 @@ class PlantelController extends Controller
     {
         $plantel = Plantel::findOrFail($id);
 
-        // Validación con campos alternativos
-        $request->validate([
-            'cct' => 'required|string|max:20|unique:planteles,cct,' . $plantel->id . ',id',
+        $rol = session('rol'); // Recupera el rol desde la sesión
+
+        // Validación base
+        $rules = [
             'nombre_escuela' => 'required|string|max:255',
             'nivel_educativo' => 'required|string|max:255',
             'turno' => 'required|string|max:100',
             'sostenimiento' => 'required|string|max:100',
-        ]);
+        ];
 
-        $plantel->update($request->only([
+        // Solo si el rol es 'director' se permite modificar el CCT
+        if (strtoupper($rol) === 'DIRECTOR') {
+            $rules['cct'] = 'required|string|max:20|unique:planteles,cct,' . $plantel->id . ',id';
+        }
+
+        $validated = $request->validate($rules);
+
+        // Campos que se pueden actualizar
+        $camposActualizables = [
             'nombre_escuela',
-            'cct',
             'nivel_educativo',
             'turno',
-            'sostenimiento'
-        ]));
+            'sostenimiento',
+        ];
+
+        if (strtoupper($rol) === 'DIRECTOR') {
+            $camposActualizables[] = 'cct';
+        }
+
+        $plantel->update($request->only($camposActualizables));
+
         return redirect()->back()->with('success', 'Ficha base actualizada correctamente.');
     }
+
 
 
     public function getLocalidades($municipioId)

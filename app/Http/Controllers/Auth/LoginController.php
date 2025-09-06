@@ -46,7 +46,9 @@ class LoginController extends Controller
 
             Session::flash('success', 'Inicio de sesión exitoso.');
 
+
             $rol = $usuario->rol->nombre_rol;
+            Session::put('rol', $rol);
 
             if ($rol === 'ADMINISTRADOR') {
                 return redirect()->route('dashboard.admin');

@@ -216,3 +216,7 @@ Route::post('/importar-archivos', [ImportarDatosController::class, 'store'])->na
 
 //Ruta para visualizar mapas
 Route::get('/mapa-planteles', [MapaController::class, 'mapa'])->name('planteles.mapa');
+
+
+//Ruta para eliminar varias fotos seleccionadas
+Route::post('/galeria/eliminar', [GaleriaFotoController::class, 'eliminarSeleccionadas'])->name('galeria.eliminarSeleccionadas');
