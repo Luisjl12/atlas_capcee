@@ -2078,19 +2078,26 @@ Estilos personalizados para contenedores en celular
     transition: transform 0.3s ease;
 }
 
+/* Diseños para iconos de ubicacion en el mapa*/
+.custom-marker .marker-icon {
+    font-size: 32px;         /* tamaño del pin */
+    color: #28a745;          /* color por defecto (verde) */
+    text-shadow: 0 0 3px rgba(0,0,0,0.4); /* sombra ligera */
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+}
 
+/* Colores por estado */
+.marker-icon.activo {
+    color: #4CAF50; /* verde */
+}
 
+.marker-icon.inactivo {
+    color: #F44336; /* rojo */
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
+.marker-icon.revision {
+    color: #FFC107; /* amarillo */
+}
 

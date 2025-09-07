@@ -1,3 +1,4 @@
+<!--Formulario para la seccion de fotos-->
 <h4>Galería Fotográfica</h4>
 <div id="galeria-alert" class="alert alert-success d-none"></div>
 
@@ -38,7 +39,10 @@
 <div id="modalEliminar" class="modal-overlay" style="display:none;">
     <div class="modal-content">
         <h3><i class="fas fa-exclamation-triangle"></i> Confirmación</h3>
-        <p id="mensajeConfirmacion">¿Estás seguro de eliminar las fotos seleccionadas?</p>
+        <p id="mensajeConfirmacion">
+            ¿Estás seguro de eliminar <span id="contadorModal">0</span> foto(s) seleccionada(s)?
+        </p>
+
         <div class="modal-actions">
             <button id="cancelarEliminar" class="btn-cancelar">Cancelar</button>
             <button id="confirmarEliminar" class="btn btn-danger">Eliminar</button>
@@ -116,7 +120,6 @@
 </style>
 
 
-
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const btnEliminar = document.getElementById('btnEliminarSeleccionadas');
@@ -127,13 +130,15 @@
         const contenedorContador = document.getElementById('contadorSeleccionadas');
         const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
 
-        // Función para actualizar el contador
+        // Función para actualizar el contador visual
         function actualizarContador() {
             const seleccionadas = document.querySelectorAll('.galeria-checkbox:checked').length;
-            contador.textContent = seleccionadas;
+            if (contador) contador.textContent = seleccionadas;
 
-            contenedorContador.classList.toggle('text-success', seleccionadas > 0);
-            contenedorContador.classList.toggle('text-muted', seleccionadas === 0);
+            if (contenedorContador) {
+                contenedorContador.classList.toggle('text-success', seleccionadas > 0);
+                contenedorContador.classList.toggle('text-muted', seleccionadas === 0);
+            }
         }
 
         // Escuchar cambios en los checkboxes
@@ -149,14 +154,24 @@
         btnEliminar.addEventListener('click', function() {
             const seleccionadas = document.querySelectorAll('.galeria-checkbox:checked');
             const ids = Array.from(seleccionadas).map(cb => cb.value);
+            const cantidad = ids.length;
 
-            if (ids.length === 0) {
+            if (cantidad === 0) {
                 alert('No hay fotos seleccionadas');
                 return;
             }
 
-            // Actualizar mensaje del modal con cantidad
-            mensajeConfirmacion.textContent = `¿Estás seguro de eliminar las ${ids.length} foto(s) seleccionadas?`;
+            // Mensaje dinámico en el modal
+            const textoFoto = cantidad === 1 ?
+                `<strong>1 foto seleccionada</strong>` :
+                `<strong>${cantidad} fotos seleccionadas</strong>`;
+
+            const contadorModal = document.getElementById('contadorModal');
+            if (contadorModal) {
+                contadorModal.textContent = cantidad;
+            }
+
+
 
             // Mostrar modal
             modal.style.display = 'flex';

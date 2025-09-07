@@ -1,3 +1,4 @@
+<!--Contenedores de las fotos de la seccion de galerias -->
 @props(['foto'])
 
 @php
