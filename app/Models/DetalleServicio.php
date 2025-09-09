@@ -12,6 +12,9 @@ class DetalleServicio extends Model
         'electricidad_contrato',
         'telefonia_fija',
         'internet_acceso',
+        'gas_tipo',
+        'internet_tipo',
+        'observaciones',
     ];
 
     public function plantel()

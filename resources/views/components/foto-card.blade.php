@@ -21,7 +21,7 @@ $descripcionJs = addslashes($descripcion);
 
         {{-- Checkbox de selección --}}
         <div class="form-check position-absolute top-0 start-0 m-2">
-            <input class="form-check-input galeria-checkbox" type="checkbox" value="{{ $foto->id }}" name="fotosSeleccionadas[]">
+            <input class="galeria-checkbox" type="checkbox" value="{{ $foto->id }}" name="fotosSeleccionadas[]">
         </div>
 
         {{-- Botón de eliminar individual --}}
@@ -43,7 +43,7 @@ $descripcionJs = addslashes($descripcion);
 
         {{-- Descripción --}}
         <div class="card-body">
-            <p class="card-text text-center">{{ $descripcion }}</p>
+            <p class="card-text text-center">{{ $fechaSubida }}</p>
         </div>
     </div>
 </div>

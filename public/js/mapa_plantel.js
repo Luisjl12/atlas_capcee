@@ -1,3 +1,6 @@
+
+//Script del mapa para ubicacion de manera individual 
+
 document.addEventListener('DOMContentLoaded', function() {
     // Inicializamos el mapa
     var map = L.map('map').setView([plantelData.lat, plantelData.lng], 15);
@@ -17,7 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         );
 
     // --- Si el mapa está en una pestaña, recalcular tamaño cuando se muestre ---
-    const tabMapa = document.querySelector('[data-step="6"]'); // Ajusta según tu tab
+    const tabMapa = document.querySelector('[data-step="6"]'); // Ajusta según tab
     const observer = new MutationObserver(() => {
         if (!tabMapa.classList.contains('d-none')) {
             setTimeout(() => map.invalidateSize(), 300); // Recalcula tamaño

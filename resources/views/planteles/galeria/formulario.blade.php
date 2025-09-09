@@ -19,20 +19,36 @@
         <label for="descripcion" class=form-label>Descripción para estas fotos</label>
         <input type="text" name="descripcion" id="descripcion" class="form-control">
     </div>
-    <button type="submit" class="btn btn-success"><i class="fas fa-camera"> Subir</i></button>
 
+    {{-- Agrupación en fila --}}
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3">
+        {{-- Botón Subir a la izquierda --}}
+        <button type="submit" class="btn btn-success">
+            <i class="fas fa-camera"></i> Subir
+        </button>
+
+        {{-- Checkbox + Botón Eliminar alineados a la derecha --}}
+        <div class="d-flex align-items-center gap-3">
+            <div class="check-todas">
+                <input type="checkbox" id="seleccionarTodas">
+                <label class="form-check-label" for="seleccionarTodas">
+                    Seleccionar Todas
+                </label>
+            </div>
+
+            <button type="button" id="btnEliminarSeleccionadas" class="btn btn-danger"
+                data-url="{{ route('galeria.eliminarSeleccionadas') }}">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </div>
 
 </form>
+
+{{-- Contador debajo --}}
 <div id="contadorSeleccionadas" class="mb-2 text-muted">
     Fotos seleccionadas: <span id="cantidadSeleccionadas">0</span>
 </div>
-
-<!--Boton de eliminar-->
-
-<button type="button" id="btnEliminarSeleccionadas" class="btn btn-danger"
-    data-url="{{ route('galeria.eliminarSeleccionadas') }}">
-    <i class="fas fa-trash"></i>
-</button>
 
 
 <!-- Modal actualizado -->
@@ -49,6 +65,8 @@
         </div>
     </div>
 </div>
+
+<!--Estilos personalizados para el modal--->
 
 <style>
     .modal-overlay {
@@ -119,7 +137,7 @@
     }
 </style>
 
-
+<!--Script para seleccionar fotos individualmente o en lote--->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const btnEliminar = document.getElementById('btnEliminarSeleccionadas');
@@ -129,6 +147,8 @@
         const contador = document.getElementById('cantidadSeleccionadas');
         const contenedorContador = document.getElementById('contadorSeleccionadas');
         const mensajeConfirmacion = document.getElementById('mensajeConfirmacion');
+        const checkboxMaestro = document.getElementById('seleccionarTodas');
+        const checkboxes = document.querySelectorAll('.galeria-checkbox');
 
         // Función para actualizar el contador visual
         function actualizarContador() {
@@ -139,10 +159,29 @@
                 contenedorContador.classList.toggle('text-success', seleccionadas > 0);
                 contenedorContador.classList.toggle('text-muted', seleccionadas === 0);
             }
+
+            // Sincronizar estado del checkbox maestro
+            if (checkboxMaestro) {
+                const total = checkboxes.length;
+                checkboxMaestro.checked = seleccionadas === total;
+                checkboxMaestro.indeterminate = seleccionadas > 0 && seleccionadas < total;
+            }
+
+            // Desactivar botón si no hay seleccionadas
+            if (btnEliminar) {
+                btnEliminar.disabled = seleccionadas === 0;
+            }
         }
 
-        // Escuchar cambios en los checkboxes
-        const checkboxes = document.querySelectorAll('.galeria-checkbox');
+        // Checkbox maestro: seleccionar/deseleccionar todos
+        if (checkboxMaestro) {
+            checkboxMaestro.addEventListener('change', function() {
+                checkboxes.forEach(cb => cb.checked = checkboxMaestro.checked);
+                actualizarContador();
+            });
+        }
+
+        // Escuchar cambios individuales
         checkboxes.forEach(cb => {
             cb.addEventListener('change', actualizarContador);
         });
@@ -161,25 +200,15 @@
                 return;
             }
 
-            // Mensaje dinámico en el modal
-            const textoFoto = cantidad === 1 ?
-                `<strong>1 foto seleccionada</strong>` :
-                `<strong>${cantidad} fotos seleccionadas</strong>`;
-
             const contadorModal = document.getElementById('contadorModal');
             if (contadorModal) {
                 contadorModal.textContent = cantidad;
             }
 
-
-
-            // Mostrar modal
             modal.style.display = 'flex';
 
-            // Cancelar
             btnCancelar.onclick = () => modal.style.display = 'none';
 
-            // Confirmar
             btnConfirmar.onclick = () => {
                 modal.style.display = 'none';
                 const url = btnEliminar.getAttribute('data-url');
@@ -202,7 +231,7 @@
                                 const card = document.getElementById(`foto-${id}`);
                                 if (card) card.remove();
                             });
-                            actualizarContador(); // Actualizar después de eliminar
+                            actualizarContador();
                         } else {
                             alert(data.message || 'Error al eliminar');
                         }

@@ -1988,8 +1988,8 @@ p {
 }
 /* Reduce el tamaño general del texto en la paginación */
 .pagination .page-link {
-    font-size: 0.85rem;  /* Puedes ajustar esto a tu gusto */
-    padding: 0.25rem 0.5rem; /* Reduce el tamaño del botón */
+    font-size: 0.85rem;  
+    padding: 0.25rem 0.5rem; 
 }
 
 /* Si Laravel usa íconos SVG (como ← o →), reduce su tamaño */
@@ -1998,7 +1998,6 @@ p {
     height: 0.75em;
 }
 
-/* Si usas FontAwesome u otros íconos con <i>, añade también: */
 .pagination i {
     font-size: 0.75rem;
 }
@@ -2099,5 +2098,35 @@ Estilos personalizados para contenedores en celular
 
 .marker-icon.revision {
     color: #FFC107; /* amarillo */
+}
+
+/*Estilos de checkboxes */
+.check-todas {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.4rem 0.8rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.check-todas input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #9A2A2A; /* usa tu color de marca */
+  cursor: pointer;
+}
+
+/*Checkbox de  manera individual*/
+
+.checkbox-foto {
+  background: rgba(255, 255, 255, 0.8);
+  padding: 4px;
+  border-radius: 6px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.1);
 }
 
