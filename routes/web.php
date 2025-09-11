@@ -21,6 +21,7 @@ use App\Http\Controllers\BusquedaController;
 use App\Http\Controllers\SupervicionController;
 use App\Http\Controllers\ImportarDatosController;
 use App\Http\Controllers\MapaController;
+use App\Http\Controllers\ForgotPasswordController;
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -220,3 +221,24 @@ Route::get('/mapa-planteles', [MapaController::class, 'mapa'])->name('planteles.
 
 //Ruta para eliminar varias fotos seleccionadas
 Route::post('/galeria/eliminar', [GaleriaFotoController::class, 'eliminarSeleccionadas'])->name('galeria.eliminarSeleccionadas');
+
+
+//Notificaciones 
+Route::get('/password/recuperar', function () {
+    return view('notificaciones.notificaciones');
+})->name('password.recuperar');
+Route::post('/password/enviar-codigo', [ForgotPasswordController::class, 'sendCode'])->name('password.enviarCodigo');
+Route::post('/password/verificar-codigo', [ForgotPasswordController::class, 'verifyCode'])->name('password.verificarCodigo');
+Route::get('/password/reset', function (\Illuminate\Http\Request $request) {
+    return view('notificaciones.reset', [
+        'email' => $request->query('email'),
+        'code' => $request->query('code'),
+    ]);
+})->name('password.reset.form');
+
+Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'])
+    ->name('password.reset');
+
+//Auditorias
+Route::get('/planteles/{id}/auditorias', [PlantelController::class, 'mostrarAuditorias'])
+    ->name('planteles.auditoria');

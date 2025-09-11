@@ -27,13 +27,21 @@ $detalle = $plantel->detalleProteccionCivil;
     <div class="alert alert-success mt-2">{{ session('success') }}</div>
     @endif
 
-    <div class="card-body-custom p-4 mt-3">
+    <div class="form-navigation nav-tabs-text mb-3">
+        <span class="nav-tab active" data-step="0">Seguridad y Protección</span>
+        <span class="nav-tab" data-step="1">Brigadas y Simulacros</span>
+        <span class="nav-tab" data-step="2">Observaciones Generales</span>
+    </div>
+
+    <!--Tab panes--->
+    <!--Servicios Basicos --->
+    <div class="form-ficha-base">
         <form action="{{ route('detalle_proteccion_civil.store', $plantel->cct) }}" method="POST" class="form-ficha-base">
             @csrf
-            <input type="hidden" name="cct" value="{{ $plantel->cct }}">
 
-            {{-- ================== DOCUMENTACIÓN Y EQUIPO ================== --}}
-            <div class="form-section">
+            <input type="hidden" name="seccion" value="seguridad">
+            <div class="form-section step-section" data-step="0">
+
                 <h4>Documentación y Equipo</h4>
                 <div class="row">
                     <div class="form-check col-md-4">
@@ -96,10 +104,19 @@ $detalle = $plantel->detalleProteccionCivil;
                             value="{{ old('programa_interno_pc_fecha', $detalle?->programa_interno_pc_fecha) }}">
                     </div>
                 </div>
-            </div>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> Guardar Datos
+                </button>
 
-            {{-- ================== CAPITAL HUMANO ================== --}}
-            <div class="form-section">
+            </div>
+        </form>
+
+        <form action="{{ route('detalle_proteccion_civil.store', $plantel->cct) }}" method="POST" class="form-ficha-base">
+            @csrf
+
+            <input type="hidden" name="seccion" value="brigadas">
+            <div class="form-section step-section" data-step="1">
+
                 <h4>Capital Humano</h4>
                 <div class="row">
                     <div class="form-check col-md-6">
@@ -132,25 +149,70 @@ $detalle = $plantel->detalleProteccionCivil;
                             value="{{ old('simulacros_ultimo_anio', $detalle?->simulacros_ultimo_anio ?? 0) }}">
                     </div>
                 </div>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> Guardar Datos
+                </button>
             </div>
+        </form>
 
-            {{-- ================== OBSERVACIONES ================== --}}
-            <div class="form-section">
-                <h4>Observaciones Generales</h4>
-                <div class="form-group">
-                    <label for="observaciones">Observaciones Adicionales de Protección Civil:</label>
-                    <textarea name="observaciones" id="observaciones" class="form-control" rows="3">{{ old('observaciones', $detalle?->observaciones) }}</textarea>
+        <form action="{{ route('detalle_proteccion_civil.store', $plantel->cct) }}" method="POST" class="form-ficha-base">
+            @csrf
+            <input type="hidden" name="seccion" value="observaciones">
+            <div class="form-section step-section" data-step="2">
+                <div class="form-section">
+                    <h4>Observaciones Generales</h4>
+                    <div class="form-group">
+                        <label for="observaciones">Observaciones Adicionales de Protección Civil:</label>
+                        <textarea name="observaciones" id="observaciones" class="form-control" rows="3">{{ old('observaciones', $detalle?->observaciones) }}</textarea>
+                    </div>
                 </div>
-            </div>
 
-            <hr>
-            <button type="submit" class="btn btn-primary btn-lg">
-                <i class="fas fa-save"></i> Guardar Datos
-            </button>
-            <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-secondary btn-lg">
-                <i class="fas fa-times"></i> Cancelar
-            </a>
+                <hr>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    <i class="fas fa-save"></i> Guardar Datos
+                </button>
+                <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-secondary btn-lg">
+                    <i class="fas fa-times"></i> Cancelar
+                </a>
+            </div>
         </form>
     </div>
+
 </div>
+
+@push('scripts')
+<!--Script para navegacion de tabs-->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const secciones = document.querySelectorAll('.step-section');
+        const pestañas = document.querySelectorAll('.nav-tab');
+
+        function mostrarSeccion(numero) {
+            for (let i = 0; i < secciones.length; i++) {
+                secciones[i].classList.toggle('active', i === numero);
+                pestañas[i].classList.toggle('active', i === numero);
+            }
+        }
+
+        // Obtener el parámetro ?step de la URL
+        const params = new URLSearchParams(window.location.search);
+        const paso = parseInt(params.get('step')) || 0;
+
+        // Mostrar la sección correspondiente al cargar
+        mostrarSeccion(paso);
+
+        // Cuando se hace clic en una pestaña
+        for (let i = 0; i < pestañas.length; i++) {
+            pestañas[i].addEventListener('click', function() {
+                mostrarSeccion(i);
+                // Opcional: actualizar la URL sin recargar
+                const nuevaUrl = new URL(window.location);
+                nuevaUrl.searchParams.set('step', i);
+                window.history.replaceState({}, '', nuevaUrl); // Esto evita que se recargue
+            });
+        }
+    });
+</script>
+
+@endpush
 @endsection

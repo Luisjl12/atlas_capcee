@@ -12,6 +12,7 @@ use App\Models\GaleriaFotos;
 use App\Models\Usuario;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use OwenIt\Auditing\Models\Audit;
 
 
 class PlantelController extends Controller
@@ -290,6 +291,22 @@ class PlantelController extends Controller
         }
 
         $plantel->update($request->only($camposActualizables));
+        // 🔐 Asignar usuario manualmente a la auditoría
+        $usuarioId = session('id');
+        $usuario = $usuarioId ? Usuario::find($usuarioId) : null;
+
+        if ($usuario) {
+            $auditoria = Audit::where('auditable_type', Plantel::class)
+                ->where('auditable_id', $plantel->id)
+                ->latest()
+                ->first();
+
+            if ($auditoria) {
+                $auditoria->user_id = $usuario->id;
+                $auditoria->user_type = Usuario::class;
+                $auditoria->save();
+            }
+        }
 
         return redirect()->back()->with('success', 'Ficha base actualizada correctamente.');
     }
@@ -329,41 +346,56 @@ class PlantelController extends Controller
     //Guardar cambios en proteccion civil
     public function guardarProteccionCivil(Request $request, $cct)
     {
-
         $plantel = Plantel::where('cct', $cct)->firstOrFail();
-
         $detalle = $plantel->detalleProteccionCivil;
+        $seccion = $request->input('seccion');
 
-        $data = $request->validate([
-            'programa_interno_pc' => 'nullable|boolean',
-            'alarma_sismica' => 'nullable|boolean',
-            'alarma_sismica_funcional' => 'nullable|boolean',
-            'brigadas_conformadas' => 'nullable|boolean',
-            'botiquin_existencia' => 'nullable|boolean',
-            'senaletica_estado' => 'required|string',
-            'extintores_cantidad' => 'required|integer|min:0',
-            'extintores_vigentes' => 'required|integer|min:0',   // ← corregido
-            'simulacros_ultimo_anio' => 'required|integer|min:0',
-            'extintores_ultima_recarga' => 'nullable|date',
-            'programa_interno_pc_fecha' => 'nullable|date',
-            'botiquin_estado' => 'nullable|string',
-            'simulacros_ultimo_anio' => 'nullable|integer|min:0',
-            'observaciones' => 'nullable|string|max:2000',
+        $validaciones = [];
+        $campos = [];
 
-        ]);
+        switch ($seccion) {
+            case 'seguridad':
+                $validaciones = [
+                    'programa_interno_pc' => 'nullable|boolean',
+                    'alarma_sismica' => 'nullable|boolean',
+                    'alarma_sismica_funcional' => 'nullable|boolean',
+                    'senaletica_estado' => 'required|string',
+                    'extintores_cantidad' => 'required|integer|min:0',
+                    'extintores_vigentes' => 'required|integer|min:0',
+                    'extintores_ultima_recarga' => 'nullable|date',
+                    'programa_interno_pc_fecha' => 'nullable|date',
+                ];
+                break;
 
+            case 'brigadas':
+                $validaciones = [
+                    'brigadas_conformadas' => 'nullable|boolean',
+                    'botiquin_existencia' => 'nullable|boolean',
+                    'botiquin_estado' => 'nullable|string',
+                    'simulacros_ultimo_anio' => 'nullable|integer|min:0',
+                ];
+                break;
+
+            case 'observaciones':
+                $validaciones = [
+                    'observaciones' => 'nullable|string|max:2000',
+                ];
+                break;
+        }
+
+        $data = $request->validate($validaciones);
 
         if (!$detalle) {
             $data['cct'] = $cct;
             $detalle = new \App\Models\DetalleProteccionCivil($data);
             $detalle->save();
         } else {
-            $detalle->update($data);
+            $detalle->fill($data)->save();
         }
 
-
-        return redirect()->route('planteles.show', $plantel->id)->with('success', 'Proteccion civil guardada correctamente');
+        return back()->with('success', 'Sección de protección civil guardada correctamente');
     }
+
 
     //Controlador para buscador dinamico para planteles 
     public function buscar(Request $request)
@@ -401,5 +433,12 @@ class PlantelController extends Controller
             ->get();
 
         return view('planteles.index', compact('planteles', 'estatus'));
+    }
+
+    //historial de cambios
+    public function mostrarAuditorias($id)
+    {
+        $plantel = Plantel::with('auditorias.user')->findOrFail($id);
+        return view('planteles.auditorias', compact('plantel'));
     }
 }

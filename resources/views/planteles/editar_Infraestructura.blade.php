@@ -35,8 +35,8 @@
 
     {{-- Formulario --}}
     <div class="form-navigation nav-tabs-text mb-3">
-        <span class="nav-tab active" data-step="0">Servicios Basicos</span>
-        <span class="nav-tab" data-step="1">Hidrosanitaria</span>
+        <span class="nav-tab active" data-step="0">Hidrosanitaria</span>
+        <span class="nav-tab" data-step="1">Servicios Basicos</span>
 
     </div>
 
@@ -44,69 +44,10 @@
     <!--Servicios Basicos --->
     <div class="form-ficha-base">
 
-        <form action="{{ route('infraestructura.update_servicios', $plantel->cct) }}" method="POST">
-            @csrf
-            @method('PUT')
-            <div class="form-section step-section" data-step="0">
-
-
-                <h4><i class="fas fa-bolt"></i> Servicios Básicos</h4>
-
-                <div class="row">
-                    <div class="form-check col-md-3">
-                        <input type="hidden" name="electricidad_contrato" value="0">
-                        <input class="form-check-input" type="checkbox" name="electricidad_contrato" value="1"
-                            {{ old('electricidad_contrato', $servicio->electricidad_contrato ?? 0) ? 'checked' : '' }}>
-                        <label> Contrato de Electricidad</label>
-                    </div>
-
-                    <div class="form-check col-md-3">
-                        <input type="hidden" name="telefonia_fija" value="0">
-                        <input class="form-check-input" type="checkbox" name="telefonia_fija" value="1"
-                            {{ old('telefonia_fija', $servicio->telefonia_fija ?? 0) ? 'checked' : '' }}>
-                        <label> Línea Telefónica Fija</label>
-                    </div>
-
-                    <div class="form-check col-md-3">
-                        <input type="hidden" name="internet_acceso" value="0">
-                        <input class="form-check-input" type="checkbox" name="internet_acceso" value="1"
-                            {{ old('internet_acceso', $servicio->internet_acceso ?? 0) ? 'checked' : '' }}>
-                        <label> Acceso a Internet</label>
-                    </div>
-                </div>
-
-                <div class="row mt-3">
-                    <div class="form-group col-md-6">
-                        <label>Tipo de Gas:</label>
-                        <input type="text" name="gas_tipo" class="form-control"
-                            placeholder="Ej: LP Estacionario, Cilindros, No tiene"
-                            value="{{ old('gas_tipo', $servicio->gas_tipo ?? '') }}">
-                    </div>
-
-                    <div class="form-group col-md-6">
-                        <label>Tipo de Internet:</label>
-                        <input type="text" name="internet_tipo" class="form-control"
-                            placeholder="Ej: Fibra Óptica, ADSL, Satelital"
-                            value="{{ old('internet_tipo', $servicio->internet_tipo ?? '') }}">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Observaciones de Servicios:</label>
-                    <textarea name="observaciones" class="form-control" rows="2">{{ old('observaciones', $servicio->observaciones ?? '') }}</textarea>
-                </div>
-
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Servicios</button>
-
-            </div>
-        </form>
-
-        <!--Hidrosanitario--->
         <form action="{{ route('infraestructura.update_hidrosanitario', $plantel->cct) }}" method="POST">
             @csrf
             @method('PUT')
-            <div class="form-section step-section" data-step="1">
-
+            <div class="form-section step-section" data-step="0">
                 <h4><i class="fas fa-faucet"></i> Hidrosanitaria</h4>
 
                 <div class="row">
@@ -163,6 +104,63 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Hidrosanitario</button>
+
+            </div>
+        </form>
+
+        <!--Hidrosanitario--->
+        <form action="{{ route('infraestructura.update_servicios', $plantel->cct) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <div class="form-section step-section" data-step="1">
+
+                <h4><i class="fas fa-bolt"></i> Servicios Básicos</h4>
+
+                <div class="row">
+                    <div class="form-check col-md-3">
+                        <input type="hidden" name="electricidad_contrato" value="0">
+                        <input class="form-check-input" type="checkbox" name="electricidad_contrato" value="1"
+                            {{ old('electricidad_contrato', $servicio->electricidad_contrato ?? 0) ? 'checked' : '' }}>
+                        <label> Contrato de Electricidad</label>
+                    </div>
+
+                    <div class="form-check col-md-3">
+                        <input type="hidden" name="telefonia_fija" value="0">
+                        <input class="form-check-input" type="checkbox" name="telefonia_fija" value="1"
+                            {{ old('telefonia_fija', $servicio->telefonia_fija ?? 0) ? 'checked' : '' }}>
+                        <label> Línea Telefónica Fija</label>
+                    </div>
+
+                    <div class="form-check col-md-3">
+                        <input type="hidden" name="internet_acceso" value="0">
+                        <input class="form-check-input" type="checkbox" name="internet_acceso" value="1"
+                            {{ old('internet_acceso', $servicio->internet_acceso ?? 0) ? 'checked' : '' }}>
+                        <label> Acceso a Internet</label>
+                    </div>
+                </div>
+
+                <div class="row mt-3">
+                    <div class="form-group col-md-6">
+                        <label>Tipo de Gas:</label>
+                        <input type="text" name="gas_tipo" class="form-control"
+                            placeholder="Ej: LP Estacionario, Cilindros, No tiene"
+                            value="{{ old('gas_tipo', $servicio->gas_tipo ?? '') }}">
+                    </div>
+
+                    <div class="form-group col-md-6">
+                        <label>Tipo de Internet:</label>
+                        <input type="text" name="internet_tipo" class="form-control"
+                            placeholder="Ej: Fibra Óptica, ADSL, Satelital"
+                            value="{{ old('internet_tipo', $servicio->internet_tipo ?? '') }}">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Observaciones de Servicios:</label>
+                    <textarea name="observaciones" class="form-control" rows="2">{{ old('observaciones', $servicio->observaciones ?? '') }}</textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Servicios</button>
 
             </div>
 

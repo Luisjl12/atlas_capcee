@@ -1,4 +1,5 @@
 <div class="mt-3 data-table-container">
+    <!--Tabla para los planteles-->
     <table class="table data-table">
         <thead class="thead-custom">
             <tr>

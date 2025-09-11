@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
+use OwenIt\Auditing\Contracts\Auditable;
 
-class Plantel extends Model
+class Plantel extends Model implements Auditable
 {
-    use Notifiable;
+    use Notifiable, \OwenIt\Auditing\Auditable;
 
     protected $table = "planteles";
     protected $primaryKey = "id";
@@ -80,5 +81,49 @@ class Plantel extends Model
     public function fotosGaleria()
     {
         return $this->hasOne(GaleriaFotos::class, 'cct', 'cct');
+    }
+
+    public function auditorias()
+    {
+        return $this->morphMany(\OwenIt\Auditing\Models\Audit::class, 'auditable');
+    }
+
+    public function transformAudit(array $data): array
+    {
+        $tags = [];
+
+        // Detectar cambios específicos
+        if (isset($data['old_values']['nombre_escuela']) && isset($data['new_values']['nombre_escuela'])) {
+            $tags[] = 'CambioNombre';
+        }
+
+        if (isset($data['old_values']['cct']) && isset($data['new_values']['cct'])) {
+            $tags[] = 'CambioCCT';
+        }
+
+        if (isset($data['old_values']['turno']) && isset($data['new_values']['turno'])) {
+            $tags[] = 'CambioTurno';
+        }
+
+        if (isset($data['old_values']['nivel_educativo']) && isset($data['new_values']['nivel_educativo'])) {
+            $tags[] = 'CambioNivel';
+        }
+
+        if (isset($data['old_values']['sostenimiento']) && isset($data['new_values']['sostenimiento'])) {
+            $tags[] = 'CambioSostenimiento';
+        }
+
+        // Agregar el rol del usuario como tag adicional
+        $usuario = $this->resolveUser();
+        if ($usuario && $usuario->rol) {
+            $tags[] = strtoupper($usuario->rol->nombre_rol);
+        }
+
+        // Convertir los tags a JSON para evitar errores de tipo
+        if (!empty($tags)) {
+            $data['tags'] = json_encode($tags);
+        }
+
+        return $data;
     }
 }
