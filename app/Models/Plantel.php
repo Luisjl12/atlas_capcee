@@ -112,6 +112,50 @@ class Plantel extends Model implements Auditable
         if (isset($data['old_values']['sostenimiento']) && isset($data['new_values']['sostenimiento'])) {
             $tags[] = 'CambioSostenimiento';
         }
+        //Tag municipios
+        if (
+            isset($data['old_values']['id_municipio']) &&
+            isset($data['new_values']['id_municipio']) &&
+            $data['old_values']['id_municipio'] != $data['new_values']['id_municipio']
+        ) {
+            $nombreAnterior = \App\Models\Municipio::find($data['old_values']['id_municipio'])?->nombre_municipio;
+            $nombreNuevo = \App\Models\Municipio::find($data['new_values']['id_municipio'])?->nombre_municipio;
+
+            $tags[] = 'CambioMunicipio';
+
+            // Opcional: agregar nombres al detalle
+
+        }
+        //Tag localidades
+        if (
+            isset($data['old_values']['id_localidad']) &&
+            isset($data['new_values']['id_localidad']) &&
+            $data['old_values']['id_localidad'] != $data['new_values']['id_localidad']
+        ) {
+            $nombreAnterior = \App\Models\Localidad::find($data['old_values']['id_localidad'])?->nombre_localidad;
+            $nombreNuevo = \App\Models\Localidad::find($data['new_values']['id_localidad'])?->nombre_localidad;
+
+            $tags[] = 'CambioLocalidad';
+        }
+        //Tag Corde 
+        if (
+            isset($data['old_values']['id_corde']) &&
+            isset($data['new_values']['id_corde']) &&
+            $data['old_values']['id_corde'] != $data['new_values']['id_corde']
+        ) {
+            $nombreAnterior = \App\Models\Corde::find($data['old_values']['id_corde'])?->nombre_corde;
+            $nombreNuevo = \App\Models\Corde::find($data['new_values']['id_corde'])?->nombre_corde;
+            $tags[] = 'cambioCorde';
+        }
+        //Tag Calle y numero
+        if (isset($data['old_values']['domicilio_calle_numero']) && isset($data['new_values']['domicilio_calle_numero'])) {
+            $tags[] = 'CambioDomicilio';
+        }
+
+        //Tag domiclio_colonia
+        if (isset($data['old_values']['domicilio_colonia']) && isset($data['new_values']['domicilio_colonia'])) {
+            $tags[] = 'cambio Domicilio Colonia';
+        }
 
         // Agregar el rol del usuario como tag adicional
         $usuario = $this->resolveUser();

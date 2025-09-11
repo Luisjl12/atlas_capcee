@@ -55,8 +55,8 @@
             <ul>
                 <li><strong>CCT</strong> (obligatorio)</li>
                 <li><strong>NOMBRE_ESCUELA</strong> (obligatorio)</li>
-                <li><strong>NOMBRE MUNICIPIO</strong></li>
-                <li><strong>NOMBRE CORDE</strong></li>
+                <li><strong>NOMBRE MUNICIPIO</strong> (obligatorio)</li>
+                <li><strong>NOMBRE CORDE</strong> (obligatorio)</li>
 
             </ul>
 
