@@ -1,0 +1,19 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "NOMGEO": "Tepexi de Rodríguez"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [ 
+            
+           ] 
+        ]
+      }
+    }
+  ]
+}
