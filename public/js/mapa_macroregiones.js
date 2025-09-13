@@ -1,29 +1,32 @@
+document.addEventListener('DOMContentLoaded', function() {
+    const map = L.map('map').setView([19.0414, -98.2063], 9);
 
-    document.addEventListener('DOMContentLoaded', function() {
-        const map = L.map('map').setView([19.0414, -98.2063], 9);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; OpenStreetMap contributors'
-        }).addTo(map);
+    
 
-        //  Contorno del estado de Puebla
-        fetch('/geojson/puebla.json')
-            .then(res => res.json())
-            .then(data => {
-                const capaPuebla = L.geoJSON(data, {
-                    style: {
-                        color: '#0a0a0aff',
-                        weight: 2,
-                        fillOpacity: 0
-                    }
-                }).addTo(map);
-                map.fitBounds(capaPuebla.getBounds());
-            })
-            .catch(err => console.error('Error al cargar el GeoJSON de Puebla:', err));
+    // Contorno del estado de Puebla
+    fetch('/geojson/puebla.json')
+        .then(res => res.json())
+        .then(data => {
+            const capaPuebla = L.geoJSON(data, {
+                style: {
+                    color: '#0a0a0aff',
+                    weight: 2,
+                    fillOpacity: 0
+                }
+            }).addTo(map);
+            map.fitBounds(capaPuebla.getBounds());
+        })
+        .catch(err => console.error('Error al cargar el GeoJSON de Puebla:', err));
+    
+     
 
-        //  Macroregiones definidas por nombre
-        const regiones = {
-            "Sierra Norte": [
+
+    // Macroregiones y microregiones
+    const regiones = {  "Sierra Norte": [
                 "Zacatlán", "Huauchinango", "Xicotepec", "Chignahuapan", "Ahuacatlán",
                 "Ahuazotepec", "Amixtlán", "Aquixtlan", "Camocuautla", "Chiconcuautla",
                 "Coatepec", "Cuautempan", "Francisco Z. Mena", "Hermenegildo Galeana",
@@ -71,20 +74,8 @@
                 "Coyotepec", "Eloxochitlán", "Ixcaquixtla", "Juan N. Méndez", "Molcaxac", "Nicolás Bravo", "San Antonio Cañada", "San Gabriel Chilac",
                 "San José Miahuatlán", "San Sebastián Tlacotepec", "Santiago Miahuatlán", "Tehuacán", "Tepanco de López", "Tlacotepec de Benito Juárez",
                 "Vicente Guerrero", "Xochitlán Todos Santos", "Zapotitlán", "Zinacatepec", "Zoquitlán"
-            ]
-
-        };
-        const colores = [
-            "#cc0000", "#0066cc", "#009933", "#ff9900", "#6600cc", "#ff3399",
-            "#00cccc", "#c48e8b", "#504b06", "#00cc00", "#200703",
-            "#ff6600", "#9933cc", "#66ff66", "#3366ff", "#ff0066",
-            "#00ffcc", "#cc9966", "#6666ff", "#ccff33", "#ffcc00",
-            "#9900ff", "#33cccc", "#ff33cc", "#669900", "#cc3333", "#006633"
-        ];
-
-
-        const microregiones = {
-            "Xicotepec": ["Francisco Z. Mena", "Honey", "Jalpan", "Jopala", "Naupan", "Pahuatlán", "Pantepec",
+            ] };
+    const microregiones = { "Xicotepec": ["Francisco Z. Mena", "Honey", "Jalpan", "Jopala", "Naupan", "Pahuatlán", "Pantepec",
                 "Tlacuilotepec", "Tlapacoya", "Tlaxco", "Venustiano Carranza", "Xicotepec", "Zihuateutla"
             ],
             "Huauchinango": ["Ahuazotepec", "Chiconcuautla", "Huauchinango", "Juan Galindo", "Tlaola", "Zacatlán"],
@@ -124,133 +115,115 @@
             ],
             "Ajalpan": ["Ajalpan", "Altepexi", "Coxcatlán", "Coyomeapan", "Eloxochitlán", "San Antonio Cañada", "San Gabriel Chilac", "San José Miahuatlán", "San Sebastián Tlacotepec",
                 "Vicente Guerrero", "Zinacatepec", "Zoquitlán"
-            ]
-        };
+            ]};
 
-        //  Función para graficar municipios por región
-        function graficarMacroregion(nombre, municipios, estilo) {
-            fetch('/geojson/municipios.json')
-                .then(res => res.json())
-                .then(data => {
-                    const seleccionados = {
-                        type: "FeatureCollection",
-                        features: data.features.filter(f =>
-                            municipios.includes(f.properties.NOMGEO)
-                        )
-                    };
-                    L.geoJSON(seleccionados, {
-                        style: estilo
-                    }).addTo(map);
-                })
-                .catch(err => console.error(`Error al cargar ${nombre}:`, err));
-        }
+    const coloresMacro = [
+         "#cc0000", "#0066cc", "#009933", "#ff9900", "#6600cc", "#ff3399",
+        "#00cccc", "#c48e8b", "#504b06", "#00cc00", "#200703",
+        "#ff6600", "#9933cc", "#66ff66", "#3366ff", "#ff0066",
+         "#00ffcc", "#cc9966", "#6666ff", "#ccff33", "#ffcc00",
+        "#9900ff", "#33cccc", "#ff33cc", "#669900", "#cc3333", "#006633"
+    ];
 
-        //  Ejecutar graficado por región
-        let capasActivas = [];
+    let capasActivas = [];
 
-        function limpiarMapa() {
-            capasActivas.forEach(capa => map.removeLayer(capa));
-            capasActivas = [];
-        }
+    function limpiarMapa() {
+        capasActivas.forEach(capa => map.removeLayer(capa));
+        capasActivas = [];
+    }
 
-        function cargarMacroregiones() {
-            Object.entries(regiones).forEach(([nombre, municipios], index) => {
-                const estilo = {
-                    color: colores[index % colores.length],
-                    weight: 2,
-                    fillOpacity: 0
-                };
-                fetch('/geojson/municipios.json')
-                    .then(res => res.json())
-                    .then(data => {
-                        const seleccionados = {
-                            type: "FeatureCollection",
-                            features: data.features.filter(f =>
-                                municipios.includes(f.properties.NOMGEO)
-                            )
-                        };
-                        const capa = L.geoJSON(seleccionados, {
-                            style: estilo
-                        }).addTo(map);
-                        capasActivas.push(capa);
-                    })
-                    .catch(err => console.error(`Error al cargar ${nombre}:`, err));
-            });
-        }
+    
 
-        function cargarMicroregiones() {
-            fetch('/geojson/municipios.json')
-                .then(res => res.json())
-                .then(data => {
-                    Object.entries(microregiones).forEach(([nombre, municipios], index) => {
-                        const seleccionados = {
-                            type: "FeatureCollection",
-                            features: data.features.filter(f =>
-                                municipios.includes(f.properties.NOMGEO)
-                            )
-                        };
+   // 1. Función para fusionar municipios en una sola geometría
+function fusionarMunicipios(features) {
+    return features.reduce((acumulado, actual) => {
+        return acumulado ? turf.union(acumulado, actual) : actual;
+    }, null);
+}
 
-                        const estilo = {
-                            color: colores[index % colores.length], // Color único por microregión
-                            weight: 2,
-                            fillOpacity: 0.15
-                        };
+// 2. Función para cargar una región (macro o micro)
+function cargarRegion(tipo, nombre, color) {
+    fetch('/geojson/municipios_limpios.json')
+        .then(res => res.json())
+        .then(data => {
+            const fuente = tipo === 'macro' ? regiones : microregiones;
+            const municipios = fuente[nombre] || [];
 
-                        const capa = L.geoJSON(seleccionados, {
-                            style: estilo
-                        }).addTo(map);
-                        capasActivas.push(capa);
-                    });
-                })
-                .catch(err => console.error('Error al cargar microregiones:', err));
-        }
+            const seleccionados = data.features.filter(f =>
+                municipios.includes(f.properties.NOMGEO)
+            );
+
+            const geometriaUnida = fusionarMunicipios(seleccionados);
+
+            const estilo = {
+                color: color,              // borde resaltado
+                weight: 3,
+                fillColor: '#f9f9f9',      // relleno neutro
+                fillOpacity: 0.3
+            };
+
+            const capa = L.geoJSON(geometriaUnida, { style: estilo }).addTo(map);
+            capasActivas.push(capa);
+            map.fitBounds(capa.getBounds());
+        })
+        .catch(err => console.error(`Error al cargar ${nombre}:`, err));
+}
+
+// 3. Función para cargar todas las macroregiones
+function cargarMacroregiones() {
+    Object.entries(regiones).forEach(([nombre, municipios], index) => {
+        const color = coloresMacro[index % coloresMacro.length];
+        cargarRegion('macro', nombre, color);
+    });
+}
+
+// 4. Función para cargar todas las microregiones
+function cargarMicroregiones() {
+    Object.entries(microregiones).forEach(([nombre, municipios], index) => {
+        const color = coloresMacro[index % coloresMacro.length];
+        cargarRegion('micro', nombre, color);
+    });
+}
 
 
+    // Marcadores de planteles
+    const planteles = window.planteles || [];
+    const markers = [];
 
+    function normalizarEstado(estado) {
+        estado = (estado || '').toLowerCase().trim();
+        return estado === 'en_revision' ? 'revision' : estado;
+    }
 
-        // Marcadores de planteles
-        const planteles = @json($planteles);
-        const markers = [];
-
-        function normalizarEstado(estado) {
-            estado = estado.toLowerCase().trim();
-            return estado === 'en_revision' ? 'revision' : estado;
-        }
-
-        function crearIconoPorEstado(estado) {
-            const clase = normalizarEstado(estado);
-            return L.divIcon({
-                className: 'custom-marker',
-                iconSize: [30, 30],
-                iconAnchor: [15, 30],
-                popupAnchor: [0, -30],
-                html: `<i class="bi bi-geo-alt-fill marker-icon ${clase}"></i>`
-            });
-        }
-
-        planteles.forEach(plantel => {
-            const estado = (plantel.estatus_plantel || 'revision').toLowerCase();
-            const icono = crearIconoPorEstado(estado);
-
-            const marker = L.marker([plantel.lat, plantel.lng], {
-                    icon: icono
-                })
-                .addTo(map)
-                .bindPopup(
-                    `<b>${plantel.nombre}</b><br>` +
-                    `CCT: ${plantel.cct}<br>` +
-                    `Estado: ${estado.charAt(0).toUpperCase() + estado.slice(1)}`
-                );
-
-            markers.push({
-                cct: plantel.cct.toLowerCase(),
-                nombre: plantel.nombre.toLowerCase(),
-                marker: marker
-            });
+    function crearIconoPorEstado(estado) {
+        return L.divIcon({
+            className: 'custom-marker',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30],
+            html: `<i class="bi bi-geo-alt-fill marker-icon ${normalizarEstado(estado)}"></i>`
         });
+    }
 
-        // Buscador de planteles
-        const buscador = document.getElementById('buscadorPlantel');
+    planteles.forEach(plantel => {
+        const marker = L.marker([plantel.lat, plantel.lng], {
+            icon: crearIconoPorEstado(plantel.estatus_plantel)
+        }).addTo(map).bindPopup(`
+            <b>${plantel.nombre}</b><br>
+            CCT: ${plantel.cct}<br>
+            Estado: ${normalizarEstado(plantel.estatus_plantel).charAt(0).toUpperCase() + normalizarEstado(plantel.estatus_plantel).slice(1)}
+        `);
+
+        markers.push({
+            cct: (plantel.cct || '').toLowerCase(),
+            nombre: (plantel.nombre || '').toLowerCase(),
+            marker
+        });
+    });
+
+    // Buscador de planteles
+    const buscador = document.getElementById('buscadorPlantel');
+    if (buscador) {
         buscador.addEventListener('input', function() {
             const texto = buscador.value.toLowerCase().trim();
             if (texto.length < 3) return;
@@ -266,15 +239,28 @@
         });
 
         buscador.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                buscador.dispatchEvent(new Event('input'));
-            }
+            if (e.key === 'Enter') buscador.dispatchEvent(new Event('input'));
         });
-        // Inicializar con macroregiones
-        cargarMacroregiones();
+    }
 
-        // Escuchar cambios en el selector
-        document.getElementById('tipoMapa').addEventListener('change', function(e) {
+    // Inicializar mapa con macroregiones
+    cargarMacroregiones();
+
+    // Selector de región
+    const selectorRegion = document.getElementById('selectorRegion');
+    if (selectorRegion) {
+        selectorRegion.addEventListener('change', function(e) {
+            const valor = e.target.value;
+            if (!valor) return;
+            const [tipo, nombre] = valor.split(':');
+            mostrarRegion(tipo, nombre);
+        });
+    }
+
+    // Tipo de mapa (macro/micro)
+    const tipoMapa = document.getElementById('tipoMapa');
+    if (tipoMapa) {
+        tipoMapa.addEventListener('change', function(e) {
             limpiarMapa();
             if (e.target.value === 'macro') {
                 cargarMacroregiones();
@@ -282,5 +268,5 @@
                 cargarMicroregiones();
             }
         });
-
-    });
+    }
+});
