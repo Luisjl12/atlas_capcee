@@ -1,53 +1,4 @@
-@extends('layouts.app')
 
-@section('title', 'Mapa de Planteles')
-
-@section('content')
-<div class="mb-3">
-    <input type="text" id="buscadorPlantel" class="form-control" placeholder="Buscar por CCT o nombre...">
-</div>
-
-<div class="container mt-4">
-    <h3 class="mb-3">Mapa de Planteles</h3>
-    <select id="tipoMapa" class="form-select mb-3" style="max-width: 300px;">
-        <option value="macro">Macroregiones</option>
-        <option value="micro">Microregiones</option>
-    </select>
-    <div id="map" style="height: 500px; border-radius: 8px;"></div>
-</div>
-
-{{-- Estilos de Leaflet --}}
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-
-{{-- Script de Leaflet --}}
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
-{{-- Estilos para íconos CSS --}}
-<style>
-    .custom-marker .marker-icon {
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        border: 2px solid white;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
-    }
-
-    .marker-icon.activo {
-        background-color: #4CAF50;
-    }
-
-    .marker-icon.inactivo {
-        background-color: #F44336;
-    }
-
-    .marker-icon.revision {
-        background-color: #FFC107;
-    }
-</style>
-
-<!--Script para graficar los mapas-->
-
-<script>
     document.addEventListener('DOMContentLoaded', function() {
         const map = L.map('map').setView([19.0414, -98.2063], 9);
 
@@ -333,7 +284,3 @@
         });
 
     });
-</script>
-
-
-@endsection
