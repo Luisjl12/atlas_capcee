@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
 
     // Contorno del estado de Puebla
-    fetch('/geojson/puebla.json')
+    fetch('/geojson/puebla_limpio_dos.json')
         .then(res => res.json())
         .then(data => {
             const capaPuebla = L.geoJSON(data, {
@@ -21,14 +21,52 @@ document.addEventListener('DOMContentLoaded', function() {
             map.fitBounds(capaPuebla.getBounds());
         })
         .catch(err => console.error('Error al cargar el GeoJSON de Puebla:', err));
-    
-     
+
+    fetch('/geojson/municipios_limpios.json')
+    .then(res => res.json())
+    .then(data => {
+        cargarMacroregionesPorLotes(data);  // carga inicial
+       
+
+        //  
+        const tipoMapa = document.getElementById('tipoMapa');
+        if (tipoMapa) {
+            tipoMapa.addEventListener('change', function(e) {
+            limpiarMapa();
+            mostrarLoader();
+             if (e.target.value === 'macro') {
+           cargarMacroregionesPorLotes(data);
+            } else {
+             cargarMicroregionesPorLotes(data);
+             }
+            });
+        }
+
+        const selectorRegion = document.getElementById('selectorRegion');
+        if (selectorRegion) {
+            selectorRegion.addEventListener('change', function(e) {
+                const valor = e.target.value;
+                if (!valor) return;
+                const [tipo, nombre] = valor.split(':');
+                limpiarMapa();
+                mostrarLoader();
+                const color = '#cc0000'; // 
+                
+                setTimeout(() => {
+                cargarRegionDesdeData(tipo, nombre, color, data);
+                const bounds = L.featureGroup(capasActivas).getBounds();
+                map.fitBounds(bounds);
+                ocultarLoader();
+                }, 50);
+            });
+        }
+    });
 
 
     // Macroregiones y microregiones
     const regiones = {  "Sierra Norte": [
                 "Zacatlán", "Huauchinango", "Xicotepec", "Chignahuapan", "Ahuacatlán",
-                "Ahuazotepec", "Amixtlán", "Aquixtlan", "Camocuautla", "Chiconcuautla",
+                "Ahuazotepec", "Amixtlán", "Aquixtla", "Camocuautla", "Chiconcuautla",
                 "Coatepec", "Cuautempan", "Francisco Z. Mena", "Hermenegildo Galeana",
                 "Honey", "Huitzilan de Serdán", "Ixtacamaxtitlán", "Jalpan", "Jopala",
                 "Juan Galindo", "Naupan", "Pahuatlán", "Pantepec", "San Felipe Tepatlán",
@@ -40,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 "Acateno", "Atempan", "Atlequizayan", "Ayotoxco de Guerrero", "Caxhuacan",
                 "Chignautla", "Cuetzalan del Progreso", "Cuyoaco", "Huehuetla", "Hueyapan",
                 "Hueytamalco", "Hueytlalpan", "Ixtepec", "Jonotla", "Nauzontla", "Olintla",
-                "Tenampulco", "Teteles de Avila Castillo", "Teziutlán", "Tlatlauquitepec",
+                "Tenampulco", "Teteles de Ávila Castillo", "Teziutlán", "Tlatlauquitepec",
                 "Tuzamapan de Galeana", "Xiutetelco", "Yaonáhuac", "Zacapoaxtla", "Zaragoza", "Zoquiapan"
 
             ],
@@ -79,7 +117,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 "Tlacuilotepec", "Tlapacoya", "Tlaxco", "Venustiano Carranza", "Xicotepec", "Zihuateutla"
             ],
             "Huauchinango": ["Ahuazotepec", "Chiconcuautla", "Huauchinango", "Juan Galindo", "Tlaola", "Zacatlán"],
-            "Chignahuapan": ["Aquixtla ", "Chignahuapan", "Ixtacamaxtitlán", "Tetela de Ocampo", "Xochiapulco", "Zautla"],
+            "Chignahuapan": ["Aquixtla", "Chignahuapan", "Ixtacamaxtitlán", "Tetela de Ocampo", "Xochiapulco", "Zautla"],
             "Cuautempan": ["Ahuacatlán", "Amixtlán", "Camocuautla", "Coatepec", "Cuautempan", "Hermenegildo Galeana", "Huitzilan de Serdán",
                 "San Felipe Tepatlán", "Tepango de Rodríguez", "Tepetzintla", "Xochitlán de Vicente Suárez", "Zapotitlán de Méndez", "Zongozotla"
             ],
@@ -92,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function() {
             "Ciudad Serdan": ["Aljojuca", "Atzitzintla", "Chalchicomula de Sesma", "Esperanza", "General Felipe Ángeles", "San Juan Atenco", "Tlachichuca"],
 
             "tecamachalco": ["Cañada Morelos", "Palmar de Bravo", "Quecholac", "San Salvador Huixcolotla", "Tecamachalco", "Yehualtepec"],
-            "Acatzingo ": ["Acatzingo", "Mazapiltepec de Juárez", "Nopalucan", "Rafael Lara Grajales", "San José Chiapa", "San Nicolás Buenos Aires", "San Salvador el Seco", "Soltepec"],
+            "Acatzingo": ["Acatzingo", "Mazapiltepec de Juárez", "Nopalucan", "Rafael Lara Grajales", "San José Chiapa", "San Nicolás Buenos Aires", "San Salvador el Seco", "Soltepec"],
             "Tepeaca": ["Atoyatempan", "Cuapiaxtla de Madero", "Huitziltepec", "Los Reyes de Juárez", "Mixtla", "Santo Tomás Hueyotlipan", "Tepeaca", "Tepeyahualco de Cuauhtémoc", "Tlanepantla", "Tochtepec"],
             "Puebla Capital": ["Puebla"],
             "Amozoc": ["Acajete", "Amozoc", "Cuautinchán", "Tecali de Herrera", "Tepatlaxco de Hidalgo"],
@@ -110,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function() {
             "Tepexi": ["Ahuatlán", "Chigmecatitlán", "Coatzingo", "Cuayuca de Andrade", "Huatlatlauca", "Huehuetlán el Grande", "La Magdalena Tlatlauquitepec", "San Diego la Mesa Tochimiltzingo", "San Juan Atzompa",
                 "San Martín Totoltepec", "Santa Catarina Tlaltempan", "Santa Inés Ahuatempan", "Teopantlán", "Tepexi de Rodríguez", "Tzicatlacoyan", "Xochiltepec", "Zacapala"
             ],
-            "Tahuacan": ["Atexcal", "Caltepec", "Chapulco", "Coyotepec", "Ixcaquixtla", "Juan N. Méndez", "Molcaxac", "Nicolás Bravo", "Santiago Miahuatlán",
+            "Tehuacan": ["Atexcal", "Caltepec", "Chapulco", "Coyotepec", "Ixcaquixtla", "Juan N. Méndez", "Molcaxac", "Nicolás Bravo", "Santiago Miahuatlán",
                 "Tehuacán", "Tepanco de López", "Tlacotepec de Benito Juárez", "Xochitlán Todos Santos", "Zapotitlán"
             ],
             "Ajalpan": ["Ajalpan", "Altepexi", "Coxcatlán", "Coyomeapan", "Eloxochitlán", "San Antonio Cañada", "San Gabriel Chilac", "San José Miahuatlán", "San Sebastián Tlacotepec",
@@ -142,50 +180,79 @@ function fusionarMunicipios(features) {
 }
 
 // 2. Función para cargar una región (macro o micro)
-function cargarRegion(tipo, nombre, color) {
-    fetch('/geojson/municipios_limpios.json')
-        .then(res => res.json())
-        .then(data => {
-            const fuente = tipo === 'macro' ? regiones : microregiones;
-            const municipios = fuente[nombre] || [];
+function cargarRegionDesdeData(tipo, nombre, color, data) {
+    const fuente = tipo === 'macro' ? regiones : microregiones;
+    const municipios = fuente[nombre] || [];
 
-            const seleccionados = data.features.filter(f =>
-                municipios.includes(f.properties.NOMGEO)
-            );
+    const seleccionados = data.features.filter(f =>
+        municipios.includes(f.properties.NOMGEO)
+    );
 
-            const geometriaUnida = fusionarMunicipios(seleccionados);
+    const geometriaUnida = fusionarMunicipios(seleccionados);
 
-            const estilo = {
-                color: color,              // borde resaltado
-                weight: 3,
-                fillColor: '#f9f9f9',      // relleno neutro
-                fillOpacity: 0.3
-            };
+    const estilo = {
+        color: color,
+        weight: 3,
+        fillColor: '#f9f9f9',
+        fillOpacity: 0.3
+    };
 
-            const capa = L.geoJSON(geometriaUnida, { style: estilo }).addTo(map);
-            capasActivas.push(capa);
-            map.fitBounds(capa.getBounds());
-        })
-        .catch(err => console.error(`Error al cargar ${nombre}:`, err));
+    const capa = L.geoJSON(geometriaUnida, { style: estilo }).addTo(map);
+    capasActivas.push(capa);
 }
+
 
 // 3. Función para cargar todas las macroregiones
-function cargarMacroregiones() {
-    Object.entries(regiones).forEach(([nombre, municipios], index) => {
-        const color = coloresMacro[index % coloresMacro.length];
-        cargarRegion('macro', nombre, color);
-    });
+function cargarMacroregionesPorLotes(data, lote = 3, delay = 100) {
+    mostrarLoader();
+    const nombres = Object.keys(regiones);
+    let index = 0;
+
+    function procesarLote() {
+        const fin = Math.min(index + lote, nombres.length);
+        for (; index < fin; index++) {
+            const nombre = nombres[index];
+            const color = coloresMacro[index % coloresMacro.length];
+            cargarRegionDesdeData('macro', nombre, color, data);
+        }
+        if (index < nombres.length) {
+            setTimeout(procesarLote, delay);
+        } else {
+            ocultarLoader();
+            const bounds = L.featureGroup(capasActivas).getBounds();
+            map.fitBounds(bounds);
+        }
+    }
+
+    procesarLote();
+    
 }
 
-// 4. Función para cargar todas las microregiones
-function cargarMicroregiones() {
-    Object.entries(microregiones).forEach(([nombre, municipios], index) => {
-        const color = coloresMacro[index % coloresMacro.length];
-        cargarRegion('micro', nombre, color);
-    });
+
+function cargarMicroregionesPorLotes(data, lote = 3, delay = 100) {
+    mostrarLoader();
+    const nombres = Object.keys(microregiones);
+    let index = 0;
+
+    function procesarLote() {
+        const fin = Math.min(index + lote, nombres.length);
+        for (; index < fin; index++) {
+            const nombre = nombres[index];
+            const color = coloresMacro[index % coloresMacro.length];
+            cargarRegionDesdeData('micro', nombre, color, data);
+        }
+        if (index < nombres.length) {
+            setTimeout(procesarLote, delay);
+        } else {
+            ocultarLoader();
+            const bounds = L.featureGroup(capasActivas).getBounds();
+            map.fitBounds(bounds);
+        }
+    }
+
+    procesarLote();
+    
 }
-
-
     // Marcadores de planteles
     const planteles = window.planteles || [];
     const markers = [];
@@ -211,7 +278,9 @@ function cargarMicroregiones() {
         }).addTo(map).bindPopup(`
             <b>${plantel.nombre}</b><br>
             CCT: ${plantel.cct}<br>
-            Estado: ${normalizarEstado(plantel.estatus_plantel).charAt(0).toUpperCase() + normalizarEstado(plantel.estatus_plantel).slice(1)}
+            Estado: ${normalizarEstado(plantel.estatus_plantel).charAt(0).toUpperCase() + normalizarEstado(plantel.estatus_plantel).slice(1)}<br>
+            Municipio: ${plantel.municipio?.nombre_municipio || 'Sin dato'}<br>
+            Localidad: ${plantel.localidad?.nombre_localidad || 'Sin dato'}
         `);
 
         markers.push({
@@ -243,30 +312,12 @@ function cargarMicroregiones() {
         });
     }
 
-    // Inicializar mapa con macroregiones
-    cargarMacroregiones();
+    function mostrarLoader() {
+    document.getElementById('loader').style.display = 'block';
+}
+    function ocultarLoader() {
+    document.getElementById('loader').style.display = 'none';
+}
 
-    // Selector de región
-    const selectorRegion = document.getElementById('selectorRegion');
-    if (selectorRegion) {
-        selectorRegion.addEventListener('change', function(e) {
-            const valor = e.target.value;
-            if (!valor) return;
-            const [tipo, nombre] = valor.split(':');
-            mostrarRegion(tipo, nombre);
-        });
-    }
 
-    // Tipo de mapa (macro/micro)
-    const tipoMapa = document.getElementById('tipoMapa');
-    if (tipoMapa) {
-        tipoMapa.addEventListener('change', function(e) {
-            limpiarMapa();
-            if (e.target.value === 'macro') {
-                cargarMacroregiones();
-            } else {
-                cargarMicroregiones();
-            }
-        });
-    }
 });

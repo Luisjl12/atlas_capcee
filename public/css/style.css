@@ -2130,3 +2130,11 @@ Estilos personalizados para contenedores en celular
   box-shadow: 0 0 4px rgba(0,0,0,0.1);
 }
 
+/*Orientacion de controles para mapas para moviles*/
+@media (max-width: 600px) {
+    #controlesMapa {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
+
