@@ -12,6 +12,7 @@ class MapaController extends Controller
         // Recupera todos los planteles que tengan latitud y longitud
         $planteles = Plantel::with(['municipio', 'localidad'])
             ->select(
+                'id',
                 'nombre_escuela as nombre',
                 'cct',
                 'latitud as lat',

@@ -82,6 +82,10 @@ class Plantel extends Model implements Auditable
     {
         return $this->hasOne(GaleriaFotos::class, 'cct', 'cct');
     }
+    public function niveles()
+    {
+        return $this->hasMany(\App\Models\InmuebleNivel::class, 'cct', 'cct');
+    }
 
     public function auditorias()
     {

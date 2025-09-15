@@ -41,7 +41,8 @@ default => ['fas fa-file', 'text-dark'],
         <span class="nav-tab" data-step="3">Proteccion Civil</span>
         <span class="nav-tab" data-step="4">Archivos</span>
         <span class="nav-tab" data-step="5">Galerias</span>
-        <span class="nav-tab" data-step="6">Mapas</span>
+        <span class="nav-tab" data-step="6">Ubicacion en el mapa</span>
+        <span class="nav-tab" data-step="7">Detalles avanzados del plantel</span>
     </div>
 
     @if (session('success'))
@@ -470,10 +471,34 @@ default => ['fas fa-file', 'text-dark'],
         <!--Mapas-->
         <div class="form-section step-section d-none" data-step="6">
             <div class="container mt-4">
-                <h3 class="mb-3">Mapa de Planteles</h3>
+                <h3 class="mb-3">Ubicacion individual del plantel</h3>
                 <div id="map" style="height: 500px; border-radius: 8px;"></div>
             </div>
         </div>
+
+        <div class="form-section step-section d-none" data-step="7">
+            <div class="container mt-4">
+                <h3 class="mb-3">Detalles avanzados del plantel</h3>
+
+                @if($plantel->niveles->isEmpty())
+
+
+                <p>No se registran niveles educativos para este plantel.</p>
+                @else
+                <ul class="list-group">
+                    @foreach($plantel->niveles->where('imparte', true) as $nivel)
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ ucfirst(str_replace('_', ' ', $nivel->nivel)) }}
+                        <span class="badge bg-success">Sí</span>
+                    </li>
+
+                    @endforeach
+                </ul>
+                @endif
+            </div>
+        </div>
+
 
     </div>
 

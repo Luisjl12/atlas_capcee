@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(err => console.error('Error al cargar el GeoJSON de Puebla:', err));
 
-    fetch('/geojson/municipios_limpios.json')
+    fetch('/geojson/municipios_limpios_dos.json')
     .then(res => res.json())
     .then(data => {
         cargarMacroregionesPorLotes(data);  // carga inicial
@@ -188,7 +188,10 @@ function cargarRegionDesdeData(tipo, nombre, color, data) {
         municipios.includes(f.properties.NOMGEO)
     );
 
-    const geometriaUnida = fusionarMunicipios(seleccionados);
+   const geometriaUnida = municipios.length > 1
+    ? fusionarMunicipios(seleccionados)
+    : seleccionados[0];
+
 
     const estilo = {
         color: color,
@@ -280,7 +283,8 @@ function cargarMicroregionesPorLotes(data, lote = 3, delay = 100) {
             CCT: ${plantel.cct}<br>
             Estado: ${normalizarEstado(plantel.estatus_plantel).charAt(0).toUpperCase() + normalizarEstado(plantel.estatus_plantel).slice(1)}<br>
             Municipio: ${plantel.municipio?.nombre_municipio || 'Sin dato'}<br>
-            Localidad: ${plantel.localidad?.nombre_localidad || 'Sin dato'}
+            Localidad: ${plantel.localidad?.nombre_localidad || 'Sin dato'}<br>
+            <a href="/planteles/${plantel.id}" target="_blank">Ver ficha completa</a>
         `);
 
         markers.push({

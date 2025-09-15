@@ -8,6 +8,7 @@ use App\Models\Municipio;
 use App\Models\Corde;
 use App\Models\Localidad;
 use Illuminate\Http\Request;
+use App\Models\InmuebleNivel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -170,6 +171,22 @@ class ImportarDatosController extends Controller
             $estatusPlantel = in_array($estatusRaw, $estatusValidos) ? $estatusRaw : $estatusPorDefecto;
 
 
+            //Nivel educativo
+            $nivelesEducativos = [
+                'inicial' => 'INMUEBLE IMPARTE EDUCACION INICIAL',
+                'preescolar' => 'INMUEBLE IMPARTE EDUCACION PREESCOLAR',
+                'primaria' => 'INMUEBLE IMPARTE EDUCACION PRIMARIA',
+                'secundaria' => 'IMPARTE_EDUCACION_SECUNDARIA',
+                'formacion_trabajo' => 'INMUEBLE IMPARTE EDUCACION FORMACION PARA EL TRABAJO',
+                'bachillerato_general' => 'INMUEBLE IMPARTE EDUCACION BACHILLERATO GENERAL',
+                'bachillerato_tecnologico' => 'INMUEBLE IMPARTE EDUCACION BACHILLERATO TECNOLOGICO O QUIVALENTE',
+                'tecnico_profesional' => 'INMUEBLE IMPARTE EDUCACION TECNICO LICENCIATURA',
+                'tecnico_licenciatura' => 'INMUEBLE IMPARTE EDUCACION TECNICO LICENCIATURA',
+                'tecnico_posgrado' => 'INMUEBLE IMPARTE EDUCACION TECNICO POSGRADO',
+            ];
+
+
+
 
             // Validar campos obligatorios
             $camposFaltantes = [];
@@ -199,8 +216,9 @@ class ImportarDatosController extends Controller
                 $errores[] = "Línea " . ($index + 1) . ": sostenimiento inválido: '$sostenimientoRaw'.";
                 continue;
             }
-
-            $corde = Corde::where('nombre_corde', $nombreCorde)->first();
+            //////
+            $nombreCordeNormalizado = $this->normalizarNombreCorde($nombreCorde);
+            $corde = Corde::where('nombre_corde', $nombreCordeNormalizado)->first();
             if (!$corde) {
                 $errores[] = "Linea" . ($index + 1) . ": el corde '$nombreCorde' no esta registrado";
                 continue;
@@ -231,7 +249,18 @@ class ImportarDatosController extends Controller
                 continue;
             }
 
+            $nivelesImpartidos = [];
 
+            foreach ($nivelesEducativos as $nivel => $encabezado) {
+                $valorRaw = strtolower(trim($datos[$encabezado] ?? ''));
+                $imparte = in_array($valorRaw, ['sí', 'si', 'true', '1']) ? true : false;
+
+                $nivelesImpartidos[] = [
+                    'cct' => $datos['CCT'] ?? null,
+                    'nivel' => $nivel,
+                    'imparte' => $imparte,
+                ];
+            }
 
             // Buscar o crear municipio y corde
             $municipio = Municipio::firstOrCreate(['nombre_municipio' => $nombreMunicipio]);
@@ -243,42 +272,78 @@ class ImportarDatosController extends Controller
             ]);
 
 
-            // Crear o actualizar plantel
+
+
+            // Datos obligatorios (que siempre deben existir en tu archivo)
+            $datosPlantel = [
+                'cct' => $cct,
+                'nombre_escuela' => $nombreEscuela,
+                'id_municipio' => $municipio->id,
+                'id_corde' => $corde->id,
+            ];
+
+
+            // Lista de campos opcionales que solo se actualizan si hay encabezado y valor
+            $camposOpcionales = [
+                'nivel_educativo' => $nivelEductivo ?? null,
+                'turno' => $turno ?? null,
+                'sostenimiento' => $sostenimiento ?? null,
+                'domicilio_calle_numero' => $domicilioCalleNumero ?? null,
+                'domicilio_colonia' => $domicilioColonia ?? null,
+                'domicilio_cp' => $domicilioCp ?? null,
+                'telefono_plantel' => $telefonoPlantel ?? null,
+                'correo_institucional' => $correoInstitucional ?? null,
+                'nombre_director_registrado' => $directorAsignado ?? null,
+                'total_alumnos' => is_numeric($totalAlumnos) ? intval($totalAlumnos) : null,
+                'total_docentes' => is_numeric($totalDocentes) ? intval($totalDocentes) : null,
+                'total_administrativos' => is_numeric($totalAdministrativos) ? intval($totalAdministrativos) : null,
+                'id_localidad' => $localidad->id ?? null,
+                'accesibilidad_rampas' => $accesibilidadRampas ?? null,
+                'accesibilidad_banos_adaptados' => $accesibilidadBanosAdaptados ?? null,
+                'accesibilidad_sanaletica_braille' => $accesibilidadSenaleticaBraile ?? null,
+                'accesibilidad_otros' => $AccesibilidadOtros ?? null,
+                'estatus_plantel' => $estatusPlantel ?? null,
+                'latitud' => (is_numeric($latitud) ? $latitud : null),
+                'longitud' => (is_numeric($longitud) ? $longitud : null),
+            ];
+
+            // Solo agregar los campos que vienen con valor
+            foreach ($camposOpcionales as $campo => $valor) {
+                if (!is_null($valor) && $valor !== '') {
+                    $datosPlantel[$campo] = $valor;
+                }
+            }
+
             $plantel = Plantel::updateOrCreate(
                 ['cct' => $cct],
-                [
-                    'nombre_escuela' => $nombreEscuela,
-                    'id_municipio' => $municipio->id,
-                    'id_corde' => $corde->id,
-                    'nivel_educativo' => $nivelEductivo,
-                    'turno' => $turno,
-                    'sostenimiento' => $sostenimiento,
-                    'domicilio_calle_numero' => $domicilioCalleNumero,
-                    'domicilio_colonia' => $domicilioColonia,
-                    'domicilio_cp' => $domicilioCp,
-                    'latitud' => is_numeric($latitud) ? $latitud : null,
-                    'longitud' => is_numeric($longitud) ? $longitud : null,
-                    'telefono_plantel' => $telefonoPlantel,
-                    'correo_institucional' => $correoInstitucional,
-                    'nombre_director_registrado' => $directorAsignado,
-                    'total_alumnos' => is_numeric($totalAlumnos) ? intval($totalAlumnos) : 0,
-                    'total_docentes' => is_numeric($totalDocentes) ? intval($totalDocentes) : 0,
-                    'total_administrativos' => is_numeric($totalAdministrativos) ? intval($totalAdministrativos) : 0,
-                    'id_localidad' => $localidad->id,
-                    'accesibilidad_rampas' => $accesibilidadRampas,
-                    'accesibilidad_banos_adaptados' => $accesibilidadBanosAdaptados,
-                    'accesibilidad_sanaletica_braille' => $accesibilidadSenaleticaBraile,
-                    'accesibilidad_otros' => $AccesibilidadOtros,
-                    'estatus_plantel' => $estatusPlantel,
-                ]
+                $datosPlantel
             );
 
+            // Crear o actualizar
             if ($plantel->wasRecentlyCreated) {
                 $nuevos[] = $cct;
             } else {
                 $actualizados[] = $cct;
             }
+
+            foreach ($nivelesImpartidos as $nivelData) {
+                if (!$nivelData['cct']) {
+                    continue; // Evitar registros sin CCT
+                }
+
+                InmuebleNivel::updateOrCreate(
+                    [
+                        'cct' => $nivelData['cct'],
+                        'nivel' => $nivelData['nivel'],
+                    ],
+                    [
+                        'imparte' => $nivelData['imparte'],
+                    ]
+                );
+            }
         }
+
+
 
         // Guardar archivo en base de datos
         $tipoDocumento = $request->tipo_documento === 'Otro'
@@ -312,5 +377,39 @@ class ImportarDatosController extends Controller
             'success' => "Importación completada. Se crearon " . count($nuevos) . " planteles y se actualizaron " . count($actualizados) . ".",
             'errores_csv' => $errores,
         ]);
+    }
+
+
+    // Normalizar nombres
+    private function normalizarNombreCorde($nombreCorde)
+    {
+        $nombre = ucwords(strtolower(trim($nombreCorde)));
+
+        // Diccionario de equivalencias
+        $equivalencias = [
+            'Acatatlan' => 'Acatlán de Osorio',
+            'Acatatlán' => 'Acatlán de Osorio',
+            'San Pedro' => 'Cholula',
+            'Cholula' => 'Cholula',
+            'Tepexi de Rodríguez' => 'Tepexi',
+            'Tepexi De Rodríguez' => 'Tepexi',
+            'Tepexi De RodrÍguez' => 'Tepexi', // con tilde raro de Excel
+            'Tepexi De RodríGuez' => 'Tepexi',
+
+
+        ];
+
+        // Si existe en equivalencias, usar el oficial
+        if (isset($equivalencias[$nombre])) {
+            return $equivalencias[$nombre];
+        }
+
+        // Si no hay equivalencia exacta, intenta buscar coincidencias parciales
+        $corde = Corde::where('nombre_corde', 'LIKE', "%$nombre%")->first();
+        if ($corde) {
+            return $corde->nombre_corde;
+        }
+
+        return $nombre; // fallback: regresa el mismo
     }
 }

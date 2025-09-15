@@ -22,6 +22,7 @@ use App\Http\Controllers\SupervicionController;
 use App\Http\Controllers\ImportarDatosController;
 use App\Http\Controllers\MapaController;
 use App\Http\Controllers\ForgotPasswordController;
+use App\Http\Controllers\InmuebleNivelController;
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -242,3 +243,6 @@ Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'
 //Auditorias
 Route::get('/planteles/{id}/auditorias', [PlantelController::class, 'mostrarAuditorias'])
     ->name('planteles.auditoria');
+
+
+Route::get('/plantel/{cct}/niveles', [InmuebleNivelController::class, 'mostrarNivelesPorCCT']);

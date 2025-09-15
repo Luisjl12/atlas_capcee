@@ -23,7 +23,7 @@ class PlantelController extends Controller
     //Funcion para el index
     public function index()
     {
-        $planteles = Plantel::with(['municipio', 'director'])->paginate(10);
+        $planteles = Plantel::with(['municipio', 'director'])->paginate(50);
         return view('planteles.index', compact('planteles'));
     }
 
