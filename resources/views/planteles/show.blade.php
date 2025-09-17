@@ -496,10 +496,162 @@ default => ['fas fa-file', 'text-dark'],
                     @endforeach
                 </ul>
                 @endif
+                @if($plantel->superficies->where('aplica', true)->isNotEmpty())
+                <h4 class="mt-4">Superficie del inmueble</h4>
+                <ul class="list-group">
+                    @foreach($plantel->superficies->where('aplica', true) as $superficie)
+                    @php
+                    $textoSuperficie = match($superficie->rango) {
+                    'menos_de_50' => 'Menos de 50 m²',
+                    'de_50_a_499' => 'De 50 a 499 m²',
+                    'de_500_a_999' => 'De 500 a 999 m²',
+                    'de_1000_a_9999' => 'De 1000 a 9999 m²',
+                    'de_10000_o_mas' => 'De 10000 m² o más',
+                    default => ucfirst(str_replace('_', ' ', $superficie->rango)),
+                    };
+                    @endphp
+
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $textoSuperficie }}
+                        <span class="badge bg-info">✔</span>
+                    </li>
+                    @endforeach
+
+                </ul>
+                @else
+                <p class="mt-4">No se registran datos de superficie para este plantel.</p>
+                @endif
+
+                @if($plantel->numero_edificios)
+                <p class="mt-4">
+                    <strong>Número de edificios utilizados por el plantel:</strong>
+                    {{ $plantel->numero_edificios }}
+                </p>
+                @else
+                <p class="mt-4 text-muted">
+                    No se ha registrado el número de edificios utilizados.
+                </p>
+                @endif
+
+                @if($plantel->agua)
+                <h4 class="mt-4">Suministro y almacenamiento de agua</h4>
+                <ul class="list-group">
+                    @foreach([
+                    'agua_red_publica' => 'Red pública',
+                    'agua_pozo' => 'Pozo',
+                    'agua_cuerpo' => 'Cuerpos de agua',
+                    'agua_pipas' => 'Pipas',
+                    'agua_otro' => 'Otro tipo de suministro',
+                    'cisterna' => 'Cisterna',
+                    'tinacos' => 'Tinacos',
+                    'tanque' => 'Tanque',
+                    'almacenamiento_otro' => 'Otro tipo de almacenamiento',
+                    ] as $campo => $etiqueta)
+                    @if($plantel->agua->$campo)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $etiqueta }}
+                        <span class="badge bg-success">Sí</span>
+                    </li>
+                    @endif
+                    @endforeach
+                </ul>
+                @else
+                <p class="text-muted">No hay datos registrados sobre suministro de agua.</p>
+                @endif
+
+                @if($plantel->energia)
+                <h4 class="mt-4">Energia</h4>
+                <ul class="list-group">
+                    @foreach([
+
+                    'energia_red_contrato'=> 'Cuenta con suminostro de energía eléctrica en red pública',
+                    'energia_red_sin_contrato'=> 'No cuenta con suministro de energía eléctrica',
+                    'energia_planta' => 'Cuenta con suministro de energia electrica con planta generadora',
+                    'energia_paneles_solares'=> 'Cuenta con suministro de energía electrica con paneles solares',
+                    'sin_energia'=>'No cuenta con energía electrica',
+                    'gas_natural'=>'Cuenta con suministro de gas natural',
+                    'gas_estacionario'=>'Cuenta con suministro de gas estacionario',
+                    'gas_cilindro'=> 'Cuenta con suministro de gas en cilindro',
+                    'sin_gas'=> 'No cuenta con suministro de gas'
+                    ] as $campo => $etiqueta)
+                    @if($plantel->energia->$campo)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $etiqueta }}
+                        <span class="badge bg-success">Sí</span>
+                    </li>
+                    @endif
+                    @endforeach
+                </ul>
+                @else
+                <p class="text-muted">No hay datos registrados sobre energia.</p>
+                @endif
+
+
+                @if($plantel->drenaje)
+                <h4 class="mt-4">Drenaje</h4>
+                <ul class="list-group">
+                    @foreach([
+                    'drenaje_publico'=>'Cuenta con sistema de drenaje público',
+                    'fosa_septica'=>'Cuenta con fosa septica',
+                    'planta_tratamiento'=>'Cuenta con planta de tratamiento',
+                    'descarga_otro'=>'Cuenta con otro tipo de descarga',
+                    'separacion_aguas'=>'Cuenta con separación de aguas negras y pluviales '
+                    ] as $campo => $etiqueta)
+                    @if($plantel->drenaje->$campo)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $etiqueta }}
+                        <span class="badge bg-success">Sí</span>
+                    </li>
+                    @endif
+                    @endforeach
+                </ul>
+                @else
+                <p class="text-muted">No hay datos registrados sobre drenaje.</p>
+                @endif
+
+                @if($plantel->sanitario)
+                <h4 class="mt-4">Infraestructura sanitaria del inmueble</h4>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between">
+                        Baños para hombres
+                        <span class="badge bg-primary">{{ $plantel->sanitario->banos_hombres }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Baños para mujeres
+                        <span class="badge bg-primary">{{ $plantel->sanitario->banos_mujeres }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Baños mixtos
+                        <span class="badge bg-primary">{{ $plantel->sanitario->banos_mixtos }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Total de sanitarios
+                        <span class="badge bg-secondary">{{ $plantel->sanitario->total_sanitarios }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Sanitarios para uso de ambos
+                        <span class="badge bg-secondary">{{ $plantel->sanitario->sanitarios_ambos }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Lavamanos
+                        <span class="badge bg-info">{{ $plantel->sanitario->lavamanos }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Tomas de agua de bebederos
+                        <span class="badge bg-info">{{ $plantel->sanitario->tomas_bebederos }}</span>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between">
+                        Baños accesibles para personas con discapacidad
+                        <span class="badge bg-success">{{ $plantel->sanitario->banos_discapacitados }}</span>
+                    </li>
+                </ul>
+                @else
+                <p class="text-muted">No se han registrado datos sanitarios para este plantel.</p>
+                @endif
+
+
             </div>
         </div>
-
-
     </div>
 
 

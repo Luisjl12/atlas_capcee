@@ -39,6 +39,7 @@ class Plantel extends Model implements Auditable
         'total_docentes',
         'total_administrativos',
         'estatus_plantel',
+        'numero_edificios',
 
 
     ];
@@ -86,6 +87,32 @@ class Plantel extends Model implements Auditable
     {
         return $this->hasMany(\App\Models\InmuebleNivel::class, 'cct', 'cct');
     }
+
+    public function superficies()
+    {
+        return $this->hasMany(InmuebleSuperficie::class, 'cct', 'cct');
+    }
+
+    public function agua()
+    {
+        return $this->hasOne(InmuebleAgua::class, 'cct', 'cct');
+    }
+
+    public function energia()
+    {
+        return $this->hasOne(InmuebleEnergia::class, 'cct', 'cct');
+    }
+
+    public function drenaje()
+    {
+        return $this->hasOne(InmuebleDrenaje::class, 'cct', 'cct');
+    }
+
+    public function sanitario()
+    {
+        return $this->hasOne(InmuebleSanitarios::class, 'cct', 'cct');
+    }
+
 
     public function auditorias()
     {

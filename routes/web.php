@@ -244,5 +244,7 @@ Route::post('/password/reset', [ForgotPasswordController::class, 'resetPassword'
 Route::get('/planteles/{id}/auditorias', [PlantelController::class, 'mostrarAuditorias'])
     ->name('planteles.auditoria');
 
-
+//Niveles 
 Route::get('/plantel/{cct}/niveles', [InmuebleNivelController::class, 'mostrarNivelesPorCCT']);
+//M2
+Route::get('/planteles/{cct}/detalles', [InmuebleSuperficieController::class, 'mostrarSuperficieCCT'])->name('planteles.detalles');

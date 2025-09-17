@@ -7,12 +7,18 @@ use App\Models\Plantel;
 use App\Models\Municipio;
 use App\Models\Corde;
 use App\Models\Localidad;
+use App\Models\InmuebleSuperficie;
+use App\Models\InmuebleAgua;
+use App\Models\InmuebleDrenaje;
+use App\Models\InmuebleEnergia;
+use App\Models\InmuebleSanitarios;
 use Illuminate\Http\Request;
 use App\Models\InmuebleNivel;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
+
 
 class ImportarDatosController extends Controller
 {
@@ -185,7 +191,99 @@ class ImportarDatosController extends Controller
                 'tecnico_posgrado' => 'INMUEBLE IMPARTE EDUCACION TECNICO POSGRADO',
             ];
 
+            $rangosSuperficie = [
+                'menos_de_50' => 'MENOS DE 50 M2',
+                'de_50_a_499' => 'DE 50 A 499 M2',
+                'de_500_a_999' => 'DE 500 A 999 M2',
+                'de_1000_a_9999' => 'DE 1000 A 9999 M2',
+                'de_10000_o_mas' => 'DE 10000 M2 O MÁS',
+            ];
+            $agua = InmuebleAgua::updateOrCreate(
+                ['cct' => $datos['CCT']],
+                [
+                    'agua_red_publica' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN RED PUBLICA'] ?? '') === '1',
+                    'agua_pozo' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN POZO'] ?? '') === '1',
+                    'agua_cuerpo' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN CUERPOS DE AGUA'] ?? '') === '1',
+                    'agua_pipas' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN PIPAS'] ?? '') === '1',
+                    'agua_otro' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN OTRO TIPO'] ?? '') === '1',
+                    'cisterna' => strtolower($datos['EL INMUEBLE CUENTA CON CISTERNA PARA ALMACENAMIENTO DE AGUA'] ?? '') === '1',
+                    'tinacos' => strtolower($datos['EL INMUEBLE CUENTA CON TINACOS PARA ALMACENAMIENTO DE AGUA'] ?? '') === '1',
+                    'tanque' => strtolower($datos['EL INMUEBLE CUENTA CON TANQUE PARA ALMACENAMIENTO DE AGUA'] ?? '') === '1',
+                    'almacenamiento_otro' => strtolower($datos['EL INMUEBLE CUENTA CON OTRO TIPO DE ALMACENAMIENTO PARA AGUA'] ?? '') === '1',
+                ]
+            );
 
+            $energia = InmuebleEnergia::updateOrCreate(
+                ['cct' => $datos['CCT']],
+                [
+                    'energia_red_contrato' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA CON CONTRATO'] ?? '') === '1',
+                    'energia_red_sin_contrato' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA SIN CONTRATO'] ?? '') === '1',
+                    'energia_planta' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA PLANTA GENERADORA DE LUZ'] ?? '') === '1',
+                    'energia_paneles_solares' => strtolower($datos['EL INMUEBLE CUENTA CON PANELES SOLARES CON BATERIA (PSB)'] ?? '') === '1',
+                    'sin_energia' => strtolower($datos['EL INMUEBLE NO CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA'] ?? '') === '1',
+                    'gas_natural' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS NATURAL'] ?? '') === '1',
+                    'gas_estacionario' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS ESTACIONARIO'] ?? '') === '1',
+                    'gas_cilindro' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS EN CILINDROS'] ?? '') === '1',
+                    'sin_gas' => strtolower($datos['EL INMUEBLE NO CUENTA CON SUMINISTRO DE GAS'] ?? '') === '1',
+
+                ]
+            );
+
+
+            $drenaje = InmuebleDrenaje::updateOrCreate(
+                ['cct' => $datos['CCT']],
+                [
+                    'drenaje_publico' => strtolower($datos['EL INMUEBLE CUENTA CON DRENAJE O COLECTOR PUBLICO'] ?? '') === '1',
+                    'fosa_septica' => strtolower($datos['EL INMUEBLE CUENTA CON FOSA SEPTICA'] ?? '') === '1',
+                    'planta_tratamiento' => strtolower($datos['EL INMUEBLE CUENTA CON PLANTA DE TRATAMIENTO'] ?? '') === '1',
+                    'descarga_otro' => strtolower($datos['OTRO TIPO DE DESCARGA'] ?? '') === '1',
+                    'separacion_aguas' => strtolower($datos['EL INMUEBLE CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES '] ?? '') === '1',
+                    'sin_separacion_de_agua' => strtolower($datos['EL INMUEBLE NO CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES '] ?? '') === '1',
+
+                ]
+            );
+            $sanitarios = InmuebleSanitarios::updateOrCreate(
+                ['cct' => $datos['CCT']],
+                [
+                    'banos_hombres' => is_numeric($datos['NUMERO DE CUARTOS DE BAÑO PARA HOMBRES CON QUE CUENTA EL INMUEBLE'] ?? '')
+                        ? intval($datos['NUMERO DE CUARTOS DE BAÑO PARA HOMBRES CON QUE CUENTA EL INMUEBLE'])
+                        : 0,
+
+                    'banos_mujeres' => is_numeric($datos['NUMERO DE CUARTOS DE BAÑO PARA MUJERES CON QUE CUENTA EL INMUEBLE'] ?? '')
+                        ? intval($datos['NUMERO DE CUARTOS DE BAÑO PARA MUJERES CON QUE CUENTA EL INMUEBLE'])
+                        : 0,
+
+                    'banos_mixtos' => is_numeric($datos['NUMERO DE CUARTOS DE BAÑO MIXTOS CON QUE CUENTA EL INMUEBLE'] ?? '')
+                        ? intval($datos['NUMERO DE CUARTOS DE BAÑO MIXTOS CON QUE CUENTA EL INMUEBLE'])
+                        : 0,
+
+                    'total_sanitarios' => is_numeric($datos['TOTAL DE TAZAS SANITARIAS, MIGITORIOS Y LETRINAS CON QUE CUENTA EL INMUEBLE'] ?? '')
+                        ? intval($datos['TOTAL DE TAZAS SANITARIAS, MIGITORIOS Y LETRINAS CON QUE CUENTA EL INMUEBLE'])
+                        : 0,
+
+                    'sanitarios_ambos' => is_numeric($datos['TOTAL DE TAZAS SANITARIAS MIGITORIOS Y LETRINAS PARA USO DE AMBOS'] ?? '')
+                        ? intval($datos['TOTAL DE TAZAS SANITARIAS MIGITORIOS Y LETRINAS PARA USO DE AMBOS'])
+                        : 0,
+
+                    'lavamanos' => is_numeric($datos['TOTAL DE LAVAMANOS QUE EXISTEN EN LA ESCUELA'] ?? '')
+                        ? intval($datos['TOTAL DE LAVAMANOS QUE EXISTEN EN LA ESCUELA'])
+                        : 0,
+
+                    'tomas_bebederos' => is_numeric($datos['TOTAL DE TOMAS DE AGUA DE BEBEDEROS QUE EXISTEN EN EL INMUEBLE'] ?? '')
+                        ? intval($datos['TOTAL DE TOMAS DE AGUA DE BEBEDEROS QUE EXISTEN EN EL INMUEBLE'])
+                        : 0,
+
+                    'banos_discapacitados' => is_numeric($datos['TOTAL DE CUARTOS DE BAÑO ACCESIBLES PARA DISCAPACITADOS'] ?? '')
+                        ? intval($datos['TOTAL DE CUARTOS DE BAÑO ACCESIBLES PARA DISCAPACITADOS'])
+                        : 0,
+                ]
+            );
+
+
+
+            $numeroEdificios = is_numeric(trim($datos['EDIFICIOS QUE SON UTILIZADOS POR LA ESCUELA'] ?? ''))
+                ? intval(trim($datos['EDIFICIOS QUE SON UTILIZADOS POR LA ESCUELA']))
+                : ($plantelExistente->numero_edificios ?? null);
 
 
             // Validar campos obligatorios
@@ -262,6 +360,17 @@ class ImportarDatosController extends Controller
                 ];
             }
 
+            foreach ($rangosSuperficie as $clave => $encabezado) {
+                $valor = strtolower(trim($datos[$encabezado] ?? ''));
+                $aplica = in_array($valor, ['sí', 'si', '1', 'true']);
+
+                InmuebleSuperficie::updateOrCreate(
+                    ['cct' => $datos['CCT'], 'rango' => $clave],
+                    ['aplica' => $aplica]
+                );
+            }
+
+
             // Buscar o crear municipio y corde
             $municipio = Municipio::firstOrCreate(['nombre_municipio' => $nombreMunicipio]);
 
@@ -305,6 +414,7 @@ class ImportarDatosController extends Controller
                 'estatus_plantel' => $estatusPlantel ?? null,
                 'latitud' => (is_numeric($latitud) ? $latitud : null),
                 'longitud' => (is_numeric($longitud) ? $longitud : null),
+                'numero_edificios' => is_numeric($numeroEdificios) ? intval($numeroEdificios) : null,
             ];
 
             // Solo agregar los campos que vienen con valor

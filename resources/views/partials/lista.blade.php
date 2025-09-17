@@ -49,9 +49,7 @@
                             onclick="mostrarModalConfirmacion('¿Seguro que quieres eliminar a este plantel?', '{{ route('planteles.destroy', $plantel->id) }}')">
                             <i class="fas fa-trash"></i>
                         </button>
-                        <a href="{{ route('planteles.auditoria', $plantel->id) }}" class="btn btn-sm btn-secondary" title="Ver Historial de Cambios">
-                            <i class="fas fa-history"></i>
-                        </a>
+
                     </div>
                 </td>
             </tr>
