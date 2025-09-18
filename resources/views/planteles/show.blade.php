@@ -649,6 +649,66 @@ default => ['fas fa-file', 'text-dark'],
                 <p class="text-muted">No se han registrado datos sanitarios para este plantel.</p>
                 @endif
 
+                @if($plantel->obras)
+                <h4 class="mt-4">Obras:</h4>
+                <ul class="list-group">
+                    @foreach([
+
+                    'rehabilitacion_realizada'=> 'Se han hecho obras de rehabilitación o mantenimiento mayor en los ultimo cinco años',
+                    'rehabilitacion_impermeabilizacion'=> 'Se han hecho obras de rehabilitación(impermeabilización)',
+                    'rehabilitacion_albanileria' => 'Se han hecho obras de rehabilitación(albañileria)',
+                    'rehabilitacion_pintura'=> 'Se han hecho obras de rehabilitación(pintura general)',
+                    'rehabilitacion_red_hidraulica'=>'Se han hecho obras de rehabilitación(restitución de red hidraulica)',
+                    'rehabilitacion_red_sanitaria'=>'Se han hecho obras de rehabilitación(restitución de red sanitaria)',
+                    'rehabilitacion_estructural'=>'Se han hecho obras de rehabilitación(restitución de red estructural)',
+                    'obras_nuevas'=> 'Se han hecho obras durante los últimos cinco años',
+                    'construccion_educativa'=> 'Se han construido espacios educativos o academicos',
+                    'construccion_deportiva'=> 'Se han construido espacios deportivos o recreativos',
+                    'construccion_sanitaria'=> 'Se han hecho construcciones sanitarias',
+                    'construccion_complementos'=>'Se han hecho construcciones en complementos de instalaciones',
+                    'construccion_total'=>'Construccion en todos los espacios del inmueble',
+                    'construccion_otro'=>'Se han hecho construcciones en otro tipo de espacio'
+                    ] as $campo => $etiqueta)
+                    @if($plantel->obras->$campo)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $etiqueta }}
+                        <span class="badge bg-success">Sí</span>
+                    </li>
+                    @endif
+                    @endforeach
+                </ul>
+                @else
+                <p class="text-muted">No hay datos registrados sobre obras.</p>
+                @endif
+
+                @if($plantel->seguridad)
+                <h4 class="mt-4">Seguridad:</h4>
+                <ul class="list-group">
+                    <li class="list-group-item d-flex justify-content-between">
+                        Total de equipo o mobiliario que cuenta la esculea para personas con discapacidad
+                        <span class="badge bg-info">{{ $plantel->seguridad->equipo_discapacidad_total }}</span>
+                    </li>
+                    @foreach([
+
+                    'rehabilitacion_realizada'=> 'Se han hecho obras de rehabilitación o mantenimiento mayor en los ultimo cinco años',
+                    'proteccion_civil' => 'La escuela cuenta con programa de protección civil',
+                    'barda_completa' => 'La escuela cuenta con barda completa',
+                    'barda_incompleta'=> 'La escuela no cuenta con barda completa',
+                    'infraestructura_discapacidad'=>'La escuela cuenta con infraestructura para discapacitados',
+                    'sin_infraestructura_discapacidad'=>'La escuela no cuenta con infraestructura para discapacitados',
+
+                    ] as $campo => $etiqueta)
+                    @if($plantel->seguridad->$campo)
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ $etiqueta }}
+                        <span class="badge bg-success">Sí</span>
+                    </li>
+                    @endif
+                    @endforeach
+                </ul>
+                @else
+                <p class="text-muted">No hay datos registrados sobre obras.</p>
+                @endif
 
             </div>
         </div>

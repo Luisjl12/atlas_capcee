@@ -12,8 +12,10 @@ use App\Models\InmuebleAgua;
 use App\Models\InmuebleDrenaje;
 use App\Models\InmuebleEnergia;
 use App\Models\InmuebleSanitarios;
+use App\Models\InmuebleSeguridad;
 use Illuminate\Http\Request;
 use App\Models\InmuebleNivel;
+use App\Models\InmuebleObras;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Carbon\Carbon;
@@ -279,7 +281,41 @@ class ImportarDatosController extends Controller
                 ]
             );
 
+            $obras = InmuebleObras::updateOrCreate(
+                ['cct' => $datos['CCT']],
+                [
+                    'rehabilitacion_realizada' => strtolower($datos['EN LOS ULTIMOS 5 AÑOS EN EL INMUEBLE SE REALIZARON OBRAS DE REAHABILITACION O DE MANTENIMEINTO MAYOR'] ?? '') === '1',
+                    'rehabilitacion_impermeabilizacion' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (IMPERMEABILIZACION)'] ?? '') === '1',
+                    'rehabilitacion_albanileria' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (ALBAÑILERIA)'] ?? '') === '1',
+                    'rehabilitacion_pintura' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (PINTURA GENERAL)'] ?? '') === '1',
+                    'rehabilitacion_red_hidraulica' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION DE LA RED HIDRAULICA)'] ?? '') === '1',
+                    'rehabilitacion_red_sanitaria' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION DE LA RED SANITARIA)'] ?? '') === '1',
+                    'rehabilitacion_esctructural' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION ESTRUCTURAL)'] ?? '') === '1',
+                    'obras_nuevas' => strtolower($datos['DURANTES LOS ULTIMOS 5 AÑOS SE REALIZARON OBRAS NUEVAS'] ?? '') === '1',
+                    'construccion_educativa' => strtolower($datos['CONSTRUCCION EN ESPACIOS ACADEMICOS O EDUCATIVOS'] ?? '') === '1',
+                    'construccion_deportiva' => strtolower($datos['CONSTRUCCION EN ESPACIOS DEPORTIVOS O RECREATIVOS'] ?? '') === '1',
+                    'construccion_sanitaria' => strtolower($datos['CONSTRUCCION EN SANITARIOS'] ?? '') === '1',
+                    'construccion_complementos' => strtolower($datos['CONSTRUCCION EN COMPLEMENTOS DE INSTALACIONES'] ?? '') === '1',
+                    'construccion_total' => strtolower($datos['CONSTRUCCION EN TODOS LOS ESPACIOS DEL INMUEBLE'] ?? '') === '1',
+                    'construccion_otro' => strtolower($datos['CONSTRUCCION EN OTRO TIPO DE ESPACIO'] ?? '') === '1',
 
+                ]
+            );
+
+            $seguridad = InmuebleSeguridad::updateOrCreate(
+                ['cct' => $datos['CCT']],
+                [
+                    'proteccion_civil' => strtolower($datos['LA ESCUELA CUENTA CON PROGRAMA DE PROTECCION CIVIL'] ?? '') === '1',
+                    'barda_completa' => strtolower($datos['EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL COMPLETO'] ?? '') === '1',
+                    'barda_incompleta' => strtolower($datos['EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL INCOMPLETO'] ?? '') === '1',
+                    'infraestructura_discapacidad' => strtolower($datos['EL INMUEBLE CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS'] ?? '') === '1',
+                    'sin_infraestructura_discapacidad' => strtolower($datos['EL INMUEBLE NO CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS'] ?? '') === '1',
+                    'equipo_discapacidad_total' => is_numeric($datos['EQUIPO O MOBILIARIO CON QUE CUENTA LA ESCUELA PARA PERSONAS CON DISCAPACIDAD (TOTAL TOTAL)'] ?? '')
+                        ? intval($datos['EQUIPO O MOBILIARIO CON QUE CUENTA LA ESCUELA PARA PERSONAS CON DISCAPACIDAD (TOTAL TOTAL)'])
+                        : 0,
+
+                ]
+            );
 
             $numeroEdificios = is_numeric(trim($datos['EDIFICIOS QUE SON UTILIZADOS POR LA ESCUELA'] ?? ''))
                 ? intval(trim($datos['EDIFICIOS QUE SON UTILIZADOS POR LA ESCUELA']))

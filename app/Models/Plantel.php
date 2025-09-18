@@ -113,6 +113,16 @@ class Plantel extends Model implements Auditable
         return $this->hasOne(InmuebleSanitarios::class, 'cct', 'cct');
     }
 
+    public function obras()
+    {
+        return $this->hasOne(InmuebleObras::class, 'cct', 'cct');
+    }
+
+    public function seguridad()
+    {
+        return $this->hasOne(InmuebleSeguridad::class, 'cct', 'cct');
+    }
+
 
     public function auditorias()
     {
