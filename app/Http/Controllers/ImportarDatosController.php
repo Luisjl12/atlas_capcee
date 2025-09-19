@@ -121,6 +121,9 @@ class ImportarDatosController extends Controller
             $nombreMunicipio = ucwords(strtolower(trim($datos['NOMBRE_MUNICIPIO'] ?? '')));
             $nombreCorde = ucwords(strtolower(trim($datos['NOMBRE_CORDE'] ?? '')));
 
+            //Verificar existencia del plantel
+            $plantelExistente = Plantel::where('cct', $cct)->first();
+
             //Localidad/no obligatorio 
             $nombreLocalidad = ucwords(strtolower(trim($datos['NOMBRE_LOCALIDAD'] ?? '')));
 
@@ -131,22 +134,22 @@ class ImportarDatosController extends Controller
 
             $rampasRaw = strtolower(trim($datos['RAMPAS'] ?? ''));
             $accesibilidadRampas = match ($rampasRaw) {
-                'si' => 1,
-                'no' => 0,
+                'si', '1' => 1,
+                'no', '0' => 0,
                 default => 0,
             };
 
             $banosAdaptadosRaw = strtolower(trim($datos['BANOS_ADAPTADOS'] ?? ''));
             $accesibilidadBanosAdaptados = match ($banosAdaptadosRaw) {
-                'si' => 1,
-                'no' => 0,
+                'si', '1' => 1,
+                'no', '0' => 0,
                 default => 0,
             };
 
             $senaleticaBraileRaw = strtolower(trim($datos['SANALETICA_BRAILE'] ?? ''));
             $accesibilidadSenaleticaBraile = match ($senaleticaBraileRaw) {
-                'si' => 1,
-                'no' => 0,
+                'si',  '1' => 1,
+                'no', '0' => 0,
                 default => 0,
             };
 
@@ -176,15 +179,19 @@ class ImportarDatosController extends Controller
 
             //Estatus
             $estatusRaw = strtolower(trim($datos['ESTATUS'] ?? ''));
+            if ($estatusRaw === '') {
+                $estatusPlantel = optional($plantelExistente)->estatus ?? $estatusPorDefecto;
+            } else {
+                $estatusPlantel = in_array($estatusRaw, $estatusValidos) ? $estatusRaw : $estatusPorDefecto;
+            }
+
             $estatusPlantel = in_array($estatusRaw, $estatusValidos) ? $estatusRaw : $estatusPorDefecto;
 
-
-            //Nivel educativo
-            $nivelesEducativos = [
+            $nivelesAcademicos = [
                 'inicial' => 'INMUEBLE IMPARTE EDUCACION INICIAL',
                 'preescolar' => 'INMUEBLE IMPARTE EDUCACION PREESCOLAR',
                 'primaria' => 'INMUEBLE IMPARTE EDUCACION PRIMARIA',
-                'secundaria' => 'IMPARTE_EDUCACION_SECUNDARIA',
+                'secundaria' => 'INMUEBLE IMPARTE EDUCACION SECUNDARIA',
                 'formacion_trabajo' => 'INMUEBLE IMPARTE EDUCACION FORMACION PARA EL TRABAJO',
                 'bachillerato_general' => 'INMUEBLE IMPARTE EDUCACION BACHILLERATO GENERAL',
                 'bachillerato_tecnologico' => 'INMUEBLE IMPARTE EDUCACION BACHILLERATO TECNOLOGICO O QUIVALENTE',
@@ -193,126 +200,245 @@ class ImportarDatosController extends Controller
                 'tecnico_posgrado' => 'INMUEBLE IMPARTE EDUCACION TECNICO POSGRADO',
             ];
 
+
+
+
             $rangosSuperficie = [
                 'menos_de_50' => 'MENOS DE 50 M2',
                 'de_50_a_499' => 'DE 50 A 499 M2',
                 'de_500_a_999' => 'DE 500 A 999 M2',
                 'de_1000_a_9999' => 'DE 1000 A 9999 M2',
-                'de_10000_o_mas' => 'DE 10000 M2 O MÁS',
+                'de_10000_o_mas' => 'DE 10,000  M2 O MAS',
             ];
+
+            foreach ($rangosSuperficie as $clave => $etiqueta) {
+                if (array_key_exists($etiqueta, $datos) && trim($datos[$etiqueta]) !== '') {
+                    InmuebleSuperficie::updateOrCreate(
+                        [
+                            'cct' => $datos['CCT'],
+                            'rango' => $etiqueta,
+                        ],
+                        [
+                            'aplica' => strtolower($datos[$etiqueta]) === '1',
+                        ]
+                    );
+                }
+            }
+
             $agua = InmuebleAgua::updateOrCreate(
                 ['cct' => $datos['CCT']],
                 [
-                    'agua_red_publica' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN RED PUBLICA'] ?? '') === '1',
-                    'agua_pozo' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN POZO'] ?? '') === '1',
-                    'agua_cuerpo' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN CUERPOS DE AGUA'] ?? '') === '1',
-                    'agua_pipas' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN PIPAS'] ?? '') === '1',
-                    'agua_otro' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN OTRO TIPO'] ?? '') === '1',
-                    'cisterna' => strtolower($datos['EL INMUEBLE CUENTA CON CISTERNA PARA ALMACENAMIENTO DE AGUA'] ?? '') === '1',
-                    'tinacos' => strtolower($datos['EL INMUEBLE CUENTA CON TINACOS PARA ALMACENAMIENTO DE AGUA'] ?? '') === '1',
-                    'tanque' => strtolower($datos['EL INMUEBLE CUENTA CON TANQUE PARA ALMACENAMIENTO DE AGUA'] ?? '') === '1',
-                    'almacenamiento_otro' => strtolower($datos['EL INMUEBLE CUENTA CON OTRO TIPO DE ALMACENAMIENTO PARA AGUA'] ?? '') === '1',
+                    'agua_red_publica' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN RED PUBLICA'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN RED PUBLICA'] ?? '') === '1'
+                        : optional($plantelExistente->agua)->agua_red_publica,
+                    'agua_pozo' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN POZO'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN POZO'] ?? '') === '1'
+                        : optional($plantelExistente->agua)->agua_poso,
+                    'agua_cuerpo' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN CUERPOS DE AGUA'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN CUERPOS DE AGUA'] ?? '') === '1'
+                        : optional($plantelExistente->agua)->agua_cuerpo,
+                    'agua_pipas' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN PIPAS'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN PIPAS'] ?? '') === '1'
+                        : optional($plantelExistente->agua)->agua_pipas,
+                    'agua_otro' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN OTRO TIPO'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE AGUA EN OTRO TIPO'] ?? '') === '1'
+                        : optional($plantelExistente->agua)->agua_otro,
+                    'cisterna' => ($datos['EL INMUEBLE CUENTA CON CISTERNA PARA ALMACENAMIENTO DE AGUA'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON CISTERNA PARA ALMACENAMIENTO DE AGUA'] ?? '') === '1'
+                        : optional($plantelExistente->agua)->cisterna,
+                    'tinacos' => ($datos['EL INMUEBLE CUENTA CON TINACOS PARA ALMACENAMIENTO DE AGUA'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON TINACOS PARA ALMACENAMIENTO DE AGUA'] ?? '') === '1'
+                        : optional($plantelExistente->agua)->tinacos,
+                    'tanque' => ($datos['EL INMUEBLE CUENTA CON TANQUE PARA ALMACENAMIENTO DE AGUA'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON TANQUE PARA ALMACENAMIENTO DE AGUA'] ?? '') === '1'
+                        : optional($plantelExistente->agua)->tanque,
+                    'almacenamiento_otro' => ($datos['EL INMUEBLE CUENTA CON OTRO TIPO DE ALMACENAMIENTO PARA AGUA'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON OTRO TIPO DE ALMACENAMIENTO PARA AGUA'] ?? '') === '1'
+                        : optional($plantelExistente->agua)->almacenamiento_otro,
                 ]
             );
 
             $energia = InmuebleEnergia::updateOrCreate(
                 ['cct' => $datos['CCT']],
                 [
-                    'energia_red_contrato' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA CON CONTRATO'] ?? '') === '1',
-                    'energia_red_sin_contrato' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA SIN CONTRATO'] ?? '') === '1',
-                    'energia_planta' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA PLANTA GENERADORA DE LUZ'] ?? '') === '1',
-                    'energia_paneles_solares' => strtolower($datos['EL INMUEBLE CUENTA CON PANELES SOLARES CON BATERIA (PSB)'] ?? '') === '1',
-                    'sin_energia' => strtolower($datos['EL INMUEBLE NO CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA'] ?? '') === '1',
-                    'gas_natural' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS NATURAL'] ?? '') === '1',
-                    'gas_estacionario' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS ESTACIONARIO'] ?? '') === '1',
-                    'gas_cilindro' => strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS EN CILINDROS'] ?? '') === '1',
-                    'sin_gas' => strtolower($datos['EL INMUEBLE NO CUENTA CON SUMINISTRO DE GAS'] ?? '') === '1',
+                    'energia_red_contrato' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA CON CONTRATO'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA CON CONTRATO'] ?? '') === '1'
+                        : optional($plantelExistente->energia)->energia_red_contrato,
 
+                    'energia_red_sin_contrato' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA SIN CONTRATO'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA SIN CONTRATO'] ?? '') === '1'
+                        : optional($plantelExistente->energia)->energia_red_sin_contrato,
+
+                    'energia_planta' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA PLANTA GENERADORA DE LUZ'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA PLANTA GENERADORA DE LUZ'] ?? '') === '1'
+                        : optional($plantelExistente->energia)->energia_planta,
+
+                    'energia_paneles_solares' => ($datos['EL INMUEBLE CUENTA CON PANELES SOLARES CON BATERIA (PSB)'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON PANELES SOLARES CON BATERIA (PSB)'] ?? '') === '1'
+                        : optional($plantelExistente->energia)->energia_paneles_solares,
+
+                    'sin_energia' => ($datos['EL INMUEBLE NO CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE NO CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA'] ?? '') === '1'
+                        : optional($plantelExistente->energia)->sin_energia,
+
+                    'gas_natural' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS NATURAL'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS NATURAL'] ?? '') === '1'
+                        : optional($plantelExistente->energia)->gas_natural,
+
+                    'gas_estacionario' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS ESTACIONARIO'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS ESTACIONARIO'] ?? '') === '1'
+                        : optional($plantelExistente->energia)->gas_estacionario,
+
+                    'gas_cilindro' => ($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS EN CILINDROS'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SUMINISTRO DE GAS EN CILINDROS'] ?? '') === '1'
+                        : optional($plantelExistente->energia)->gas_cilindro,
+
+                    'sin_gas' => ($datos['EL INMUEBLE NO CUENTA CON SUMINISTRO DE GAS'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE NO CUENTA CON SUMINISTRO DE GAS'] ?? '') === '1'
+                        : optional($plantelExistente->energia)->sin_gas,
                 ]
             );
-
 
             $drenaje = InmuebleDrenaje::updateOrCreate(
                 ['cct' => $datos['CCT']],
                 [
-                    'drenaje_publico' => strtolower($datos['EL INMUEBLE CUENTA CON DRENAJE O COLECTOR PUBLICO'] ?? '') === '1',
-                    'fosa_septica' => strtolower($datos['EL INMUEBLE CUENTA CON FOSA SEPTICA'] ?? '') === '1',
-                    'planta_tratamiento' => strtolower($datos['EL INMUEBLE CUENTA CON PLANTA DE TRATAMIENTO'] ?? '') === '1',
-                    'descarga_otro' => strtolower($datos['OTRO TIPO DE DESCARGA'] ?? '') === '1',
-                    'separacion_aguas' => strtolower($datos['EL INMUEBLE CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES '] ?? '') === '1',
-                    'sin_separacion_de_agua' => strtolower($datos['EL INMUEBLE NO CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES '] ?? '') === '1',
+                    'drenaje_publico' => ($datos['EL INMUEBLE CUENTA CON DRENAJE O COLECTOR PUBLICO'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON DRENAJE O COLECTOR PUBLICO'] ?? '') === '1'
+                        : optional($plantelExistente->drenaje)->drenaje_publico,
 
+                    'fosa_septica' => ($datos['EL INMUEBLE CUENTA CON FOSA SEPTICA'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON FOSA SEPTICA'] ?? '') === '1'
+                        : optional($plantelExistente->drenaje)->fosa_septica,
+
+                    'planta_tratamiento' => ($datos['EL INMUEBLE CUENTA CON PLANTA DE TRATAMIENTO'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON PLANTA DE TRATAMIENTO'] ?? '') === '1'
+                        : optional($plantelExistente->drenaje)->planta_tratamiento,
+
+                    'descarga_otro' => ($datos['OTRO TIPO DE DESCARGA'] ?? '') !== ''
+                        ? strtolower($datos['OTRO TIPO DE DESCARGA'] ?? '') === '1'
+                        : optional($plantelExistente->drenaje)->descarga_otro,
+
+                    'separacion_aguas' => ($datos['EL INMUEBLE CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES '] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES '] ?? '') === '1'
+                        : optional($plantelExistente->drenaje)->separacion_aguas,
+
+                    'sin_separacion_de_agua' => ($datos['EL INMUEBLE NO CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES '] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE NO CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES '] ?? '') === '1'
+                        : optional($plantelExistente->drenaje)->sin_separacion_de_agua,
                 ]
             );
+
+            $campos = [
+                'banos_hombres' => 'NUMERO DE CUARTOS DE BAÑO PARA HOMBRES CON QUE CUENTA EL INMUEBLE',
+                'banos_mujeres' => 'NUMERO DE CUARTOS DE BAÑO PARA MUJERES CON QUE CUENTA EL INMUEBLE',
+                'banos_mixtos' => 'NUMERO DE CUARTOS DE BAÑO MIXTOS CON QUE CUENTA EL INMUEBLE',
+                'total_sanitarios' => 'TOTAL DE TAZAS SANITARIAS, MIGITORIOS Y LETRINAS CON QUE CUENTA EL INMUEBLE',
+                'sanitarios_ambos' => 'TOTAL DE TAZAS SANITARIAS MIGITORIOS Y LETRINAS PARA USO DE AMBOS',
+                'lavamanos' => 'TOTAL DE LAVAMANOS QUE EXISTEN EN LA ESCUELA',
+                'tomas_bebederos' => 'TOTAL DE TOMAS DE AGUA DE BEBEDEROS QUE EXISTEN EN EL INMUEBLE',
+                'banos_discapacitados' => 'TOTAL DE CUARTOS DE BAÑO ACCESIBLES PARA DISCAPACITADOS',
+            ];
+
+            $valores = [];
+
+            foreach ($campos as $campoDB => $encabezadoExcel) {
+                if (array_key_exists($encabezadoExcel, $datos) && is_numeric($datos[$encabezadoExcel])) {
+                    $valores[$campoDB] = intval($datos[$encabezadoExcel]);
+                }
+            }
+
+            // Si ya existe el registro, se actualizan solo los campos presentes
             $sanitarios = InmuebleSanitarios::updateOrCreate(
                 ['cct' => $datos['CCT']],
-                [
-                    'banos_hombres' => is_numeric($datos['NUMERO DE CUARTOS DE BAÑO PARA HOMBRES CON QUE CUENTA EL INMUEBLE'] ?? '')
-                        ? intval($datos['NUMERO DE CUARTOS DE BAÑO PARA HOMBRES CON QUE CUENTA EL INMUEBLE'])
-                        : 0,
-
-                    'banos_mujeres' => is_numeric($datos['NUMERO DE CUARTOS DE BAÑO PARA MUJERES CON QUE CUENTA EL INMUEBLE'] ?? '')
-                        ? intval($datos['NUMERO DE CUARTOS DE BAÑO PARA MUJERES CON QUE CUENTA EL INMUEBLE'])
-                        : 0,
-
-                    'banos_mixtos' => is_numeric($datos['NUMERO DE CUARTOS DE BAÑO MIXTOS CON QUE CUENTA EL INMUEBLE'] ?? '')
-                        ? intval($datos['NUMERO DE CUARTOS DE BAÑO MIXTOS CON QUE CUENTA EL INMUEBLE'])
-                        : 0,
-
-                    'total_sanitarios' => is_numeric($datos['TOTAL DE TAZAS SANITARIAS, MIGITORIOS Y LETRINAS CON QUE CUENTA EL INMUEBLE'] ?? '')
-                        ? intval($datos['TOTAL DE TAZAS SANITARIAS, MIGITORIOS Y LETRINAS CON QUE CUENTA EL INMUEBLE'])
-                        : 0,
-
-                    'sanitarios_ambos' => is_numeric($datos['TOTAL DE TAZAS SANITARIAS MIGITORIOS Y LETRINAS PARA USO DE AMBOS'] ?? '')
-                        ? intval($datos['TOTAL DE TAZAS SANITARIAS MIGITORIOS Y LETRINAS PARA USO DE AMBOS'])
-                        : 0,
-
-                    'lavamanos' => is_numeric($datos['TOTAL DE LAVAMANOS QUE EXISTEN EN LA ESCUELA'] ?? '')
-                        ? intval($datos['TOTAL DE LAVAMANOS QUE EXISTEN EN LA ESCUELA'])
-                        : 0,
-
-                    'tomas_bebederos' => is_numeric($datos['TOTAL DE TOMAS DE AGUA DE BEBEDEROS QUE EXISTEN EN EL INMUEBLE'] ?? '')
-                        ? intval($datos['TOTAL DE TOMAS DE AGUA DE BEBEDEROS QUE EXISTEN EN EL INMUEBLE'])
-                        : 0,
-
-                    'banos_discapacitados' => is_numeric($datos['TOTAL DE CUARTOS DE BAÑO ACCESIBLES PARA DISCAPACITADOS'] ?? '')
-                        ? intval($datos['TOTAL DE CUARTOS DE BAÑO ACCESIBLES PARA DISCAPACITADOS'])
-                        : 0,
-                ]
+                $valores
             );
+
 
             $obras = InmuebleObras::updateOrCreate(
                 ['cct' => $datos['CCT']],
                 [
-                    'rehabilitacion_realizada' => strtolower($datos['EN LOS ULTIMOS 5 AÑOS EN EL INMUEBLE SE REALIZARON OBRAS DE REAHABILITACION O DE MANTENIMEINTO MAYOR'] ?? '') === '1',
-                    'rehabilitacion_impermeabilizacion' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (IMPERMEABILIZACION)'] ?? '') === '1',
-                    'rehabilitacion_albanileria' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (ALBAÑILERIA)'] ?? '') === '1',
-                    'rehabilitacion_pintura' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (PINTURA GENERAL)'] ?? '') === '1',
-                    'rehabilitacion_red_hidraulica' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION DE LA RED HIDRAULICA)'] ?? '') === '1',
-                    'rehabilitacion_red_sanitaria' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION DE LA RED SANITARIA)'] ?? '') === '1',
-                    'rehabilitacion_esctructural' => strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION ESTRUCTURAL)'] ?? '') === '1',
-                    'obras_nuevas' => strtolower($datos['DURANTES LOS ULTIMOS 5 AÑOS SE REALIZARON OBRAS NUEVAS'] ?? '') === '1',
-                    'construccion_educativa' => strtolower($datos['CONSTRUCCION EN ESPACIOS ACADEMICOS O EDUCATIVOS'] ?? '') === '1',
-                    'construccion_deportiva' => strtolower($datos['CONSTRUCCION EN ESPACIOS DEPORTIVOS O RECREATIVOS'] ?? '') === '1',
-                    'construccion_sanitaria' => strtolower($datos['CONSTRUCCION EN SANITARIOS'] ?? '') === '1',
-                    'construccion_complementos' => strtolower($datos['CONSTRUCCION EN COMPLEMENTOS DE INSTALACIONES'] ?? '') === '1',
-                    'construccion_total' => strtolower($datos['CONSTRUCCION EN TODOS LOS ESPACIOS DEL INMUEBLE'] ?? '') === '1',
-                    'construccion_otro' => strtolower($datos['CONSTRUCCION EN OTRO TIPO DE ESPACIO'] ?? '') === '1',
+                    'rehabilitacion_realizada' => ($datos['EN LOS ULTIMOS 5 AÑOS EN EL INMUEBLE SE REALIZARON OBRAS DE REAHABILITACION O DE MANTENIMEINTO MAYOR'] ?? '') !== ''
+                        ? strtolower($datos['EN LOS ULTIMOS 5 AÑOS EN EL INMUEBLE SE REALIZARON OBRAS DE REAHABILITACION O DE MANTENIMEINTO MAYOR'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->rehabilitacion_realizada,
 
+                    'rehabilitacion_impermeabilizacion' => ($datos['OBRA DE REAHABILITACION QUE SE REALIZO (IMPERMEABILIZACION)'] ?? '') !== ''
+                        ? strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (IMPERMEABILIZACION)'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->rehabilitacion_impermeabilizacion,
+
+                    'rehabilitacion_albanileria' => ($datos['OBRA DE REAHABILITACION QUE SE REALIZO (ALBAÑILERIA)'] ?? '') !== ''
+                        ? strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (ALBAÑILERIA)'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->rehabilitacion_albanileria,
+
+                    'rehabilitacion_pintura' => ($datos['OBRA DE REAHABILITACION QUE SE REALIZO (PINTURA GENERAL)'] ?? '') !== ''
+                        ? strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (PINTURA GENERAL)'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->rehabilitacion_pintura,
+
+                    'rehabilitacion_red_hidraulica' => ($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION DE LA RED HIDRAULICA)'] ?? '') !== ''
+                        ? strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION DE LA RED HIDRAULICA)'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->rehabilitacion_red_hidraulica,
+
+                    'rehabilitacion_red_sanitaria' => ($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION DE LA RED SANITARIA)'] ?? '') !== ''
+                        ? strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION DE LA RED SANITARIA)'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->rehabilitacion_red_sanitaria,
+
+                    'rehabilitacion_esctructural' => ($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION ESTRUCTURAL)'] ?? '') !== ''
+                        ? strtolower($datos['OBRA DE REAHABILITACION QUE SE REALIZO (RESTITUCION ESTRUCTURAL)'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->rehabilitacion_esctructural,
+
+                    'obras_nuevas' => ($datos['DURANTES LOS ULTIMOS 5 AÑOS SE REALIZARON OBRAS NUEVAS'] ?? '') !== ''
+                        ? strtolower($datos['DURANTES LOS ULTIMOS 5 AÑOS SE REALIZARON OBRAS NUEVAS'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->obras_nuevas,
+
+                    'construccion_educativa' => ($datos['CONSTRUCCION EN ESPACIOS ACADEMICOS O EDUCATIVOS'] ?? '') !== ''
+                        ? strtolower($datos['CONSTRUCCION EN ESPACIOS ACADEMICOS O EDUCATIVOS'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->construccion_educativa,
+
+                    'construccion_deportiva' => ($datos['CONSTRUCCION EN ESPACIOS DEPORTIVOS O RECREATIVOS'] ?? '') !== ''
+                        ? strtolower($datos['CONSTRUCCION EN ESPACIOS DEPORTIVOS O RECREATIVOS'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->construccion_deportiva,
+
+                    'construccion_sanitaria' => ($datos['CONSTRUCCION EN SANITARIOS'] ?? '') !== ''
+                        ? strtolower($datos['CONSTRUCCION EN SANITARIOS'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->construccion_sanitaria,
+
+                    'construccion_complementos' => ($datos['CONSTRUCCION EN COMPLEMENTOS DE INSTALACIONES'] ?? '') !== ''
+                        ? strtolower($datos['CONSTRUCCION EN COMPLEMENTOS DE INSTALACIONES'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->construccion_complementos,
+
+                    'construccion_total' => ($datos['CONSTRUCCION EN TODOS LOS ESPACIOS DEL INMUEBLE'] ?? '') !== ''
+                        ? strtolower($datos['CONSTRUCCION EN TODOS LOS ESPACIOS DEL INMUEBLE'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->construccion_total,
+
+                    'construccion_otro' => ($datos['CONSTRUCCION EN OTRO TIPO DE ESPACIO'] ?? '') !== ''
+                        ? strtolower($datos['CONSTRUCCION EN OTRO TIPO DE ESPACIO'] ?? '') === '1'
+                        : optional($plantelExistente->obras)->construccion_otro,
                 ]
             );
 
             $seguridad = InmuebleSeguridad::updateOrCreate(
                 ['cct' => $datos['CCT']],
                 [
-                    'proteccion_civil' => strtolower($datos['LA ESCUELA CUENTA CON PROGRAMA DE PROTECCION CIVIL'] ?? '') === '1',
-                    'barda_completa' => strtolower($datos['EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL COMPLETO'] ?? '') === '1',
-                    'barda_incompleta' => strtolower($datos['EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL INCOMPLETO'] ?? '') === '1',
-                    'infraestructura_discapacidad' => strtolower($datos['EL INMUEBLE CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS'] ?? '') === '1',
-                    'sin_infraestructura_discapacidad' => strtolower($datos['EL INMUEBLE NO CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS'] ?? '') === '1',
-                    'equipo_discapacidad_total' => is_numeric($datos['EQUIPO O MOBILIARIO CON QUE CUENTA LA ESCUELA PARA PERSONAS CON DISCAPACIDAD (TOTAL TOTAL)'] ?? '')
+                    'proteccion_civil' => ($datos['LA ESCUELA CUENTA CON PROGRAMA DE PROTECCION CIVIL'] ?? '') !== ''
+                        ? strtolower($datos['LA ESCUELA CUENTA CON PROGRAMA DE PROTECCION CIVIL'] ?? '') === '1'
+                        : optional($plantelExistente->seguridad)->proteccion_civil,
+                    'barda_completa' => ($datos['EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL COMPLETO'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL COMPLETO'] ?? '') === '1'
+                        : optional($plantelExistente->seguridad)->barda_completa,
+                    'barda_incompleta' => ($datos['EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL INCOMPLETO'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL INCOMPLETO'] ?? '') === '1'
+                        : optional($plantelExistente->seguridad)->barda_incompleta,
+                    'infraestructura_discapacidad' => ($datos['EL INMUEBLE CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS'] ?? '') === '1'
+                        : optional($plantelExistente->seguridad)->infraestructura_discapacidad,
+                    'sin_infraestructura_discapacidad' => ($datos['EL INMUEBLE NO CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS'] ?? '') !== ''
+                        ? strtolower($datos['EL INMUEBLE NO CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS'] ?? '') === '1'
+                        : optional($plantelExistente->seguridad)->sin_infraestructura_discapacidad,
+
+                    //  numérico
+                    'equipo_discapacidad_total' => array_key_exists('EQUIPO O MOBILIARIO CON QUE CUENTA LA ESCUELA PARA PERSONAS CON DISCAPACIDAD (TOTAL TOTAL)', $datos)
+                        && is_numeric($datos['EQUIPO O MOBILIARIO CON QUE CUENTA LA ESCUELA PARA PERSONAS CON DISCAPACIDAD (TOTAL TOTAL)'])
                         ? intval($datos['EQUIPO O MOBILIARIO CON QUE CUENTA LA ESCUELA PARA PERSONAS CON DISCAPACIDAD (TOTAL TOTAL)'])
-                        : 0,
+                        : optional($plantelExistente->seguridad)->equipo_discapacidad_total,
 
                 ]
             );
@@ -378,32 +504,15 @@ class ImportarDatosController extends Controller
                 continue;
             }
 
-            if ($estatusRaw && !in_array($estatusRaw, $estatusValidos)) {
-                $errores[] = "Linea " . ($index + 1) . ": estatus inválido: '$estatusRaw'. Solo se permite: activo, inactivo, en_revision.";
-                continue;
-            }
+            $estatusRaw = strtolower(trim($datos['ESTATUS'] ?? ''));
 
-            $nivelesImpartidos = [];
-
-            foreach ($nivelesEducativos as $nivel => $encabezado) {
-                $valorRaw = strtolower(trim($datos[$encabezado] ?? ''));
-                $imparte = in_array($valorRaw, ['sí', 'si', 'true', '1']) ? true : false;
-
-                $nivelesImpartidos[] = [
-                    'cct' => $datos['CCT'] ?? null,
-                    'nivel' => $nivel,
-                    'imparte' => $imparte,
-                ];
-            }
-
-            foreach ($rangosSuperficie as $clave => $encabezado) {
-                $valor = strtolower(trim($datos[$encabezado] ?? ''));
-                $aplica = in_array($valor, ['sí', 'si', '1', 'true']);
-
-                InmuebleSuperficie::updateOrCreate(
-                    ['cct' => $datos['CCT'], 'rango' => $clave],
-                    ['aplica' => $aplica]
-                );
+            // Si viene vacío en Excel
+            if ($estatusRaw === '') {
+                // Conservar el estatus existente si existe, si no usar por defecto
+                $estatusPlantel = $plantelExistente->estatus_plantel ?? $estatusPorDefecto;
+            } else {
+                // Si viene un valor, validar si es permitido
+                $estatusPlantel = in_array($estatusRaw, $estatusValidos) ? $estatusRaw : $estatusPorDefecto;
             }
 
 
@@ -465,28 +574,32 @@ class ImportarDatosController extends Controller
                 $datosPlantel
             );
 
+            //Por el amor de DIOS no muevas esta parte o si no va a dar error de referencia
+            foreach ($nivelesAcademicos as $nivel => $etiqueta) {
+                if (array_key_exists($etiqueta, $datos) && trim($datos[$etiqueta]) !== '') {
+                    InmuebleNivel::updateOrCreate(
+                        [
+                            'cct' => $datos['CCT'],
+                            'nivel' => $nivel,
+                        ],
+                        [
+                            'imparte' => strtolower($datos[$etiqueta]) === '1',
+                        ]
+                    );
+                }
+            }
+
             // Crear o actualizar
             if ($plantel->wasRecentlyCreated) {
                 $nuevos[] = $cct;
             } else {
                 $actualizados[] = $cct;
             }
-
-            foreach ($nivelesImpartidos as $nivelData) {
-                if (!$nivelData['cct']) {
-                    continue; // Evitar registros sin CCT
-                }
-
-                InmuebleNivel::updateOrCreate(
-                    [
-                        'cct' => $nivelData['cct'],
-                        'nivel' => $nivelData['nivel'],
-                    ],
-                    [
-                        'imparte' => $nivelData['imparte'],
-                    ]
-                );
+            //Filas incompletas
+            if (count($fila) < count($encabezados)) {
+                $fila = array_pad($fila, count($encabezados), null);
             }
+            $datos = array_combine($encabezados, $fila);
         }
 
 
@@ -557,5 +670,23 @@ class ImportarDatosController extends Controller
         }
 
         return $nombre; // fallback: regresa el mismo
+    }
+
+    private function toBOOL($valor, $valorPorDefecto = null)
+    {
+        if ($valor === null || $valor === '') {
+            return $valorPorDefecto;
+        }
+
+        $valor = strtolower(trim($valor));
+        if (in_array($valor, ['sí', 'si', 'true', '1'], true)) {
+            return true;
+        }
+
+        if (in_array($valor, ['no', 'false', '0'], true)) {
+            return false;
+        }
+
+        return $valorPorDefecto; // Por si el valor no coincide con ninguna opción
     }
 }

@@ -476,29 +476,34 @@ default => ['fas fa-file', 'text-dark'],
             </div>
         </div>
 
+        <!--Datos avanzados-->
         <div class="form-section step-section d-none" data-step="7">
-            <div class="container mt-4">
+            <div class="form-ficha-base mt-4">
                 <h3 class="mb-3">Detalles avanzados del plantel</h3>
 
-                @if($plantel->niveles->isEmpty())
+                <div class="mb-4">
+                    <h4><i class=" fas fa-graduation-cap"></i>
+                        Nivel educativo
+                    </h4>
 
+                    @if($plantel->niveles->isEmpty())
+                    <p>No se registran niveles educativos para este plantel.</p>
+                    @else
+                    <ul class="list-group">
+                        @foreach($plantel->niveles->where('imparte', true) as $nivel)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ ucfirst(str_replace('_', ' ', $nivel->nivel)) }}
+                            <span class="badge bg-success">Sí</span>
+                        </li>
+                        @endforeach
+                    </ul>
+                    @endif
+                </div>
 
-                <p>No se registran niveles educativos para este plantel.</p>
-                @else
-                <ul class="list-group">
-                    @foreach($plantel->niveles->where('imparte', true) as $nivel)
-
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        {{ ucfirst(str_replace('_', ' ', $nivel->nivel)) }}
-                        <span class="badge bg-success">Sí</span>
-                    </li>
-
-                    @endforeach
-                </ul>
-                @endif
+                {{-- Superficie --}}
+                <h4><i class="fas fa-ruler-combined"></i> Superficie del inmueble</h4>
                 @if($plantel->superficies->where('aplica', true)->isNotEmpty())
-                <h4 class="mt-4">Superficie del inmueble</h4>
-                <ul class="list-group">
+                <ul class="list-group mb-3">
                     @foreach($plantel->superficies->where('aplica', true) as $superficie)
                     @php
                     $textoSuperficie = match($superficie->rango) {
@@ -510,32 +515,28 @@ default => ['fas fa-file', 'text-dark'],
                     default => ucfirst(str_replace('_', ' ', $superficie->rango)),
                     };
                     @endphp
-
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ $textoSuperficie }}
-                        <span class="badge bg-info">✔</span>
+                        <span class="badge bg-info"><i class="fas fa-check"></i></span>
                     </li>
                     @endforeach
-
                 </ul>
                 @else
-                <p class="mt-4">No se registran datos de superficie para este plantel.</p>
+                <p class="text-muted">No se registran datos de superficie para este plantel.</p>
                 @endif
 
+                {{-- Número de edificios --}}
+                <h4 class="mt-4"><i class="fas fa-building"></i> Edificios</h4>
                 @if($plantel->numero_edificios)
-                <p class="mt-4">
-                    <strong>Número de edificios utilizados por el plantel:</strong>
-                    {{ $plantel->numero_edificios }}
-                </p>
+                <p><strong>Número de edificios utilizados:</strong> {{ $plantel->numero_edificios }}</p>
                 @else
-                <p class="mt-4 text-muted">
-                    No se ha registrado el número de edificios utilizados.
-                </p>
+                <p class="text-muted">No se ha registrado el número de edificios.</p>
                 @endif
 
+                {{-- Agua --}}
+                <h4 class="mt-4"><i class="fas fa-tint"></i> Suministro y almacenamiento de agua</h4>
                 @if($plantel->agua)
-                <h4 class="mt-4">Suministro y almacenamiento de agua</h4>
-                <ul class="list-group">
+                <ul class="list-group mb-3">
                     @foreach([
                     'agua_red_publica' => 'Red pública',
                     'agua_pozo' => 'Pozo',
@@ -550,7 +551,7 @@ default => ['fas fa-file', 'text-dark'],
                     @if($plantel->agua->$campo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ $etiqueta }}
-                        <span class="badge bg-success">Sí</span>
+                        <span class="badge bg-success"><i class="fas fa-check"></i></span>
                     </li>
                     @endif
                     @endforeach
@@ -559,48 +560,51 @@ default => ['fas fa-file', 'text-dark'],
                 <p class="text-muted">No hay datos registrados sobre suministro de agua.</p>
                 @endif
 
-                @if($plantel->energia)
-                <h4 class="mt-4">Energia</h4>
-                <ul class="list-group">
-                    @foreach([
 
-                    'energia_red_contrato'=> 'Cuenta con suminostro de energía eléctrica en red pública',
+                {{-- Energía --}}
+                <h4 class="mt-4"><i class="fas fa-bolt"></i> Energía</h4>
+                @if($plantel->energia)
+                <ul class="list-group mb-3">
+                    @foreach([
+                    'energia_red_contrato'=> 'Cuenta con suministro de energía eléctrica en red pública',
                     'energia_red_sin_contrato'=> 'No cuenta con suministro de energía eléctrica',
-                    'energia_planta' => 'Cuenta con suministro de energia electrica con planta generadora',
-                    'energia_paneles_solares'=> 'Cuenta con suministro de energía electrica con paneles solares',
-                    'sin_energia'=>'No cuenta con energía electrica',
-                    'gas_natural'=>'Cuenta con suministro de gas natural',
-                    'gas_estacionario'=>'Cuenta con suministro de gas estacionario',
-                    'gas_cilindro'=> 'Cuenta con suministro de gas en cilindro',
+                    'energia_planta' => 'Planta generadora',
+                    'energia_paneles_solares'=> 'Paneles solares',
+                    'sin_energia'=>'No cuenta con energía eléctrica',
+                    'gas_natural'=>'Gas natural',
+                    'gas_estacionario'=>'Gas estacionario',
+                    'gas_cilindro'=> 'Gas en cilindro',
                     'sin_gas'=> 'No cuenta con suministro de gas'
                     ] as $campo => $etiqueta)
                     @if($plantel->energia->$campo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ $etiqueta }}
-                        <span class="badge bg-success">Sí</span>
+                        <span class="badge bg-success"><i class="fas fa-check"></i></span>
                     </li>
                     @endif
                     @endforeach
                 </ul>
                 @else
-                <p class="text-muted">No hay datos registrados sobre energia.</p>
+                <p class="text-muted">No hay datos registrados sobre energía.</p>
                 @endif
 
 
+
+                {{-- Drenaje --}}
+                <h4 class="mt-4"><i class="fas fa-water"></i> Drenaje</h4>
                 @if($plantel->drenaje)
-                <h4 class="mt-4">Drenaje</h4>
-                <ul class="list-group">
+                <ul class="list-group mb-3">
                     @foreach([
-                    'drenaje_publico'=>'Cuenta con sistema de drenaje público',
-                    'fosa_septica'=>'Cuenta con fosa septica',
-                    'planta_tratamiento'=>'Cuenta con planta de tratamiento',
-                    'descarga_otro'=>'Cuenta con otro tipo de descarga',
-                    'separacion_aguas'=>'Cuenta con separación de aguas negras y pluviales '
+                    'drenaje_publico'=>'Drenaje público',
+                    'fosa_septica'=>'Fosa séptica',
+                    'planta_tratamiento'=>'Planta de tratamiento',
+                    'descarga_otro'=>'Otro tipo de descarga',
+                    'separacion_aguas'=>'Separación de aguas negras y pluviales'
                     ] as $campo => $etiqueta)
                     @if($plantel->drenaje->$campo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ $etiqueta }}
-                        <span class="badge bg-success">Sí</span>
+                        <span class="badge bg-success"><i class="fas fa-check"></i></span>
                     </li>
                     @endif
                     @endforeach
@@ -609,70 +613,48 @@ default => ['fas fa-file', 'text-dark'],
                 <p class="text-muted">No hay datos registrados sobre drenaje.</p>
                 @endif
 
+
+                {{-- Sanitarios --}}
+                <h4 class="mt-4"><i class="fas fa-restroom"></i> Infraestructura sanitaria</h4>
                 @if($plantel->sanitario)
-                <h4 class="mt-4">Infraestructura sanitaria del inmueble</h4>
-                <ul class="list-group">
-                    <li class="list-group-item d-flex justify-content-between">
-                        Baños para hombres
-                        <span class="badge bg-primary">{{ $plantel->sanitario->banos_hombres }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        Baños para mujeres
-                        <span class="badge bg-primary">{{ $plantel->sanitario->banos_mujeres }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        Baños mixtos
-                        <span class="badge bg-primary">{{ $plantel->sanitario->banos_mixtos }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        Total de sanitarios
-                        <span class="badge bg-secondary">{{ $plantel->sanitario->total_sanitarios }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        Sanitarios para uso de ambos
-                        <span class="badge bg-secondary">{{ $plantel->sanitario->sanitarios_ambos }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        Lavamanos
-                        <span class="badge bg-info">{{ $plantel->sanitario->lavamanos }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        Tomas de agua de bebederos
-                        <span class="badge bg-info">{{ $plantel->sanitario->tomas_bebederos }}</span>
-                    </li>
-                    <li class="list-group-item d-flex justify-content-between">
-                        Baños accesibles para personas con discapacidad
-                        <span class="badge bg-success">{{ $plantel->sanitario->banos_discapacitados }}</span>
-                    </li>
+                <ul class="list-group mb-3">
+                    <li class="list-group-item d-flex justify-content-between">Baños hombres <span>{{ $plantel->sanitario->banos_hombres }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Baños mujeres <span>{{ $plantel->sanitario->banos_mujeres }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Baños mixtos <span>{{ $plantel->sanitario->banos_mixtos }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Total sanitarios <span>{{ $plantel->sanitario->total_sanitarios }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Sanitarios ambos <span>{{ $plantel->sanitario->sanitarios_ambos }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Lavamanos <span>{{ $plantel->sanitario->lavamanos }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Bebederos <span>{{ $plantel->sanitario->tomas_bebederos }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Baños accesibles para discapacitados <span>{{ $plantel->sanitario->banos_discapacitados }}</span></li>
                 </ul>
                 @else
-                <p class="text-muted">No se han registrado datos sanitarios para este plantel.</p>
+                <p class="text-muted">No se han registrado datos sanitarios.</p>
                 @endif
 
+                {{-- Obras --}}
+                <h4 class="mt-4"><i class="fas fa-tools"></i> Obras</h4>
                 @if($plantel->obras)
-                <h4 class="mt-4">Obras:</h4>
-                <ul class="list-group">
+                <ul class="list-group mb-3">
                     @foreach([
-
-                    'rehabilitacion_realizada'=> 'Se han hecho obras de rehabilitación o mantenimiento mayor en los ultimo cinco años',
-                    'rehabilitacion_impermeabilizacion'=> 'Se han hecho obras de rehabilitación(impermeabilización)',
-                    'rehabilitacion_albanileria' => 'Se han hecho obras de rehabilitación(albañileria)',
-                    'rehabilitacion_pintura'=> 'Se han hecho obras de rehabilitación(pintura general)',
-                    'rehabilitacion_red_hidraulica'=>'Se han hecho obras de rehabilitación(restitución de red hidraulica)',
-                    'rehabilitacion_red_sanitaria'=>'Se han hecho obras de rehabilitación(restitución de red sanitaria)',
-                    'rehabilitacion_estructural'=>'Se han hecho obras de rehabilitación(restitución de red estructural)',
-                    'obras_nuevas'=> 'Se han hecho obras durante los últimos cinco años',
-                    'construccion_educativa'=> 'Se han construido espacios educativos o academicos',
-                    'construccion_deportiva'=> 'Se han construido espacios deportivos o recreativos',
-                    'construccion_sanitaria'=> 'Se han hecho construcciones sanitarias',
-                    'construccion_complementos'=>'Se han hecho construcciones en complementos de instalaciones',
-                    'construccion_total'=>'Construccion en todos los espacios del inmueble',
-                    'construccion_otro'=>'Se han hecho construcciones en otro tipo de espacio'
+                    'rehabilitacion_realizada'=> 'Obras de rehabilitación en últimos 5 años',
+                    'rehabilitacion_impermeabilizacion'=> 'Impermeabilización',
+                    'rehabilitacion_albanileria' => 'Albañilería',
+                    'rehabilitacion_pintura'=> 'Pintura general',
+                    'rehabilitacion_red_hidraulica'=>'Red hidráulica',
+                    'rehabilitacion_red_sanitaria'=>'Red sanitaria',
+                    'rehabilitacion_estructural'=>'Obras estructurales',
+                    'obras_nuevas'=> 'Obras nuevas',
+                    'construccion_educativa'=> 'Espacios educativos',
+                    'construccion_deportiva'=> 'Espacios deportivos',
+                    'construccion_sanitaria'=> 'Construcciones sanitarias',
+                    'construccion_complementos'=>'Complementos instalaciones',
+                    'construccion_total'=>'Construcción total',
+                    'construccion_otro'=>'Otro tipo de construcción'
                     ] as $campo => $etiqueta)
                     @if($plantel->obras->$campo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ $etiqueta }}
-                        <span class="badge bg-success">Sí</span>
+                        <span class="badge bg-success"><i class="fas fa-check"></i></span>
                     </li>
                     @endif
                     @endforeach
@@ -681,33 +663,31 @@ default => ['fas fa-file', 'text-dark'],
                 <p class="text-muted">No hay datos registrados sobre obras.</p>
                 @endif
 
+                {{-- Seguridad --}}
+                <h4 class="mt-4"><i class="fas fa-shield-alt"></i> Seguridad</h4>
                 @if($plantel->seguridad)
-                <h4 class="mt-4">Seguridad:</h4>
-                <ul class="list-group">
+                <ul class="list-group mb-3">
                     <li class="list-group-item d-flex justify-content-between">
-                        Total de equipo o mobiliario que cuenta la esculea para personas con discapacidad
-                        <span class="badge bg-info">{{ $plantel->seguridad->equipo_discapacidad_total }}</span>
+                        Equipo/mobiliario discapacidad
+                        <span>{{ $plantel->seguridad->equipo_discapacidad_total }}</span>
                     </li>
                     @foreach([
-
-                    'rehabilitacion_realizada'=> 'Se han hecho obras de rehabilitación o mantenimiento mayor en los ultimo cinco años',
-                    'proteccion_civil' => 'La escuela cuenta con programa de protección civil',
-                    'barda_completa' => 'La escuela cuenta con barda completa',
-                    'barda_incompleta'=> 'La escuela no cuenta con barda completa',
-                    'infraestructura_discapacidad'=>'La escuela cuenta con infraestructura para discapacitados',
-                    'sin_infraestructura_discapacidad'=>'La escuela no cuenta con infraestructura para discapacitados',
-
+                    'proteccion_civil' => 'Programa de protección civil',
+                    'barda_completa' => 'Barda completa',
+                    'barda_incompleta'=> 'Barda incompleta',
+                    'infraestructura_discapacidad'=>'Infraestructura para discapacitados',
+                    'sin_infraestructura_discapacidad'=>'Sin infraestructura para discapacitados',
                     ] as $campo => $etiqueta)
                     @if($plantel->seguridad->$campo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ $etiqueta }}
-                        <span class="badge bg-success">Sí</span>
+                        <span class="badge bg-success"><i class="fas fa-check"></i></span>
                     </li>
                     @endif
                     @endforeach
                 </ul>
                 @else
-                <p class="text-muted">No hay datos registrados sobre obras.</p>
+                <p class="text-muted">No hay datos registrados sobre seguridad.</p>
                 @endif
 
             </div>
