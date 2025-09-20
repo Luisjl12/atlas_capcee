@@ -31,6 +31,9 @@ class ImportarDatosController extends Controller
 
     public function store(Request $request)
     {
+
+        set_time_limit(300); // 5 minutos
+
         // Validación del archivo
         $request->validate([
             'archivo' => 'required|file|mimes:csv,txt,xlsx,xls|max:10240',
@@ -127,6 +130,7 @@ class ImportarDatosController extends Controller
             //Localidad/no obligatorio 
             $nombreLocalidad = ucwords(strtolower(trim($datos['NOMBRE_LOCALIDAD'] ?? '')));
 
+
             // Normalizar campos opcionales
             $nivelRaw = strtolower(trim($datos['NIVEL_EDUCATIVO'] ?? ''));
             $turnoRaw = strtolower(trim($datos['TURNO'] ?? ''));
@@ -199,9 +203,6 @@ class ImportarDatosController extends Controller
                 'tecnico_licenciatura' => 'INMUEBLE IMPARTE EDUCACION TECNICO LICENCIATURA',
                 'tecnico_posgrado' => 'INMUEBLE IMPARTE EDUCACION TECNICO POSGRADO',
             ];
-
-
-
 
             $rangosSuperficie = [
                 'menos_de_50' => 'MENOS DE 50 M2',
@@ -524,9 +525,6 @@ class ImportarDatosController extends Controller
                 'nombre_localidad' => $nombreLocalidad,
                 'municipio_id' => $municipio->id,
             ]);
-
-
-
 
             // Datos obligatorios (que siempre deben existir en tu archivo)
             $datosPlantel = [
