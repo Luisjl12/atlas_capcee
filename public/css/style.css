@@ -337,7 +337,6 @@ body {
 }
 
 .btn-primary {
-    /* Botón principal del sistema (ej. Guardar en formularios) */
     background-color: var(--color-vino-principal);
     color: var(--color-texto-sobre-vino);
     border-color: var(--color-vino-principal);
@@ -831,6 +830,91 @@ table.data-table tbody tr:last-child td {
 
 p i {
     margin-right: 0.4em;
+}
+.modal-filtros {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background: var(--color-fondo-tarjeta);
+  width: 95%;
+  max-width: 400px;
+  max-height: 90vh;     
+  overflow-y: auto;       
+  border-radius: 12px;
+  padding: 1rem 1.2rem;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+  animation: fadeIn 0.3s ease;
+  position: relative;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .8rem;
+}
+
+.close-modal {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #888;
+}
+
+.filter-section {margin-bottom: 1rem;display: flex;flex-direction: column;}
+.filter-section label {font-size: .9rem; font-weight: 600;margin-bottom: .4rem;}
+
+.filter-section input[type="text"],
+.filter-section select {
+  width: 100%;
+  padding: .5rem .8rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: .9rem;
+}
+
+/* Chips */
+.chip-group {display: flex;flex-wrap: wrap;gap: .5rem;}
+.chip-group input { display: none; }
+
+.chip-group span {
+  display: inline-block;
+  padding: .4rem .9rem;
+  border-radius: 20px;
+  background: #f7f7f7;
+  border: 1px solid #ddd;
+  font-size: .85rem;
+  cursor: pointer;
+  transition: all .2s;
+}
+
+.chip-group input:checked + span {background-color: var(--color-vino-terciario);color: var(--color-fondo-tarjeta);border-color: var(--color-vino-terciario);}
+hr {border: none;border-top: 1px solid #eee;margin: .8rem 0;}
+
+.modal-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 1rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid #eee;
+  background: var(--color-fondo-tarjeta);
+}
+.show {background-color: var(--color-vino-secundario);border-radius: 8px;flex: 1;}
+
+@keyframes fadeIn {
+  from {opacity: 0; transform: translateY(-10px);}
+  to {opacity: 1; transform: translateY(0);}
 }
 
 /* Panel general */
@@ -2130,11 +2214,82 @@ Estilos personalizados para contenedores en celular
   box-shadow: 0 0 4px rgba(0,0,0,0.1);
 }
 
-/*Orientacion de controles para mapas para moviles*/
 @media (max-width: 600px) {
     #controlesMapa {
         flex-direction: column;
         align-items: stretch;
     }
+}
+
+.sidebar-filtros {
+    width: 300px;
+    background: var(--color-fondo-tarjeta);
+    border-radius: 14px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    padding: 18px;
+    overflow-y: auto;
+    max-height: 70vh;
+    border: 1px solid #e6e6e6;
+}
+
+.sidebar-filtros h4 {
+    margin-bottom: 14px;
+    color: var(--color-vino-principal);
+    font-size: 1.2rem;
+    font-weight: 700;
+    padding-bottom: 4px;
+}
+
+.sidebar-filtros input {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.lista-filtros h6, .tipo-mapa-container label {
+    color: var(--color-vino-principal);
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.filtro-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 10px 14px;
+    margin-bottom: 8px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #333;
+    transition: all 0.2s ease;
+}
+
+.filtro-btn:hover {
+    background: var(--color-vino-principal);
+    color: var(--color-fondo-tarjeta);
+    transform: translateX(4px); 
+    box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+}
+
+.filtro-btn.active {
+    background: var(--color-vino-principal);
+    color: #fff;
+    font-weight: 600;
+}
+
+.tipo-mapa-container label {margin-bottom: 6px;}
+
+#tipoMapa:focus, #buscadorRegion:focus{
+    border-color: var(--color-vino-principal);
+    box-shadow: 0 0 0 3px rgba(140, 0, 0, 0.2);
+    outline: none;
 }
 

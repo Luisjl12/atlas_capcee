@@ -11,14 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('inmueble_nivel', function (Blueprint $table) {
-            $table->dropForeign(['cct']);
-
-            // Agrega la nueva con cascada
+        Schema::table('inmueble_agua', function (Blueprint $table) {
             $table->foreign('cct')
                 ->references('cct')
                 ->on('planteles')
-                ->onDelete('cascade');
+                ->onDelete('cascade')
+                ->onUpdate('cascade');
         });
     }
 
@@ -27,8 +25,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('inmueble_nivel', function (Blueprint $table) {
-            //
+        Schema::table('inmueble_agua', function (Blueprint $table) {
+            $table->dropForeign(['cct']);
         });
     }
 };

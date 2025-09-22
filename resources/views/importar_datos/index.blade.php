@@ -22,11 +22,13 @@
                 <i class="fas fa-file-excel"></i> Descargar Plantilla CSV
             </a>
         </div>
-        @if(session('success'))
-        <div class="alert alert-success mt-3">
-            {{ session('success') }}
+
+        @if (session('mensaje'))
+        <div class="alert alert-success">
+            {{ session('mensaje') }}
         </div>
         @endif
+
 
         @if(session('errores_csv'))
         <div class="alert alert-warning mt-3">
@@ -49,6 +51,17 @@
             </ul>
         </div>
         @endif
+        @if (session('errores'))
+        <div class="alert alert-warning">
+            <strong>Errores durante la importación:</strong>
+            <ul>
+                @foreach (session('errores') as $error)
+                <li>{{ $error['cct'] }}: {{ $error['error'] }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
         <div class="card-body-custom p-4 mt-3">
             <p>Esta herramienta permite importar datos de planteles desde un archivo CSV. Asegúrese de que el archivo tenga los encabezados correctos:</p>
 

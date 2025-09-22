@@ -17,6 +17,9 @@
                     <a href="{{route('panel.supervision')}}" class="accion-card yellow">
                         <i class="fas fa-tasks"></i> Panel de Supervisión
                     </a>
+                    <a href="{{route('planteles.index')}}" class="accion-card red">
+                        <i class="fas fa-school"></i> Gestionar Planteles
+                    </a>
                 </div>
                 <div class="columna-acciones">
                     <a href="{{route('busqueda.avanzada')}}" class="accion-card green">

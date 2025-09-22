@@ -490,7 +490,7 @@ default => ['fas fa-file', 'text-dark'],
                     <p>No se registran niveles educativos para este plantel.</p>
                     @else
                     <ul class="list-group">
-                        @foreach($plantel->niveles->where('imparte', true) as $nivel)
+                        @foreach($plantel->niveles as $nivel)
                         <li class="list-group-item d-flex justify-content-between align-items-center">
                             {{ ucfirst(str_replace('_', ' ', $nivel->nivel)) }}
                             <span class="badge bg-success">Sí</span>
@@ -538,15 +538,15 @@ default => ['fas fa-file', 'text-dark'],
                 @if($plantel->agua)
                 <ul class="list-group mb-3">
                     @foreach([
-                    'agua_red_publica' => 'Red pública',
-                    'agua_pozo' => 'Pozo',
-                    'agua_cuerpo' => 'Cuerpos de agua',
-                    'agua_pipas' => 'Pipas',
+                    'agua_red_publica' => 'Cuenta con red pública de agua potable',
+                    'agua_pozo' => 'Cuenta con pozo',
+                    'agua_cuerpo' => 'Cuenta con cuerpos de agua',
+                    'agua_pipas' => 'Cuenta con pipas de agua',
                     'agua_otro' => 'Otro tipo de suministro',
-                    'cisterna' => 'Cisterna',
-                    'tinacos' => 'Tinacos',
-                    'tanque' => 'Tanque',
-                    'almacenamiento_otro' => 'Otro tipo de almacenamiento',
+                    'cisterna' => 'Cuenta con cisterna',
+                    'tinacos' => 'Cuenta con tinacos',
+                    'tanque' => 'Cuenta con tanque de agua',
+                    'almacenamiento_otro' => 'Otro tipo de almacenamiento para agua',
                     ] as $campo => $etiqueta)
                     @if($plantel->agua->$campo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -562,18 +562,18 @@ default => ['fas fa-file', 'text-dark'],
 
 
                 {{-- Energía --}}
-                <h4 class="mt-4"><i class="fas fa-bolt"></i> Energía</h4>
+                <h4 class="mt-4"><i class="fas fa-bolt"></i> Energía y Gas</h4>
                 @if($plantel->energia)
                 <ul class="list-group mb-3">
                     @foreach([
                     'energia_red_contrato'=> 'Cuenta con suministro de energía eléctrica en red pública',
                     'energia_red_sin_contrato'=> 'No cuenta con suministro de energía eléctrica',
-                    'energia_planta' => 'Planta generadora',
-                    'energia_paneles_solares'=> 'Paneles solares',
+                    'energia_planta' => 'Cuenta con planta generadora',
+                    'energia_paneles_solares'=> 'Cuenta con paneles solares',
                     'sin_energia'=>'No cuenta con energía eléctrica',
-                    'gas_natural'=>'Gas natural',
-                    'gas_estacionario'=>'Gas estacionario',
-                    'gas_cilindro'=> 'Gas en cilindro',
+                    'gas_natural'=>'Cuenta con gas natural',
+                    'gas_estacionario'=>'Cuenta con gas estacionario',
+                    'gas_cilindro'=> 'Cuenta con gas en cilindro',
                     'sin_gas'=> 'No cuenta con suministro de gas'
                     ] as $campo => $etiqueta)
                     @if($plantel->energia->$campo)
@@ -595,11 +595,11 @@ default => ['fas fa-file', 'text-dark'],
                 @if($plantel->drenaje)
                 <ul class="list-group mb-3">
                     @foreach([
-                    'drenaje_publico'=>'Drenaje público',
-                    'fosa_septica'=>'Fosa séptica',
-                    'planta_tratamiento'=>'Planta de tratamiento',
-                    'descarga_otro'=>'Otro tipo de descarga',
-                    'separacion_aguas'=>'Separación de aguas negras y pluviales'
+                    'drenaje_publico'=>'Cuenta con drenaje público',
+                    'fosa_septica'=>'Cuenta con fosa séptica',
+                    'planta_tratamiento'=>'Cuenta con planta de tratamiento',
+                    'descarga_otro'=>'Cuenta con otro tipo de descarga',
+                    'separacion_aguas'=>'Cuenta con separación de aguas negras y pluviales'
                     ] as $campo => $etiqueta)
                     @if($plantel->drenaje->$campo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">
@@ -618,14 +618,14 @@ default => ['fas fa-file', 'text-dark'],
                 <h4 class="mt-4"><i class="fas fa-restroom"></i> Infraestructura sanitaria</h4>
                 @if($plantel->sanitario)
                 <ul class="list-group mb-3">
-                    <li class="list-group-item d-flex justify-content-between">Baños hombres <span>{{ $plantel->sanitario->banos_hombres }}</span></li>
-                    <li class="list-group-item d-flex justify-content-between">Baños mujeres <span>{{ $plantel->sanitario->banos_mujeres }}</span></li>
-                    <li class="list-group-item d-flex justify-content-between">Baños mixtos <span>{{ $plantel->sanitario->banos_mixtos }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Total baños hombres <span>{{ $plantel->sanitario->banos_hombres }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Total baños mujeres <span>{{ $plantel->sanitario->banos_mujeres }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Total baños mixtos <span>{{ $plantel->sanitario->banos_mixtos }}</span></li>
                     <li class="list-group-item d-flex justify-content-between">Total sanitarios <span>{{ $plantel->sanitario->total_sanitarios }}</span></li>
-                    <li class="list-group-item d-flex justify-content-between">Sanitarios ambos <span>{{ $plantel->sanitario->sanitarios_ambos }}</span></li>
-                    <li class="list-group-item d-flex justify-content-between">Lavamanos <span>{{ $plantel->sanitario->lavamanos }}</span></li>
-                    <li class="list-group-item d-flex justify-content-between">Bebederos <span>{{ $plantel->sanitario->tomas_bebederos }}</span></li>
-                    <li class="list-group-item d-flex justify-content-between">Baños accesibles para discapacitados <span>{{ $plantel->sanitario->banos_discapacitados }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Total sanitarios ambos <span>{{ $plantel->sanitario->sanitarios_ambos }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Total Lavamanos <span>{{ $plantel->sanitario->lavamanos }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Total Bebederos <span>{{ $plantel->sanitario->tomas_bebederos }}</span></li>
+                    <li class="list-group-item d-flex justify-content-between">Total baños accesibles para discapacitados <span>{{ $plantel->sanitario->banos_discapacitados }}</span></li>
                 </ul>
                 @else
                 <p class="text-muted">No se han registrado datos sanitarios.</p>
@@ -673,9 +673,9 @@ default => ['fas fa-file', 'text-dark'],
                     </li>
                     @foreach([
                     'proteccion_civil' => 'Programa de protección civil',
-                    'barda_completa' => 'Barda completa',
-                    'barda_incompleta'=> 'Barda incompleta',
-                    'infraestructura_discapacidad'=>'Infraestructura para discapacitados',
+                    'barda_completa' => 'Cuenta con barda completa',
+                    'barda_incompleta'=> 'Su barda esta incompleta',
+                    'infraestructura_discapacidad'=>'Cuenta con infraestructura para discapacitados',
                     'sin_infraestructura_discapacidad'=>'Sin infraestructura para discapacitados',
                     ] as $campo => $etiqueta)
                     @if($plantel->seguridad->$campo)

@@ -17,6 +17,7 @@
                     <a href="{{route('planteles.index')}}" class="accion-card red">
                         <i class="fas fa-school"></i> Gestionar Planteles
                     </a>
+
                 </div>
 
                 <div class="columna-acciones">

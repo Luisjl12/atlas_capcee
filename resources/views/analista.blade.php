@@ -23,6 +23,9 @@
                     <a href="{{route('busqueda.avanzada')}}" class="accion-card green">
                         <i class="fas fa-search"></i> Buscador Avanzado
                     </a>
+                    <a href="{{route('planteles.index')}}" class="accion-card red">
+                        <i class="fas fa-school"></i> Gestionar Planteles
+                    </a>
                 </div>
                 <div class="columna-acciones">
                     <a href="{{route('importarDatos.show')}}" class="accion-card green">

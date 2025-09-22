@@ -19,6 +19,9 @@
                     <a href="{{route('importarDatos.show')}}" class="accion-card green">
                         <i class="fas fa-upload"></i> Importar Datos
                     </a>
+                    <a href="{{route('planteles.index')}}" class="accion-card red">
+                        <i class="fas fa-school"></i> Gestionar Planteles
+                    </a>
                 </div>
 
                 <div class="columna-acciones">

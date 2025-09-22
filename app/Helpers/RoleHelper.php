@@ -9,7 +9,6 @@ class RoleHelper
     //Ruta para mi perfil y buscador avanzado
     public static function dashboardRoute($roleId)
     {
-
         return match ($roleId) {
             1 => route('dashboard.admin'),
             2 => route('dashboard.analista'),
@@ -23,8 +22,11 @@ class RoleHelper
     public static function gestionPlanteles($roleId)
     {
         return match ($roleId) {
-            1 => route('dashboard.admin'),     // Administrador
-            4 => route('dashboard.director'),  // Director
+            1 => route('dashboard.admin'),
+            2 => route('dashboard.analista'),
+            3 => route('dashboard.supervisor'),
+            4 => route('dashboard.director'),
+            5 => route('dashboard.capturista'),
         };
     }
 
