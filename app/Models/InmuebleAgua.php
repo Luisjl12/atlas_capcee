@@ -19,6 +19,7 @@ class InmuebleAgua extends Model
         'tinacos',
         'tanque',
         'almacenamiento_otro',
+        'estado_red_hidraulica',
     ];
 
     public function plantel()

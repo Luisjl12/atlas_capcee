@@ -19,6 +19,11 @@ class InmuebleSanitarios extends Model
         'lavamanos',
         'tomas_bebederos',
         'banos_discapacitados',
+        'estado_instalacion_sanitaria',
+        'estado_banos',
+        'estado_minigitorios',
+        'estado_lavamanos',
+        'estado_bebederos',
 
     ];
     public function plantel()

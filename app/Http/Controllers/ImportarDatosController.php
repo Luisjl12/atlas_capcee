@@ -7,6 +7,8 @@ use App\Models\Plantel;
 use App\Models\Municipio;
 use App\Models\Corde;
 use App\Models\Localidad;
+use App\Models\Macroregion;
+use App\Models\Microregion;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportarDatosController extends Controller
@@ -46,7 +48,7 @@ class ImportarDatosController extends Controller
         }
 
         $encabezados = array_map('trim', $data[0]);
-        $camposEsperados = ['CCT', 'NOMBRE_ESCUELA', 'ID_MUNICIPIO', 'ID_CORDE'];
+        $camposEsperados = ['CV_CCT', 'NOMBRECT', 'C_NOM_MUN', 'NOM_CORDE'];
         $faltantes = array_diff($camposEsperados, $encabezados);
 
         if (!empty($faltantes)) {
@@ -91,17 +93,13 @@ class ImportarDatosController extends Controller
             'tinacos' => 'EL INMUEBLE CUENTA CON TINACOS PARA ALMACENAMIENTO DE AGUA',
             'tanque' => 'EL INMUEBLE CUENTA CON TANQUE PARA ALMACENAMIENTO DE AGUA',
             'almacenamiento_otro' => 'EL INMUEBLE CUENTA CON OTRO TIPO DE ALMACENAMIENTO PARA AGUA',
+            'estado_red_hidraulica' => 'ESTADO DE RED HIDRAULICA', //String 
         ];
         $atributosEnergia = [
-            'energia_red_contrato' => 'EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA CON CONTRATO',
-            'energia_red_sin_contrato' => 'EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA SIN CONTRATO',
             'energia_planta' => 'EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA PLANTA GENERADORA DE LUZ',
             'energia_panales_solares' => 'EL INMUEBLE CUENTA CON PANELES SOLARES CON BATERIA (PSB)',
-            'sin_energia' => 'EL INMUEBLE NO CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA',
-            'gas_natural' => 'EL INMUEBLE CUENTA CON SUMINISTRO DE GAS NATURAL',
-            'gas_estacionario' => 'EL INMUEBLE CUENTA CON SUMINISTRO DE GAS ESTACIONARIO',
-            'gas_cilindro' => 'EL INMUEBLE CUENTA CON SUMINISTRO DE GAS EN CILINDROS',
-            'sin_gas' => 'EL INMUEBLE NO CUENTA CON SUMINISTRO DE GAS',
+            'suministro_energia' => 'EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA', //
+            'estado_instalacion_electrica' => 'ESTADO DE INSTALACION ELECTRICA', //String 
         ];
 
         $atributosDrenaje = [
@@ -110,18 +108,20 @@ class ImportarDatosController extends Controller
             'planta_tratamiento' => 'EL INMUEBLE CUENTA CON PLANTA DE TRATAMIENTO',
             'descarga_otro' => 'OTRO TIPO DE DESCARGA',
             'separacion_aguas' =>  'EL INMUEBLE CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES ',
-            'sin_separacion_aguas' => 'EL INMUEBLE NO CUENTA CON SEPARACION DE AGUAS NEGRAS Y PLUVIALES ',
         ];
 
         $sanitarios = [
             'banos_hombres' => 'NUMERO DE CUARTOS DE BAÑO PARA HOMBRES CON QUE CUENTA EL INMUEBLE',
             'banos_mujeres' => 'NUMERO DE CUARTOS DE BAÑO PARA MUJERES CON QUE CUENTA EL INMUEBLE',
-            'banos_mixtos' => 'NUMERO DE CUARTOS DE BAÑO MIXTOS CON QUE CUENTA EL INMUEBLE',
+            'estado_banos' => 'ESTADO DE BAÑOS', //String
             'total_sanitarios' => 'TOTAL DE TAZAS SANITARIAS, MIGITORIOS Y LETRINAS CON QUE CUENTA EL INMUEBLE',
-            'sanitarios_ambos' => 'TOTAL DE TAZAS SANITARIAS MIGITORIOS Y LETRINAS PARA USO DE AMBOS',
+            'estado_minigitorios' => 'ESTADO MINGITORIOS', //String
             'lavamanos' => 'TOTAL DE LAVAMANOS QUE EXISTEN EN LA ESCUELA',
+            'estado_lavamanos' => 'ESTADO DE LAVAMANOS', //String
             'tomas_bebederos' => 'TOTAL DE TOMAS DE AGUA DE BEBEDEROS QUE EXISTEN EN EL INMUEBLE',
+            'estado_bebederos' => 'ESTADO DE BEBEDEROS', //String
             'banos_discapacitados' => 'TOTAL DE CUARTOS DE BAÑO ACCESIBLES PARA DISCAPACITADOS',
+            'estado_instalacion_sanitaria' => 'ESTADO DE INSTALACION SANITARIA', //String
         ];
 
         $atributosObras = [
@@ -144,9 +144,9 @@ class ImportarDatosController extends Controller
         $atributosSeguridad = [
             'proteccion_civil' => 'LA ESCUELA CUENTA CON PROGRAMA DE PROTECCION CIVIL',
             'barda_completa' => 'EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL COMPLETO',
-            'barda_incompleta' => 'EL INMUEBLE CUENTA CON BARDA O CERCA PERIMETRAL INCOMPLETO',
+            'estado_barda' => 'ESTADO DE BARDA PERIMETRAL', //string
+            'estado_cerco' => 'ESTADO DE CERCO PERIMETRAL', //string
             'infraestructura_discapacidad' => 'EL INMUEBLE CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS',
-            'sin_infraestructura_discapacidad' => 'EL INMUEBLE NO CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS',
         ];
 
 
@@ -156,10 +156,10 @@ class ImportarDatosController extends Controller
         foreach (array_slice($data, 1) as $fila) {
             $fila = array_map('trim', $fila);
 
-            $cct = strtoupper($fila[array_search('CCT', $encabezados)]);
-            $nombreEscuela = $fila[array_search('NOMBRE_ESCUELA', $encabezados)];
-            $nombreMunicipio = $fila[array_search('ID_MUNICIPIO', $encabezados)];
-            $nombreCorde = $fila[array_search('ID_CORDE', $encabezados)];
+            $cct = strtoupper($fila[array_search('CV_CCT', $encabezados)]);
+            $nombreEscuela = $fila[array_search('NOMBRECT', $encabezados)];
+            $nombreMunicipio = $fila[array_search('C_NOM_MUN', $encabezados)];
+            $nombreCorde = $fila[array_search('NOM_CORDE', $encabezados)];
 
 
             if (!$cct || !$nombreMunicipio || !$nombreCorde) {
@@ -180,6 +180,7 @@ class ImportarDatosController extends Controller
                 continue;
             }
 
+
             // Preparar campos base
             $campos = [
                 'id_municipio' => $municipio->id,
@@ -187,9 +188,21 @@ class ImportarDatosController extends Controller
                 'nombre_escuela' => $nombreEscuela,
             ];
 
+            //Latitud y Longitud 
+            $latitud = $fila[array_search('LATITUD', $encabezados)] ?? null;
+            $longitud = $fila[array_search('LONGITUD', $encabezados)] ?? null;
+
+            if (!empty($latitud)) {
+                $campos['latitud'] = is_numeric($latitud) ? floatval($latitud) : null;
+            }
+
+            if (!empty($longitud)) {
+                $campos['longitud'] = is_numeric($longitud) ? floatval($longitud) : null;
+            }
+
             // Solo actualizar localidad si el encabezado existe y viene con valor
-            if (in_array('LOCALIDAD', $encabezados)) {
-                $nombreLocalidad = $fila[array_search('LOCALIDAD', $encabezados)] ?? null;
+            if (in_array('C_NOM_LOC', $encabezados)) {
+                $nombreLocalidad = $fila[array_search('C_NOM_LOC', $encabezados)] ?? null;
 
                 if (!empty($nombreLocalidad)) {
                     $localidad = Localidad::firstOrCreate(
@@ -216,14 +229,42 @@ class ImportarDatosController extends Controller
                 }
             }
 
-
-            Plantel::updateOrCreate(
+            //Crear o editar plantel
+            $plantel = Plantel::updateOrCreate(
                 ['cct' => $cct],
                 $campos
             );
 
-            $plantel = Plantel::where('cct', $cct)->first();
+            // Asignar macroregión si existe en el Excel
+            if (in_array('MACROREGION', $encabezados)) {
+                $nombreMacroregion = strtoupper($fila[array_search('MACROREGION', $encabezados)] ?? '');
 
+                if (!empty($nombreMacroregion)) {
+                    $macroregion = Macroregion::firstOrCreate([
+                        'nombre_macroregion' => $nombreMacroregion
+                    ]);
+
+                    $plantel->macroregion()->associate($macroregion);
+                    $plantel->save();
+                }
+            }
+
+            //Asignar microregion si existe en el Excel
+            if (in_array('MICROREGION', $encabezados)) {
+                $nombreMicroregion = strtoupper($fila[array_search('MICROREGION', $encabezados)] ?? '');
+
+                if (!empty($nombreMicroregion)) {
+                    $microregion = Microregion::firstOrCreate([
+                        'nombre_microregiones' => $nombreMicroregion
+                    ]);
+
+                    $plantel->microregion()->associate($microregion);
+                    $plantel->save();
+                }
+            }
+
+
+            //Leer nivel academico del archivo excel
             foreach ($nivelesAcademicos as $clave => $encabezado) {
                 if (in_array($encabezado, $encabezados)) {
                     $valor = $fila[array_search($encabezado, $encabezados)] ?? null;
@@ -244,7 +285,7 @@ class ImportarDatosController extends Controller
                     }
                 }
             }
-
+            //Leer rango de superficie 
             foreach ($rangosSuperficie as $clave => $encabezado) {
                 if (in_array($encabezado, $encabezados)) {
                     $valor = $fila[array_search($encabezado, $encabezados)] ?? null;
@@ -264,17 +305,23 @@ class ImportarDatosController extends Controller
                 }
             }
 
-
+            //Leer datos hidraulicos 
             $datosAgua = ['cct' => $cct];
 
             foreach ($atributosAgua as $campo => $encabezado) {
                 if (in_array($encabezado, $encabezados)) {
                     $valor = $fila[array_search($encabezado, $encabezados)] ?? null;
 
-                    // Normalizamos: si viene 1 o "si" => true, en cualquier otro caso => false
-                    $datosAgua[$campo] = ($valor == 1 || strtolower(trim((string)$valor)) === 'si');
+                    if ($campo === 'estado_red_hidraulica') {
+                        // Se guarda tal cual como string 
+                        $datosAgua[$campo] = trim((string)$valor);
+                    } else {
+                        // Normalización booleana
+                        $datosAgua[$campo] = ($valor == 1 || strtolower(trim((string)$valor)) === 'si');
+                    }
                 }
             }
+
 
             // Solo guarda si hay al menos un campo evaluado además de 'cct'
             if (count($datosAgua) > 1) {
@@ -284,6 +331,8 @@ class ImportarDatosController extends Controller
                 );
             }
 
+            //Leer datos de energia
+            $datosEnergia = ['cct' => $cct];
 
             $datosEnergia = ['cct' => $cct];
 
@@ -291,9 +340,21 @@ class ImportarDatosController extends Controller
                 if (in_array($encabezado, $encabezados)) {
                     $valor = $fila[array_search($encabezado, $encabezados)] ?? null;
 
-                    // Normalizamos: si viene 1 o "si" => true, en cualquier otro caso => false
-                    $datosEnergia[$campo] = ($valor == 1 || strtolower(trim((string)$valor)) === 'si');
+                    if ($campo === 'estado_instalacion_electrica') {
+                        // Se guarda como string limpio
+                        $datosEnergia[$campo] = trim((string)$valor);
+                    } else {
+                        // Normalización booleana
+                        $datosEnergia[$campo] = ($valor == 1 || strtolower(trim((string)$valor)) === 'si');
+                    }
                 }
+            }
+
+            if (count($datosEnergia) > 1) {
+                \App\Models\InmuebleEnergia::updateOrCreate(
+                    ['cct' => $cct],
+                    $datosEnergia
+                );
             }
 
             // Solo guarda si hay al menos un campo evaluado además de 'cct'
@@ -304,6 +365,7 @@ class ImportarDatosController extends Controller
                 );
             }
 
+            //Leer datos de drenaje 
             $datosDrenaje = ['cct' => $cct];
 
             foreach ($atributosDrenaje as $campo => $encabezado) {
@@ -323,20 +385,24 @@ class ImportarDatosController extends Controller
                 );
             }
 
-
+            //Leer datos sanitarios del archivo excel
             $datosSanitarios = ['cct' => $cct];
 
             foreach ($sanitarios as $campo => $encabezado) {
                 if (in_array($encabezado, $encabezados)) {
                     $valor = $fila[array_search($encabezado, $encabezados)] ?? null;
 
-                    if (is_numeric($valor)) {
+                    // Campos de estado que deben guardarse como string
+                    if (str_starts_with($campo, 'estado_')) {
+                        $datosSanitarios[$campo] = trim((string)$valor);
+                    }
+                    // Campos numéricos
+                    elseif (is_numeric($valor)) {
                         $datosSanitarios[$campo] = intval($valor);
                     }
                 }
             }
 
-            // Si hay al menos un campo numérico, actualiza o crea
             if (count($datosSanitarios) > 1) {
                 \App\Models\InmuebleSanitarios::updateOrCreate(
                     ['cct' => $cct],
@@ -344,6 +410,8 @@ class ImportarDatosController extends Controller
                 );
             }
 
+
+            //Leer datos de obras del excel 
             $datosObras = ['cct' => $cct];
 
             foreach ($atributosObras as $campo => $encabezado) {
@@ -363,28 +431,29 @@ class ImportarDatosController extends Controller
                 );
             }
 
-
+            //Leer datos de seguridad 
             $datosSeguridad = ['cct' => $cct];
 
-            // Booleanos
             foreach ($atributosSeguridad as $campo => $encabezado) {
                 if (in_array($encabezado, $encabezados)) {
                     $valor = $fila[array_search($encabezado, $encabezados)] ?? null;
 
-                    // Normalizamos: 1 o "si" => true, cualquier otro valor => false
-                    $datosSeguridad[$campo] = ($valor == 1 || strtolower(trim((string)$valor)) === 'si');
+                    if (in_array($campo, ['estado_barda', 'estado_cerco'])) {
+                        // Guardamos como string limpio
+                        $datosSeguridad[$campo] = trim((string)$valor);
+                    } else {
+                        // Normalización booleana
+                        $datosSeguridad[$campo] = ($valor == 1 || strtolower(trim((string)$valor)) === 'si');
+                    }
                 }
             }
 
-            // Entero
+            // Campo entero adicional
             if (in_array($campoEquipoDiscapacidad, $encabezados)) {
                 $valor = $fila[array_search($campoEquipoDiscapacidad, $encabezados)] ?? null;
-
-                // Si viene vacío o 0 lo guardamos como 0
                 $datosSeguridad['equipo_discapacidad_total'] = is_numeric($valor) ? intval($valor) : 0;
             }
 
-            // Actualiza o crea siempre que tenga algún dato
             \App\Models\InmuebleSeguridad::updateOrCreate(
                 ['cct' => $cct],
                 $datosSeguridad

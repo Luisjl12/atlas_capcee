@@ -187,7 +187,7 @@
                 </div>
             </div>
 
-            <div class="row mb-4">
+            <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="latitud" class="form-label">Latitud:</label>
                     <input type="text" class="form-control" name="latitud" value="{{ old('latitud', $plantel->latitud) }}" placeholder="Ej. 19.432608" required>
@@ -197,6 +197,20 @@
                     <input type="text" class="form-control" name="longitud" value="{{ old('longitud', $plantel->longitud) }}" placeholder="Ej. -99.133209" required>
                 </div>
             </div>
+
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+                    <label class="form-label">Macroregión:</label>
+                    <input type="text" class="form-control" value="{{ $plantel->macroregion->nombre_macroregion ?? 'No asignada' }}" readonly>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Microregión:</label>
+                    <input type="text" class="form-control" value="{{ $plantel->microregion->nombre_microregiones ?? 'No asignada' }}" readonly>
+                </div>
+            </div>
+
 
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Ubicación</button>

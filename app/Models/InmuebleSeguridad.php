@@ -15,7 +15,9 @@ class InmuebleSeguridad extends Model
         'barda_incompleta',
         'infraestructura_discapacidad',
         'sin_infraestructura_discapacidad',
-        'equipo_discapacidad_total'
+        'equipo_discapacidad_total',
+        'estado_barda',
+        'estado_cerco',
     ];
 
     public function plantel()

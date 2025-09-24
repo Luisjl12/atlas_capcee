@@ -123,6 +123,16 @@ class Plantel extends Model implements Auditable
         return $this->hasOne(InmuebleSeguridad::class, 'cct', 'cct');
     }
 
+    public function macroregion()
+    {
+        return $this->belongsTo(Macroregion::class);
+    }
+
+    public function microregion()
+    {
+        return $this->belongsTo(Microregion::class);
+    }
+
 
     public function auditorias()
     {

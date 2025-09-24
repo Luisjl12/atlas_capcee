@@ -19,6 +19,8 @@ class InmuebleEnergia extends Model
         'gas_estacionario',
         'gas_cilindro',
         'sin_gas',
+        'estado_instalacion_electrica',
+        'suministro_energia',
     ];
 
     public function plantel()
