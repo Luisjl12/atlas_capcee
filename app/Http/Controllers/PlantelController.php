@@ -410,7 +410,7 @@ class PlantelController extends Controller
             });
         }
 
-        $planteles = $query->get();
+        $planteles = $query->limit(20)->get();
 
         return response()->json([
             'html' => view('partials.lista', compact('planteles'))->render()

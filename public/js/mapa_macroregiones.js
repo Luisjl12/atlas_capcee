@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const map = L.map('map').setView([19.0414, -98.2063], 9);
+    window.map = L.map('map').setView([19.0414, -98.2063], 9);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '&copy; OpenStreetMap contributors'
@@ -365,5 +365,50 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    //Filtro por localidades
+    document.getElementById('filtro-localidad').addEventListener('change', function () {
+    const localidadId = this.value;
+    const url = '/mapa-planteles?' + new URLSearchParams({ localidad: localidadId });
 
+    console.log('Localidad seleccionada:', localidadId);
+
+    fetch(url)
+        .then(res => res.json())
+        .then(respuesta => {
+            
+            const planteles = respuesta.data || [];
+
+            map.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    map.removeLayer(layer);
+                }
+            });
+
+            const markers = [];
+
+            planteles.forEach(plantel => {
+                if (plantel.lat && plantel.lng) {
+                    const marker = L.marker([parseFloat(plantel.lat), parseFloat(plantel.lng)], {
+                        icon: crearIconoPorEstado(plantel.estatus_plantel)
+                    }).addTo(map).bindPopup(`
+                        <b>${plantel.nombre}</b><br>
+                        CCT: ${plantel.cct}<br>
+                        Estado: ${normalizarEstado(plantel.estatus_plantel).charAt(0).toUpperCase() + normalizarEstado(plantel.estatus_plantel).slice(1)}<br>
+                        Municipio: ${plantel.municipio?.nombre_municipio || 'Sin dato'}<br>
+                        Localidad: ${plantel.localidad?.nombre_localidad || 'Sin dato'}<br>
+                        <a href="/planteles/${plantel.id}" target="_blank">Ver ficha completa</a>
+                    `);
+
+                    markers.push({
+                        cct: (plantel.cct || '').toLowerCase(),
+                        nombre: (plantel.nombre || '').toLowerCase(),
+                        marker
+                    });
+                }
+            });
+        })
+        .catch(error => {
+            console.error('Error al cargar los planteles:', error);
+        });
+    });
 });

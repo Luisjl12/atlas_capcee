@@ -217,7 +217,9 @@ Route::post('/importar-archivos', [ImportarDatosController::class, 'store'])->na
 
 
 //Ruta para visualizar mapas
-Route::get('/mapa-planteles', [MapaController::class, 'mapa'])->name('planteles.mapa');
+Route::get('/mapa', [MapaController::class, 'vistaMapa'])->name('mapa.vista');
+Route::get('/mapa-planteles', [MapaController::class, 'mapa'])->name('mapa.datos');
+
 
 
 //Ruta para eliminar varias fotos seleccionadas
@@ -247,4 +249,8 @@ Route::get('/planteles/{id}/auditorias', [PlantelController::class, 'mostrarAudi
 //Niveles 
 Route::get('/plantel/{cct}/niveles', [InmuebleNivelController::class, 'mostrarNivelesPorCCT']);
 //M2
-Route::get('/planteles/{cct}/detalles', [InmuebleSuperficieController::class, 'mostrarSuperficieCCT'])->name('planteles.detalles');
+//Route::get('/planteles/{cct}/detalles', [InmuebleSuperficieController::class, 'mostrarSuperficieCCT'])->name('planteles.detalles');
+
+
+//Ruta para filtrar planteles en el mapa
+Route::get('/filtrar-planteles', [MapaController::class, 'filtrar']);

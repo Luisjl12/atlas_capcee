@@ -1,5 +1,10 @@
 document.addEventListener('DOMContentLoaded', function () {
-    $('#buscar').on('input', function () {
+    const $input = $('#buscar');
+
+    //  Activar despliegue al cargar la tabla inicial
+    inicializarDespliegueUsuarios();
+
+    $input.on('input', function () {
         const buscar = $(this).val();
 
         $.ajax({
@@ -8,6 +13,9 @@ document.addEventListener('DOMContentLoaded', function () {
             data: { buscar },
             success: function (response) {
                 $('#tabla-usuarios').html(response.html);
+
+                //  Reactivar despliegue después de actualizar la tabla
+                inicializarDespliegueUsuarios();
             }
         });
     });

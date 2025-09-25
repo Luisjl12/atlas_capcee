@@ -166,6 +166,19 @@
                 </div>
             </div>
 
+            <div class="row mb-3">
+
+                <div class="col-md-4">
+                    <label class="form-label">Macroregión:</label>
+                    <input type="text" class="form-control" value="{{ $plantel->macroregion->nombre_macroregion ?? 'No asignada' }}" readonly>
+                </div>
+
+                <div class="col-md-4">
+                    <label class="form-label">Microregión:</label>
+                    <input type="text" class="form-control" value="{{ $plantel->microregion->nombre_microregiones ?? 'No asignada' }}" readonly>
+                </div>
+            </div>
+
             <div class="mt-4">
                 <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Ubicación</button>
             </div>

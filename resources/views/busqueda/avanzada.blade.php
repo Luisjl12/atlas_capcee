@@ -199,4 +199,5 @@
         }
     });
 </script>
+<script src="{{asset('js/tabla-expandible-planteles.js')}}"></script>
 @endpush

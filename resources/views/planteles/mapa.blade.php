@@ -10,6 +10,14 @@
         <h2><i class="bi bi-geo-alt-fill"></i> Mapa de Planteles</h2>
     </a>
 </div>
+<select id="filtro-localidad">
+    <option value="">-- Selecciona localidad --</option>
+    @foreach($localidades as $localidad)
+    <option value="{{ $localidad->id }}">{{ $localidad->nombre_localidad }}</option>
+    @endforeach
+</select>
+
+<button id="btn-filtros" class="btn btn-primary">Filtrar planteles por superficie</button>
 
 <div style="display: flex; gap: 20px;">
     <div class="sidebar-filtros">
@@ -86,6 +94,47 @@
 
         <div id="map" style="height: 500px; border-radius: 8px;"></div>
     </div>
+
+
+    <!-- Modal de filtros -->
+    <div id="modal-filtros" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span id="cerrar-modal" class="close">&times;</span>
+            <h3>Filtros avanzados</h3>
+
+            <form id="form-filtros">
+                <!-- Región -->
+                <label>Macroregión</label>
+                <select id="filtro-macroregion">
+                    <option value="">-- Selecciona --</option>
+                    @foreach($macroregiones as $macro)
+                    <option value="{{ $macro->id }}">{{ $macro->nombre_macroregion }}</option>
+                    @endforeach
+                </select>
+
+                <!-- Nivel educativo -->
+                <label>Nivel educativo</label>
+                <select id="filtro-nivel">
+                    <option value="">-- Selecciona --</option>
+                    @foreach($niveles as $nivel)
+                    <option value="{{ $nivel->nivel }}">{{ ucfirst($nivel->nivel) }}</option>
+                    @endforeach
+                </select>
+
+
+                <!-- Superficie -->
+                <select id="filtro-superficie">
+                    <option value="">-- Selecciona --</option>
+                    @foreach($rangosSuperficie as $rango)
+                    <option value="{{ $rango->rango }}">{{ ucwords(str_replace('_', ' ', $rango->rango)) }} m²</option>
+                    @endforeach
+                </select>
+
+                <button type="submit">Aplicar filtros</button>
+            </form>
+        </div>
+    </div>
+
 </div>
 
 
@@ -96,12 +145,12 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
-<script>
-    window.planteles = @json($planteles);
-</script>
+
 
 <!--Script para graficar los mapas-->
 <script src="{{ asset('js/mapa_macroregiones.js') }}"></script>
 
+<!--Script para los filtros-->
+<script src="{{ asset('js/filtrosPlanteles.js') }}"></script>
 
 @endsection

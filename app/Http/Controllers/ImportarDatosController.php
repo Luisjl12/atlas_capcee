@@ -236,8 +236,8 @@ class ImportarDatosController extends Controller
             );
 
             // Asignar macroregión si existe en el Excel
-            if (in_array('MACROREGION', $encabezados)) {
-                $nombreMacroregion = strtoupper($fila[array_search('MACROREGION', $encabezados)] ?? '');
+            if (in_array('MACRORREGION', $encabezados)) {
+                $nombreMacroregion = strtoupper($fila[array_search('MACRORREGION', $encabezados)] ?? '');
 
                 if (!empty($nombreMacroregion)) {
                     $macroregion = Macroregion::firstOrCreate([
@@ -250,8 +250,8 @@ class ImportarDatosController extends Controller
             }
 
             //Asignar microregion si existe en el Excel
-            if (in_array('MICROREGION', $encabezados)) {
-                $nombreMicroregion = strtoupper($fila[array_search('MICROREGION', $encabezados)] ?? '');
+            if (in_array('MICRORREGION', $encabezados)) {
+                $nombreMicroregion = strtoupper($fila[array_search('MICRORREGION', $encabezados)] ?? '');
 
                 if (!empty($nombreMicroregion)) {
                     $microregion = Microregion::firstOrCreate([

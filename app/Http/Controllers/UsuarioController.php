@@ -28,13 +28,12 @@ class UsuarioController extends Controller
             });
         }
 
-        $usuarios = $query->get();
+        $usuarios = $query->paginate(20);
 
         return response()->json([
             'html' => view('partials.tabla_usuarios', compact('usuarios'))->render()
         ]);
     }
-
 
     public function create()
     {

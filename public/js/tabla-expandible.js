@@ -1,11 +1,12 @@
-
-document.addEventListener('DOMContentLoaded', function() {
+function inicializarDespliegueUsuarios() {
     const filas = document.querySelectorAll('.usuario-nombre');
-    filas.forEach((fila, index) => {
-        fila.addEventListener('click', function() {
-            const detalle = document.querySelectorAll('.usuario-detalle')[index];
-            const icono = fila.querySelector('.toggle-icon i');
+    const detalles = document.querySelectorAll('.usuario-detalle');
 
+    filas.forEach((fila, index) => {
+        const detalle = detalles[index];
+        const icono = fila.querySelector('.toggle-icon i');
+
+        fila.addEventListener('click', function () {
             detalle.classList.toggle('d-none');
 
             if (detalle.classList.contains('d-none')) {
@@ -17,5 +18,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-});
-
+}

@@ -1,11 +1,12 @@
-
-document.addEventListener('DOMContentLoaded', function() {
+function inicializarDesplieguePlanteles() {
     const filas = document.querySelectorAll('.plantel-nombre');
-    filas.forEach((fila, index) => {
-        fila.addEventListener('click', function() {
-            const detalle = document.querySelectorAll('.plantel-detalle')[index];
-            const icono = fila.querySelector('.toggle-icon i');
+    const detalles = document.querySelectorAll('.plantel-detalle');
 
+    filas.forEach((fila, index) => {
+        const detalle = detalles[index];
+        const icono = fila.querySelector('.toggle-icon i');
+
+        fila.addEventListener('click', function () {
             detalle.classList.toggle('d-none');
 
             if (detalle.classList.contains('d-none')) {
@@ -17,4 +18,4 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
-});
+}
