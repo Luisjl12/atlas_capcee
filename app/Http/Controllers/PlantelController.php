@@ -10,6 +10,7 @@ use App\Models\Localidad;
 use App\Models\Corde;
 use App\Models\GaleriaFotos;
 use App\Models\Usuario;
+use App\Models\InmuebleNivel;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use OwenIt\Auditing\Models\Audit;
@@ -40,6 +41,7 @@ class PlantelController extends Controller
         $directores = Usuario::whereHas('rol', function ($q) {
             $q->where('nombre_rol', 'DIRECTOR');
         })->get();
+
 
         return view('planteles.create', compact('municipios', 'localidades', 'cordes', 'directores'));
     }
@@ -207,11 +209,16 @@ class PlantelController extends Controller
     public function show(string $id)
     {
         $plantel = Plantel::with(['espacios', 'detalleHidrosanitario', 'detalleServicio', 'detalleProteccionCivil'])->findOrFail($id);
+        $niveles = InmuebleNivel::where('cct', $plantel->cct)->get();
         $hidrosanitario = $plantel->detalleHidrosanitario;
         $servicio = $plantel->detalleServicio;
         $estadosConservacion = ['BUENO', 'REGULAR', 'MALO', 'NO_APLICA', 'EN_PROCESO'];
         $archivos = ArchivosPlantel::where('cct', $plantel->cct)->get();
         $fotos = GaleriaFotos::with(['usuario', 'plantel'])->where('cct', $plantel->cct)->get();
+        $nivelesEducativos = Plantel::select('nivel_educativo')
+            ->distinct()
+            ->pluck('nivel_educativo')
+            ->sort();
 
         $mapData = [
             'lat' => $plantel->latitud,
@@ -234,6 +241,8 @@ class PlantelController extends Controller
             'fotos',
             'planteles', // lo mandamos a la vista
             'mapData',
+            'niveles',
+            'nivelesEducativos'
         ));
     }
 
@@ -244,6 +253,7 @@ class PlantelController extends Controller
     public function edit(string $id)
     {
         $plantel = Plantel::findOrFail($id);
+        $niveles = InmuebleNivel::where('cct', $plantel->cct)->get();
         $municipios = Municipio::all();
         $localidades = Localidad::all();
         $cordes = Corde::all();
@@ -251,7 +261,7 @@ class PlantelController extends Controller
             $q->where('nombre_rol', 'DIRECTOR');
         })->get();
 
-        return view('planteles.edit', compact('plantel', 'municipios', 'localidades', 'cordes', 'directores'));
+        return view('planteles.edit', compact('plantel', 'municipios', 'localidades', 'cordes', 'directores', 'niveles'));
     }
 
     /**
@@ -291,7 +301,7 @@ class PlantelController extends Controller
         }
 
         $plantel->update($request->only($camposActualizables));
-        // 🔐 Asignar usuario manualmente a la auditoría
+        //  Asignar usuario manualmente a la auditoría
         $usuarioId = session('id');
         $usuario = $usuarioId ? Usuario::find($usuarioId) : null;
 

@@ -254,3 +254,11 @@ Route::get('/plantel/{cct}/niveles', [InmuebleNivelController::class, 'mostrarNi
 
 //Ruta para filtrar planteles en el mapa
 Route::get('/filtrar-planteles', [MapaController::class, 'filtrar']);
+
+Route::get('/filtrar-agua', [MapaController::class, 'filtrarAgua']);
+
+Route::get('/filtrar-energia', [MapaController::class, 'filtrarPlantelesEnergia'])
+    ->name('filtrar-energia');
+
+
+Route::get('/filtrar-drenaje', [MapaController::class, 'filtrarPlantelesDrenaje'])->name('filtrar-drenaje');

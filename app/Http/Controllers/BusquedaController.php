@@ -49,7 +49,11 @@ class BusquedaController extends Controller
         $cordes = Corde::all();
         $municipios = Municipio::all();
         // etc...
+        $nivelesEducativos = Plantel::select('nivel_educativo')
+            ->distinct()
+            ->pluck('nivel_educativo')
+            ->sort();
 
-        return view('busqueda.avanzada', compact('planteles', 'cordes', 'municipios'));
+        return view('busqueda.avanzada', compact('planteles', 'cordes', 'municipios', 'nivelesEducativos'));
     }
 }

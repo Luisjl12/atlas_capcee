@@ -65,11 +65,12 @@ default => ['fas fa-file', 'text-dark'],
 
             <h4>Información General del Plantel</h4>
             <div class="data-grid">
-                <div class="data-pair"><label>Nombre Oficial:</label><span> {{ $plantel->nombre_escuela }}</span></div>
+                <div class="data-pair"><label>Nombre Oficial:</label><span>{{ $plantel->nombre_escuela }}</span></div>
                 <div class="data-pair"><label>Nivel Educativo:</label><span> {{ $plantel->nivel_educativo }}</span></div>
-                <div class="data-pair"><label>Turno:</label><span> {{ $plantel->turno }}</span></div>
-                <div class="data-pair"><label>Sostenimiento:</label><span> {{ $plantel->sostenimiento }}</span></div>
+                <div class="data-pair"><label>Turno:</label><span>{{ $plantel->turno }}</span></div>
+                <div class="data-pair"><label>Sostenimiento:</label><span>{{ $plantel->sostenimiento }}</span></div>
             </div>
+
             <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-primary mt-3">
                 <i class=" fas fa-edit"></i> Editar Ficha Base
             </a>

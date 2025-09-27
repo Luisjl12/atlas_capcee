@@ -79,8 +79,17 @@
                         <option value="secundaria" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'secundaria' ? 'selected' : '' }}>Secundaria</option>
                         <option value="media superior" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'media superior' ? 'selected' : '' }}>Media Superior</option>
                         <option value="superior" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'superior' ? 'selected' : '' }}>Superior</option>
+                        {{-- Si el valor en BD no coincide con las opciones, mostrarlo --}}
+                        @php
+                        $valor = old('nivel_educativo', $plantel->nivel_educativo ?? '');
+                        $opciones = ['preescolar','primaria','secundaria','media superior','superior'];
+                        @endphp
+                        @if($valor && !in_array($valor, $opciones))
+                        <option value="{{ $valor }}" selected>{{ ucfirst($valor) }}</option>
+                        @endif
                     </select>
                 </div>
+
                 <div class="col-md-4">
                     <label for="turno" class="form-label">Turno:</label>
                     <select name="turno" id="turno" class="form-select" required>

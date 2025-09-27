@@ -149,9 +149,12 @@ class ImportarDatosController extends Controller
             'infraestructura_discapacidad' => 'EL INMUEBLE CUENTA CON INFRAESTRUCTURA (CAJONES, RAMPAS, SEÑALAMIENTOS, ETC) SOFTWARE, COMPUTADORAS PARA DISCAPACITADOS',
         ];
 
-
         $campoEquipoDiscapacidad = 'EQUIPO O MOBILIARIO CON QUE CUENTA LA ESCUELA PARA PERSONAS CON DISCAPACIDAD (TOTAL TOTAL)';
 
+        //Atributos adaptados
+        $atributosProteccionCivil = [
+            'programa_interno_pc' => 'PROGRAMA DE PROTECCION CIVIL',
+        ];
 
         foreach (array_slice($data, 1) as $fila) {
             $fila = array_map('trim', $fila);
@@ -226,6 +229,43 @@ class ImportarDatosController extends Controller
 
                 if (!empty($numeroEdificios)) {
                     $campos['numero_edificios'] = is_numeric($numeroEdificios) ? intval($numeroEdificios) : null;
+                }
+            }
+
+            //Nivel educativo en string
+
+            if (in_array('TIPO EDUCATIVO', $encabezados)) {
+                $tipoEducativo = $fila[array_search('TIPO EDUCATIVO', $encabezados)] ?? null;
+
+                if (!empty($tipoEducativo)) {
+                    $campos['nivel_educativo'] = trim($tipoEducativo);
+                }
+            }
+
+            //Syministro de agua en string  
+
+            if (in_array('SUMINISTRO DE AGUA', $encabezados)) {
+                $suministroAgua = $fila[array_search('SUMINISTRO DE AGUA', $encabezados)] ?? null;
+
+                if (!empty($suministroAgua)) {
+                    // Guardar en la tabla detalle_hidrosanitario
+                    \App\Models\DetalleHidrosanitario::updateOrCreate(
+                        ['cct' => $cct], // condición
+                        ['fuente_agua' => $suministroAgua] // valores a insertar/actualizar
+                    );
+                }
+            }
+
+            //Almacenamiento de agua en string
+            if (in_array('ALMACENAMIENTO DE AGUA', $encabezados)) {
+                $suministroAgua = $fila[array_search('ALMACENAMIENTO DE AGUA', $encabezados)] ?? null;
+
+                if (!empty($suministroAgua)) {
+                    // Guardar en la tabla detalle_hidrosanitario
+                    \App\Models\DetalleHidrosanitario::updateOrCreate(
+                        ['cct' => $cct], // condición
+                        ['almacenamiento_agua' => $suministroAgua] // valores a insertar/actualizar
+                    );
                 }
             }
 
@@ -457,6 +497,23 @@ class ImportarDatosController extends Controller
             \App\Models\InmuebleSeguridad::updateOrCreate(
                 ['cct' => $cct],
                 $datosSeguridad
+            );
+
+            //Datos adaptados
+            $datosProteccionCivil = ['cct' => $cct];
+
+            foreach ($atributosProteccionCivil as $campo => $encabezado) {
+                if (in_array($encabezado, $encabezados)) {
+                    $valor = $fila[array_search($encabezado, $encabezados)] ?? null;
+
+                    // Normalizamos: 1 o "si" => true, en cualquier otro caso => false
+                    $datosProteccionCivil[$campo] = ($valor == 1 || strtolower(trim((string)$valor)) === 'si');
+                }
+            }
+
+            \App\Models\DetalleProteccionCivil::updateOrCreate(
+                ['cct' => $cct],
+                $datosProteccionCivil
             );
 
             $procesados++;

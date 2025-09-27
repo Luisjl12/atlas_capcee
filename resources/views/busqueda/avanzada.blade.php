@@ -36,6 +36,7 @@
 
                     <form method="GET" action="{{ route('busqueda.avanzada') }}" class="filters-form">
 
+                        {{-- Buscar --}}
                         <div class="filter-section">
                             <label for="busqueda">Buscar</label>
                             <input type="text" id="busqueda" name="busqueda"
@@ -45,6 +46,7 @@
 
                         <hr>
 
+                        {{-- Municipio --}}
                         <div class="filter-section">
                             <label for="id_municipio">Municipio</label>
                             <select id="id_municipio" name="id_municipio">
@@ -58,59 +60,28 @@
                             </select>
                         </div>
 
+                        {{-- Nivel educativo --}}
                         <div class="filter-section">
-                            <label for="id_corde">Corde</label>
-                            <select id="id_corde" name="id_corde">
-                                <option value="">Todas</option>
-                                @foreach($cordes as $corde)
-                                <option value="{{ $corde->id }}"
-                                    {{ request('id_corde') == $corde->id ? 'selected' : '' }}>
-                                    {{ $corde->nombre_corde }}
-                                </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <hr>
-
-                        <div class="filter-section">
-                            <label>Nivel</label>
+                            <label>Nivel Educativo</label>
                             <div class="chip-group">
                                 <label>
                                     <input type="radio" name="nivel_educativo" value=""
                                         {{ request('nivel_educativo') == '' ? 'checked' : '' }}>
                                     <span>Todos</span>
                                 </label>
+                                @foreach($nivelesEducativos as $nivel)
                                 <label>
-                                    <input type="radio" name="nivel_educativo" value="Preescolar"
-                                        {{ request('nivel_educativo') == 'Preescolar' ? 'checked' : '' }}>
-                                    <span>Preescolar</span>
+                                    <input type="radio" name="nivel_educativo" value="{{ $nivel }}"
+                                        {{ request('nivel_educativo') == $nivel ? 'checked' : '' }}>
+                                    <span>{{ $nivel }}</span>
                                 </label>
-                                <label>
-                                    <input type="radio" name="nivel_educativo" value="Primaria"
-                                        {{ request('nivel_educativo') == 'Primaria' ? 'checked' : '' }}>
-                                    <span>Primaria</span>
-                                </label>
-                                <label>
-                                    <input type="radio" name="nivel_educativo" value="Secundaria"
-                                        {{ request('nivel_educativo') == 'Secundaria' ? 'checked' : '' }}>
-                                    <span>Secundaria</span>
-                                </label>
-                                <label>
-                                    <input type="radio" name="nivel_educativo" value="Educación Media Superior"
-                                        {{ request('nivel_educativo') == 'Educación Media Superior' ? 'checked' : '' }}>
-                                    <span>Media Superior</span>
-                                </label>
-                                <label>
-                                    <input type="radio" name="nivel_educativo" value="Educación Superior"
-                                        {{ request('nivel_educativo') == 'Educación Superior' ? 'checked' : '' }}>
-                                    <span>Superior</span>
-                                </label>
+                                @endforeach
                             </div>
                         </div>
 
                         <hr>
 
+                        {{-- Sostenimiento --}}
                         <div class="filter-section">
                             <label>Sostenimiento</label>
                             <div class="chip-group">
@@ -144,6 +115,7 @@
 
                         <hr>
 
+                        {{-- Alarma sísmica --}}
                         <div class="filter-section">
                             <label>Alarma Sísmica</label>
                             <div class="chip-group">
@@ -165,6 +137,7 @@
                             </div>
                         </div>
 
+                        {{-- Footer del modal --}}
                         <div class="modal-footer">
                             <button type="submit" class="btn show">Mostrar Planteles</button>
                             <a href="{{ route('busqueda.avanzada') }}" class="btn-limpiador">
@@ -175,6 +148,7 @@
                 </div>
             </div>
 
+            {{-- Total de resultados --}}
             <p class="mt-3"><strong>{{ $planteles->total() }}</strong> planteles encontrados.</p>
 
             {{-- Tabla de resultados --}}
@@ -199,5 +173,5 @@
         }
     });
 </script>
-<script src="{{asset('js/tabla-expandible-planteles.js')}}"></script>
+<script src="{{ asset('js/tabla-expandible-planteles.js') }}"></script>
 @endpush

@@ -10,14 +10,19 @@
         <h2><i class="bi bi-geo-alt-fill"></i> Mapa de Planteles</h2>
     </a>
 </div>
-<select id="filtro-localidad">
-    <option value="">-- Selecciona localidad --</option>
-    @foreach($localidades as $localidad)
-    <option value="{{ $localidad->id }}">{{ $localidad->nombre_localidad }}</option>
-    @endforeach
-</select>
 
 <button id="btn-filtros" class="btn btn-primary">Filtrar planteles por superficie</button>
+<button id="btn-filtros-agua" class="btn btn-primary" style="margin-left: 10px;">
+    Filtrar por suministro de agua
+</button>
+<button id="btn-filtros-energia" class="btn btn-primary" style="margin-left: 10px;">
+    Filtrar por suministro de energía
+</button>
+<button id="btn-filtros-drenaje" class="btn btn-primary" style="margin-left: 10px;">
+    Filtrar por drenaje
+</button>
+
+
 
 <div style="display: flex; gap: 20px;">
     <div class="sidebar-filtros">
@@ -94,48 +99,65 @@
 
         <div id="map" style="height: 500px; border-radius: 8px;"></div>
     </div>
+</div>
 
 
-    <!-- Modal de filtros -->
-    <div id="modal-filtros" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span id="cerrar-modal" class="close">&times;</span>
-            <h3>Filtros avanzados</h3>
+<!-- Modal de filtros -->
+<div id="modal-filtros" class="modal">
+    <div class="modal-content">
+        <span id="cerrar-modal" class="close">&times;</span>
+        <h3>Filtros avanzados</h3>
 
-            <form id="form-filtros">
-                <!-- Región -->
-                <label>Macroregión</label>
-                <select id="filtro-macroregion">
+        <form id="form-filtros">
+            <div class="filtro-bloque">
+                <label for="filtro-macroregion">Macroregión</label>
+                <select id="filtro-macroregion" name="macroregion">
                     <option value="">-- Selecciona --</option>
                     @foreach($macroregiones as $macro)
                     <option value="{{ $macro->id }}">{{ $macro->nombre_macroregion }}</option>
                     @endforeach
                 </select>
 
-                <!-- Nivel educativo -->
-                <label>Nivel educativo</label>
-                <select id="filtro-nivel">
+                <label for="filtro-microregion">Microregión</label>
+                <select id="filtro-microregion" name="microregion">
+                    <option value="">-- Selecciona --</option>
+                    @foreach($microregiones as $micro)
+                    <option value="{{ $micro->id }}">{{ $micro->nombre_microregiones }}</option>
+                    @endforeach
+                </select>
+
+                <label for="filtro-municipio">Municipio</label>
+                <select id="filtro-municipio" name="municipio">
+                    <option value="">-- Selecciona --</option>
+                    @foreach($municipios as $muni)
+                    <option value="{{ $muni->id }}">{{ $muni->nombre_municipio }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="filtro-bloque">
+                <label for="filtro-nivel">Nivel educativo</label>
+                <select id="filtro-nivel" name="nivel">
                     <option value="">-- Selecciona --</option>
                     @foreach($niveles as $nivel)
                     <option value="{{ $nivel->nivel }}">{{ ucfirst($nivel->nivel) }}</option>
                     @endforeach
                 </select>
 
-
-                <!-- Superficie -->
-                <select id="filtro-superficie">
+                <label for="filtro-superficie">Superficie</label>
+                <select id="filtro-superficie" name="superficie">
                     <option value="">-- Selecciona --</option>
                     @foreach($rangosSuperficie as $rango)
                     <option value="{{ $rango->rango }}">{{ ucwords(str_replace('_', ' ', $rango->rango)) }} m²</option>
                     @endforeach
                 </select>
+            </div>
 
-                <button type="submit">Aplicar filtros</button>
-            </form>
-        </div>
+            <button type="submit">Aplicar filtros</button>
+        </form>
     </div>
-
 </div>
+
 
 
 {{-- Estilos de Leaflet --}}
@@ -145,6 +167,8 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
+<script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
+
 
 
 <!--Script para graficar los mapas-->
@@ -152,5 +176,56 @@
 
 <!--Script para los filtros-->
 <script src="{{ asset('js/filtrosPlanteles.js') }}"></script>
+
+<!--Script para el filtro de agua-->
+<script src="{{ asset('js/filtro_agua.js') }}"></script>
+
+<!--script para el filtro de energia-->
+<script src="{{ asset('js/filtro_energia.js') }}"></script>
+
+<!--script para el filtro de drenaje-->
+<script src="{{ asset('js/filtro_drenaje.js') }}"></script>
+
+
+
+
+<x-modal-filtros
+    id="modal-agua"
+    formId="form-agua"
+    titulo="Filtro por suministro de agua">
+    @include('partials.filtros_agua', [
+    'macroregiones' => $macroregiones,
+    'microregiones' => $microregiones,
+    'municipios' => $municipios,
+    'niveles' => $niveles
+    ])
+</x-modal-filtros>
+
+<x-modal-filtros
+    id="modal-energia"
+    formId="form-energia"
+    titulo="Filtro por suministro de energía">
+    @include('partials/filtro_energia', [
+    'macroregiones' => $macroregiones,
+    'microregiones' => $microregiones,
+    'municipios' => $municipios,
+    'niveles' => $niveles
+    ])
+</x-modal-filtros>
+
+<x-modal-filtros
+    id="modal-drenaje"
+    formId="form-drenaje"
+    titulo="Filtro por drenaje">
+    @include('partials.filtro_drenaje', [
+    'macroregiones' => $macroregiones,
+    'microregiones' => $microregiones,
+    'municipios' => $municipios,
+    'niveles' => $niveles
+    ])
+</x-modal-filtros>
+
+
+
 
 @endsection

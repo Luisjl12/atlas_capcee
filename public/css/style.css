@@ -2293,3 +2293,72 @@ Estilos personalizados para contenedores en celular
     outline: none;
 }
 
+/*
+Diseño de modal para los filtros 
+*/
+.modal {
+   position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0,0,0,0.6);
+    z-index: 9999;
+    display: none;
+}
+
+.modal-content {
+    background-color: #fff;
+    padding: 2rem;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 0.5rem;
+}
+
+.close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+#form-filtros label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+}
+
+#form-filtros select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#form-filtros button {
+    margin-top: 1.5rem;
+    padding: 0.7rem 1.5rem;
+    background-color: #5f1d0d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#form-filtros button:hover {
+    background-color: #350302;
+}
+
