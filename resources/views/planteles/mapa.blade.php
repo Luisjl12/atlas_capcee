@@ -11,20 +11,10 @@
     </a>
 </div>
 
-<button id="btn-filtros" class="btn btn-primary">Filtrar planteles por superficie</button>
-<button id="btn-filtros-agua" class="btn btn-primary" style="margin-left: 10px;">
-    Filtrar por suministro de agua
-</button>
-<button id="btn-filtros-energia" class="btn btn-primary" style="margin-left: 10px;">
-    Filtrar por suministro de energía
-</button>
-<button id="btn-filtros-drenaje" class="btn btn-primary" style="margin-left: 10px;">
-    Filtrar por drenaje
-</button>
-
 
 
 <div style="display: flex; gap: 20px;">
+
     <div class="sidebar-filtros">
         <h4>Regiones</h4>
         <input type="text" id="buscadorRegion" placeholder="Buscar región...">
@@ -80,6 +70,24 @@
     </div>
 
     <div style="flex:1; position: relative;">
+        <!-- Botón flotante con menú de filtros -->
+        <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
+            <div class="dropdown">
+                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Aplicar filtros
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" href="#" id="btn-filtros">Filtrar por superficie</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-agua">Filtrar por agua</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-energia">Filtrar por energía</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-drenaje">Filtrar por drenaje</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-estado">Filtrar por conservación</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-obras">Filtrar por obras realizadas</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-seguridad">Filtrar por seguridad</a></li>
+                </ul>
+            </div>
+        </div>
+        <!---->
         <div id="loader" style="
             display: none;
             position: absolute;
@@ -106,11 +114,11 @@
 <div id="modal-filtros" class="modal">
     <div class="modal-content">
         <span id="cerrar-modal" class="close">&times;</span>
-        <h3>Filtros avanzados</h3>
+        <h3>Filtro por superficie</h3>
 
         <form id="form-filtros">
             <div class="filtro-bloque">
-                <label for="filtro-macroregion">Macroregión</label>
+                <label for="filtro-macroregion">¿En qué macroregión desea filtrar?</label>
                 <select id="filtro-macroregion" name="macroregion">
                     <option value="">-- Selecciona --</option>
                     @foreach($macroregiones as $macro)
@@ -118,7 +126,7 @@
                     @endforeach
                 </select>
 
-                <label for="filtro-microregion">Microregión</label>
+                <label for="filtro-microregion">¿Qué microregión le interesa?</label>
                 <select id="filtro-microregion" name="microregion">
                     <option value="">-- Selecciona --</option>
                     @foreach($microregiones as $micro)
@@ -126,7 +134,7 @@
                     @endforeach
                 </select>
 
-                <label for="filtro-municipio">Municipio</label>
+                <label for="filtro-municipio">¿En qué municipio desea aplicar el filtro?</label>
                 <select id="filtro-municipio" name="municipio">
                     <option value="">-- Selecciona --</option>
                     @foreach($municipios as $muni)
@@ -136,7 +144,7 @@
             </div>
 
             <div class="filtro-bloque">
-                <label for="filtro-nivel">Nivel educativo</label>
+                <label for="filtro-nivel">¿Qué nivel educativo desea consultar?</label>
                 <select id="filtro-nivel" name="nivel">
                     <option value="">-- Selecciona --</option>
                     @foreach($niveles as $nivel)
@@ -144,7 +152,7 @@
                     @endforeach
                 </select>
 
-                <label for="filtro-superficie">Superficie</label>
+                <label for="filtro-superficie">¿Qué rango de superficie desea filtrar?</label>
                 <select id="filtro-superficie" name="superficie">
                     <option value="">-- Selecciona --</option>
                     @foreach($rangosSuperficie as $rango)
@@ -157,6 +165,7 @@
         </form>
     </div>
 </div>
+
 
 
 
@@ -186,6 +195,14 @@
 <!--script para el filtro de drenaje-->
 <script src="{{ asset('js/filtro_drenaje.js') }}"></script>
 
+<!--script para filtrar por estado-->
+<script src="{{ asset('js/filtro_estado.js') }}"></script>
+
+<!--script para filtrar por obras realizadas-->
+<script src="{{ asset('js/filtro_obras.js') }}"></script>
+
+<!--scrip para filtrar por seguridad-->
+<script src="{{ asset('js/filtro_seguridad.js') }}"></script>
 
 
 
@@ -226,6 +243,44 @@
 </x-modal-filtros>
 
 
+<x-modal-filtros
+    id="modal-instalaciones"
+    formId="form-instalaciones"
+    titulo="Filtro por estado de instalaciones">
+
+    @include('partials.filtro_estado', [
+    'macroregiones' => $macroregiones,
+    'microregiones' => $microregiones,
+    'municipios' => $municipios,
+    'niveles' => $niveles
+    ])
+</x-modal-filtros>
+
+<x-modal-filtros
+    id="modal-obras"
+    formId="form-obras"
+    titulo="Filtro por obras realizadas en los últimos 5 años">
+
+    @include('partials.filtro_obras', [
+    'macroregiones' => $macroregiones,
+    'microregiones' => $microregiones,
+    'municipios' => $municipios,
+    'niveles' => $niveles
+    ])
+</x-modal-filtros>
+
+<x-modal-filtros
+    id="modal-seguridad"
+    formId="form-seguridad"
+    titulo="Filtro por condiciones de seguridad del inmueble">
+
+    @include('partials.filtro_seguridad', [
+    'macroregiones' => $macroregiones,
+    'microregiones' => $microregiones,
+    'municipios' => $municipios,
+    'niveles' => $niveles
+    ])
+</x-modal-filtros>
 
 
 @endsection

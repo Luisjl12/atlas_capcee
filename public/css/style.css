@@ -2362,3 +2362,42 @@ Diseño de modal para los filtros
     background-color: #350302;
 }
 
+.filtro-bloque {
+    margin-bottom: 1.5rem;
+}
+
+.filtro-bloque label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: bold;
+    font-size: 0.95rem;
+}
+
+.filtro-select {
+    width: 100%;
+    padding: 0.5rem;
+    margin-top: 0.3rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+
+/*
+Estilos para menu flotante
+*/
+.dropdown-menu {
+  background-color: #f8f9fa !important; /* gris claro amigable */
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+}
+
+.dropdown-menu .dropdown-item {
+  color: #212529;
+}
+
+.dropdown-menu .dropdown-item:hover {
+  background-color: #e2e6ea;
+  color: #000;
+}
+
+

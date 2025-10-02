@@ -313,4 +313,190 @@ class MapaController extends Controller
 
         return response()->json(['data' => $planteles]);
     }
+
+    //Filtrar por estado de conservación
+    public function filtrarInstalaciones(Request $request)
+    {
+        $query = Plantel::query()->with(['agua', 'sanitario', 'energia', 'municipio', 'localidad', 'niveles']);
+
+        //  Filtros de regiones
+        if ($request->filled('macroregion')) {
+            $query->where('macroregion_id', $request->macroregion);
+        }
+
+        if ($request->filled('microregion')) {
+            $query->where('microregion_id', $request->microregion);
+        }
+
+        if ($request->filled('municipio')) {
+            $query->where('id_municipio', $request->municipio);
+        }
+
+        //  Filtro por nivel educativo
+        if ($request->filled('nivel')) {
+            $query->whereHas('niveles', function ($q) use ($request) {
+                $q->where('nivel', $request->nivel);
+            });
+        }
+
+        //  Filtros de estado de instalaciones
+        if ($request->filled('estado_red_hidraulica')) {
+            $estado = $request->estado_red_hidraulica;
+            $query->whereHas('agua', fn($q) => $q->where('estado_red_hidraulica', $estado));
+        }
+
+        if ($request->filled('estado_instalacion_sanitaria')) {
+            $estado = $request->estado_instalacion_sanitaria;
+            $query->whereHas('sanitario', fn($q) => $q->where('estado_instalacion_sanitaria', $estado));
+        }
+
+        if ($request->filled('estado_instalacion_electrica')) {
+            $estado = $request->estado_instalacion_electrica;
+            $query->whereHas('energia', fn($q) => $q->where('estado_instalacion_electrica', $estado));
+        }
+
+        //  Solo planteles con coordenadas
+        $query->whereNotNull('latitud')->whereNotNull('longitud');
+
+        $planteles = $query->get();
+
+        return response()->json(['data' => $planteles]);
+    }
+
+    //Filtrar por obras
+    public function filtrarPlantelesObras(Request $request)
+    {
+        $query = Plantel::query()->with(['obras', 'municipio', 'localidad', 'niveles']);
+
+        // Filtros de regiones
+        if ($request->filled('macroregion')) {
+            $query->where('macroregion_id', $request->macroregion);
+        }
+
+        if ($request->filled('microregion')) {
+            $query->where('microregion_id', $request->microregion);
+        }
+
+        if ($request->filled('municipio')) {
+            $query->where('id_municipio', $request->municipio);
+        }
+
+        //  Filtro por nivel educativo
+        if ($request->filled('nivel')) {
+            $query->whereHas('niveles', function ($q) use ($request) {
+                $q->where('nivel', $request->nivel);
+            });
+        }
+
+        //  Filtros de obras realizadas (últimos 5 años)
+        if ($request->has('rehabilitacion_realizada')) {
+            $query->whereHas('obras', fn($q) => $q->where('rehabilitacion_realizada', 1));
+        }
+
+        if ($request->has('rehabilitacion_impermeabilizacion')) {
+            $query->whereHas('obras', fn($q) => $q->where('rehabilitacion_impermeabilizacion', 1));
+        }
+
+        if ($request->has('rehabilitacion_albanileria')) {
+            $query->whereHas('obras', fn($q) => $q->where('rehabilitacion_albanileria', 1));
+        }
+
+        if ($request->has('rehabilitacion_pintura')) {
+            $query->whereHas('obras', fn($q) => $q->where('rehabilitacion_pintura', 1));
+        }
+
+        if ($request->has('rehabilitacion_red_hidraulica')) {
+            $query->whereHas('obras', fn($q) => $q->where('rehabilitacion_red_hidraulica', 1));
+        }
+
+        if ($request->has('rehabilitacion_red_sanitaria')) {
+            $query->whereHas('obras', fn($q) => $q->where('rehabilitacion_red_sanitaria', 1));
+        }
+
+        if ($request->has('rehabilitacion_esctructural')) {
+            $query->whereHas('obras', fn($q) => $q->where('rehabilitacion_estructural', 1));
+        }
+
+        if ($request->has('obras_nuevas')) {
+            $query->whereHas('obras', fn($q) => $q->where('obras_nuevas', 1));
+        }
+
+        if ($request->has('construccion_educativa')) {
+            $query->whereHas('obras', fn($q) => $q->where('construccion_educativa', 1));
+        }
+
+        if ($request->has('construccion_deportiva')) {
+            $query->whereHas('obras', fn($q) => $q->where('construccion_deportiva', 1));
+        }
+
+        if ($request->has('construccion_sanitaria')) {
+            $query->whereHas('obras', fn($q) => $q->where('construccion_sanitaria', 1));
+        }
+
+        if ($request->has('construccion_complementos')) {
+            $query->whereHas('obras', fn($q) => $q->where('construccion_complementos', 1));
+        }
+
+        if ($request->has('contruccion_otro')) {
+            $query->whereHas('obras', fn($q) => $q->where('contruccion_otro', 1));
+        }
+
+        //  Solo planteles con coordenadas
+        $query->whereNotNull('latitud')->whereNotNull('longitud');
+
+        $planteles = $query->get();
+
+        return response()->json(['data' => $planteles]);
+    }
+
+
+    //Filtro para seguridad
+    public function filtrarPlantelesSeguridad(Request $request)
+    {
+        $query = Plantel::query()->with(['seguridad', 'municipio', 'localidad', 'niveles']);
+
+        // Filtros de regiones
+        if ($request->filled('macroregion')) {
+            $query->where('macroregion_id', $request->macroregion);
+        }
+
+        if ($request->filled('microregion')) {
+            $query->where('microregion_id', $request->microregion);
+        }
+
+        if ($request->filled('municipio')) {
+            $query->where('id_municipio', $request->municipio);
+        }
+
+        // Filtro por nivel educativo
+        if ($request->filled('nivel')) {
+            $query->whereHas('niveles', function ($q) use ($request) {
+                $q->where('nivel', $request->nivel);
+            });
+        }
+
+        // Filtros de seguridad
+        if ($request->filled('proteccion_civil')) {
+            $query->whereHas('seguridad', fn($q) => $q->where('proteccion_civil', $request->proteccion_civil));
+        }
+
+        if ($request->filled('barda_completa')) {
+            $query->whereHas('seguridad', fn($q) => $q->where('barda_completa', $request->barda_completa));
+        }
+
+        if ($request->filled('estado_barda')) {
+            $query->whereHas('seguridad', fn($q) => $q->where('estado_barda', $request->estado_barda));
+        }
+
+        if ($request->filled('estado_cerco')) {
+            $query->whereHas('seguridad', fn($q) => $q->where('estado_cerco', $request->estado_cerca));
+        }
+
+        // Solo planteles con coordenadas
+        $query->whereNotNull('latitud')->whereNotNull('longitud');
+
+        $planteles = $query->get();
+
+        return response()->json(['data' => $planteles]);
+    }
 }

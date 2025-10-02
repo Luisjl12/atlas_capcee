@@ -156,6 +156,18 @@ class ImportarDatosController extends Controller
             'programa_interno_pc' => 'PROGRAMA DE PROTECCION CIVIL',
         ];
 
+        //Atributos para detalles o atributos a tabla detalle hidrosanitario
+        $atributosHidrosanitario = [
+            'sanitarios_hombres_wc' => 'NUMERO DE CUARTOS DE BAÑO PARA HOMBRES',
+            'sanitarios_mujeres_wc' => 'NUMERO DE CUARTOS DE BAÑO PARA MUJERES',
+
+        ];
+
+        //Atributos de electricidad adapdatos 
+        $atributosElectricidad = [
+            'electricidad_contrato' => 'EL INMUEBLE CUENTA CON SUMINISTRO DE ENERGIA ELECTRICA RED PUBLICA CON CONTRATO',
+        ];
+
         foreach (array_slice($data, 1) as $fila) {
             $fila = array_map('trim', $fila);
 
@@ -269,6 +281,32 @@ class ImportarDatosController extends Controller
                 }
             }
 
+            //Tipo de descarga string 
+            if (in_array('TIPO DE DRENAJE', $encabezados)) {
+                $suministroDrenaje = $fila[array_search('TIPO DE DRENAJE', $encabezados)] ?? null;
+
+                if (!empty($suministroDrenaje)) {
+                    // Guardar en la tabla detalle_hidrosanitario
+                    \App\Models\DetalleHidrosanitario::updateOrCreate(
+                        ['cct' => $cct], // condición
+                        ['tipo_drenaje' => $suministroDrenaje] // valores a insertar/actualizar
+                    );
+                }
+            }
+
+            //Tipo de gas 
+            if (in_array('TIPO DE GAS', $encabezados)) {
+                $suministroGas = $fila[array_search('TIPO DE GAS', $encabezados)] ?? null;
+
+                if (!empty($suministroGas)) {
+                    // Guardar en la tabla detalle_hidrosanitario
+                    \App\Models\DetalleServicio::updateOrCreate(
+                        ['cct' => $cct], // condición
+                        ['gas_tipo' => $suministroGas] // valores a insertar/actualizar
+                    );
+                }
+            }
+
             //Crear o editar plantel
             $plantel = Plantel::updateOrCreate(
                 ['cct' => $cct],
@@ -374,7 +412,6 @@ class ImportarDatosController extends Controller
             //Leer datos de energia
             $datosEnergia = ['cct' => $cct];
 
-            $datosEnergia = ['cct' => $cct];
 
             foreach ($atributosEnergia as $campo => $encabezado) {
                 if (in_array($encabezado, $encabezados)) {
@@ -425,7 +462,7 @@ class ImportarDatosController extends Controller
                 );
             }
 
-            //Leer datos sanitarios del archivo excel
+            //Leer datos sanitarios 
             $datosSanitarios = ['cct' => $cct];
 
             foreach ($sanitarios as $campo => $encabezado) {
@@ -515,6 +552,46 @@ class ImportarDatosController extends Controller
                 ['cct' => $cct],
                 $datosProteccionCivil
             );
+
+            //Datos adaptados a detalle hidrosanitario
+            $datosHidrosanitario = ['cct' => $cct];
+            $camposEnteros = ['sanitarios_hombres_wc', 'sanitarios_mujeres_wc'];
+
+            foreach ($atributosHidrosanitario as $campo => $encabezado) {
+                if (in_array($encabezado, $encabezados)) {
+                    $valor = $fila[array_search($encabezado, $encabezados)] ?? null;
+
+                    if ($valor !== null && $valor !== '') {
+                        // Si el campo está en la lista de enteros, lo convertimos
+                        $datosHidrosanitario[$campo] = in_array($campo, $camposEnteros)
+                            ? (int) $valor
+                            : $valor;
+                    }
+                }
+            }
+
+            \App\Models\DetalleHidrosanitario::updateOrCreate(
+                ['cct' => $cct],
+                $datosHidrosanitario
+            );
+
+            // Datos adaptados a detalle servicios de electricidad
+            $datosElectricidad = ['cct' => $cct];
+
+            foreach ($atributosElectricidad as $campo => $encabezado) {
+                if (in_array($encabezado, $encabezados)) {
+                    $valor = $fila[array_search($encabezado, $encabezados)] ?? null;
+
+                    // Normalizamos a booleano: 1 o "si" => true, en cualquier otro caso => false
+                    $datosElectricidad[$campo] = ($valor == 1 || strtolower(trim((string) $valor)) === 'si');
+                }
+            }
+
+            \App\Models\DetalleServicio::updateOrCreate(
+                ['cct' => $cct],
+                $datosElectricidad
+            );
+
 
             $procesados++;
         }
