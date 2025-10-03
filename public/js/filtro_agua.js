@@ -17,13 +17,11 @@ document.addEventListener('DOMContentLoaded', () => {
     formAgua?.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        // ✅ Primero obtenemos los valores
         const macroregion = document.getElementById('agua-macroregion').value;
         const microregion = document.getElementById('agua-microregion').value;
         const municipio = document.getElementById('agua-municipio').value;
         const nivel = document.getElementById('agua-nivel').value.toLowerCase().trim();
 
-        // 🔹 Validación de orden
         if (!macroregion && !microregion && !municipio) {
             alert('Debes seleccionar al menos una región (macroregión, microregión o municipio).');
             return;

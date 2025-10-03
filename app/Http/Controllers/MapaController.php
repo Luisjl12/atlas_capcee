@@ -499,4 +499,119 @@ class MapaController extends Controller
 
         return response()->json(['data' => $planteles]);
     }
+
+    //Filtro para accesibilidad
+    public function filtrarPlantelesAccesibilidad(Request $request)
+    {
+        $query = Plantel::query()->with(['seguridad', 'municipio', 'localidad', 'niveles']);
+
+        // Filtros de región
+        if ($request->filled('macroregion')) {
+            $query->where('macroregion_id', $request->macroregion);
+        }
+
+        if ($request->filled('microregion')) {
+            $query->where('microregion_id', $request->microregion);
+        }
+
+        if ($request->filled('municipio')) {
+            $query->where('id_municipio', $request->municipio);
+        }
+
+        // Filtro por nivel educativo
+        if ($request->filled('nivel')) {
+            $query->whereHas('niveles', function ($q) use ($request) {
+                $q->where('nivel', $request->nivel);
+            });
+        }
+
+        // Filtros de accesibilidad
+        if ($request->filled('infraestructura_discapacidad')) {
+            $query->whereHas('seguridad', fn($q) => $q->where('infraestructura_discapacidad', $request->infraestructura_discapacidad));
+        }
+
+        if ($request->filled('sin_infraestructura_discapacidad')) {
+            $query->whereHas('seguridad', fn($q) => $q->where('sin_infraestructura_discapacidad', $request->sin_infraestructura_discapacidad));
+        }
+
+        if ($request->filled('equipo_discapacidad_categoria')) {
+            $query->whereHas('seguridad', function ($q) use ($request) {
+                switch ($request->equipo_discapacidad_categoria) {
+                    case 'ninguno':
+                        $q->where('equipo_discapacidad_total', 0);
+                        break;
+                    case 'bajo':
+                        $q->whereBetween('equipo_discapacidad_total', [1, 2]);
+                        break;
+                    case 'medio':
+                        $q->whereBetween('equipo_discapacidad_total', [3, 5]);
+                        break;
+                    case 'alto':
+                        $q->where('equipo_discapacidad_total', '>', 5);
+                        break;
+                }
+            });
+        }
+
+        // Solo planteles con coordenadas
+        $query->whereNotNull('latitud')->whereNotNull('longitud');
+
+        return response()->json(['data' => $query->get()]);
+    }
+
+    //Filtro por sanitarios del plantel 
+    public function filtrarPlantelesSanitarios(Request $request)
+    {
+        $query = Plantel::query()->with(['sanitario', 'municipio', 'localidad', 'niveles']);
+
+        // Filtros de región y nivel
+        if ($request->filled('macroregion')) {
+            $query->where('macroregion_id', $request->macroregion);
+        }
+
+        if ($request->filled('microregion')) {
+            $query->where('microregion_id', $request->microregion);
+        }
+
+        if ($request->filled('municipio')) {
+            $query->where('id_municipio', $request->municipio);
+        }
+
+        if ($request->filled('nivel')) {
+            $query->whereHas('niveles', fn($q) => $q->where('nivel', $request->nivel));
+        }
+
+        // Filtros sanitarios
+        if ($request->filled('estado_banos')) {
+            $query->whereHas('sanitario', fn($q) => $q->where('estado_banos', $request->estado_banos));
+        }
+
+        if ($request->filled('banos_hombres_min')) {
+            $query->whereHas('sanitario', fn($q) => $q->where('banos_hombres', '>=', $request->banos_hombres_min));
+        }
+
+        if ($request->filled('banos_mujeres_min')) {
+            $query->whereHas('sanitario', fn($q) => $q->where('banos_mujeres', '>=', $request->banos_mujeres_min));
+        }
+
+        if ($request->filled('lavamanos_min')) {
+            $query->whereHas('sanitario', fn($q) => $q->where('lavamanos', '>=', $request->lavamanos_min));
+        }
+
+        if ($request->filled('estado_lavamanos')) {
+            $query->whereHas('sanitario', fn($q) => $q->where('estado_lavamanos', $request->estado_lavamanos));
+        }
+
+        if ($request->filled('tomas_bebederos_min')) {
+            $query->whereHas('sanitario', fn($q) => $q->where('tomas_bebederos', '>=', $request->tomas_bebederos_min));
+        }
+
+        if ($request->filled('estado_bebederos')) {
+            $query->whereHas('sanitario', fn($q) => $q->where('estado_bebederos', $request->estado_bebederos));
+        }
+
+        $query->whereNotNull('latitud')->whereNotNull('longitud');
+
+        return response()->json(['data' => $query->get()]);
+    }
 }

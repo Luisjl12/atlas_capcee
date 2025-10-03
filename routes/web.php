@@ -268,3 +268,7 @@ Route::get('/filtrar-instalaciones', [MapaController::class, 'filtrarInstalacion
 Route::get('/filtrar-obras', [MapaController::class, 'filtrarPlantelesObras']);
 
 Route::get('/filtrar-seguridad', [MapaController::class, 'filtrarPlantelesSeguridad']);
+
+Route::get('/filtrar-accesibilidad', [MapaController::class, 'filtrarPlantelesAccesibilidad']);
+
+Route::get('/filtrar-sanitarios', [MapaController::class, 'filtrarPlantelesSanitarios']);

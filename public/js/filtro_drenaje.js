@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         iconSize: [30,30],
                         iconAnchor: [15,30],
                         popupAnchor: [0,-30],
-                        html: `<i class="bi bi-droplet-fill marker-icon ${normalizarEstado(estado)}"></i>`
+                        html: `<i class="bi bi-geo-alt-fill marker-icon ${normalizarEstado(estado)}"></i>`
                     });
                 }
 

@@ -77,13 +77,16 @@
                     Aplicar filtros
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#" id="btn-filtros">Filtrar por superficie</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-agua">Filtrar por agua</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-energia">Filtrar por energía</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-drenaje">Filtrar por drenaje</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-estado">Filtrar por conservación</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-obras">Filtrar por obras realizadas</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-seguridad">Filtrar por seguridad</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-superficie">Filtrar por superficie </a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-agua">Filtrar por accesibilidad hidraulica </a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-energia">Filtrar por accesibilidad energetica </a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-drenaje">Filtrar por accesibilidad drenaje </a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-estado">Filtrar por estado de conservación hidraulica, sanitaria y energetica</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-obras">Filtrar por obras realizadas en los últimos cinco años</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-seguridad">Filtrar por seguridad y protección civil</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-accesibilidad">Filtrar por accesibilidad </a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-sanitarios">Filtrar por número y estado de sanitarios</a></li>
+
                 </ul>
             </div>
         </div>
@@ -108,64 +111,6 @@
         <div id="map" style="height: 500px; border-radius: 8px;"></div>
     </div>
 </div>
-
-
-<!-- Modal de filtros -->
-<div id="modal-filtros" class="modal">
-    <div class="modal-content">
-        <span id="cerrar-modal" class="close">&times;</span>
-        <h3>Filtro por superficie</h3>
-
-        <form id="form-filtros">
-            <div class="filtro-bloque">
-                <label for="filtro-macroregion">¿En qué macroregión desea filtrar?</label>
-                <select id="filtro-macroregion" name="macroregion">
-                    <option value="">-- Selecciona --</option>
-                    @foreach($macroregiones as $macro)
-                    <option value="{{ $macro->id }}">{{ $macro->nombre_macroregion }}</option>
-                    @endforeach
-                </select>
-
-                <label for="filtro-microregion">¿Qué microregión le interesa?</label>
-                <select id="filtro-microregion" name="microregion">
-                    <option value="">-- Selecciona --</option>
-                    @foreach($microregiones as $micro)
-                    <option value="{{ $micro->id }}">{{ $micro->nombre_microregiones }}</option>
-                    @endforeach
-                </select>
-
-                <label for="filtro-municipio">¿En qué municipio desea aplicar el filtro?</label>
-                <select id="filtro-municipio" name="municipio">
-                    <option value="">-- Selecciona --</option>
-                    @foreach($municipios as $muni)
-                    <option value="{{ $muni->id }}">{{ $muni->nombre_municipio }}</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div class="filtro-bloque">
-                <label for="filtro-nivel">¿Qué nivel educativo desea consultar?</label>
-                <select id="filtro-nivel" name="nivel">
-                    <option value="">-- Selecciona --</option>
-                    @foreach($niveles as $nivel)
-                    <option value="{{ $nivel->nivel }}">{{ ucfirst($nivel->nivel) }}</option>
-                    @endforeach
-                </select>
-
-                <label for="filtro-superficie">¿Qué rango de superficie desea filtrar?</label>
-                <select id="filtro-superficie" name="superficie">
-                    <option value="">-- Selecciona --</option>
-                    @foreach($rangosSuperficie as $rango)
-                    <option value="{{ $rango->rango }}">{{ ucwords(str_replace('_', ' ', $rango->rango)) }} m²</option>
-                    @endforeach
-                </select>
-            </div>
-
-            <button type="submit">Aplicar filtros</button>
-        </form>
-    </div>
-</div>
-
 
 
 
@@ -203,6 +148,13 @@
 
 <!--scrip para filtrar por seguridad-->
 <script src="{{ asset('js/filtro_seguridad.js') }}"></script>
+
+<!--script para filtrar por accesibilidad-->
+<script src="{{ asset('js/filtro_accesibilidad.js') }}"></script>
+
+<!--script para filtrar por número y estado de sanitarios-->
+<script src="{{ asset('js/filtro_sanitarios.js') }}"></script>
+
 
 
 
@@ -282,5 +234,41 @@
     ])
 </x-modal-filtros>
 
+<x-modal-filtros
+    id="modal-accesibilidad"
+    formId="form-accesibilidad"
+    titulo="Filtro por accesibilidad el inmueble">
+    @include('partials.filtro_accesibilidad', [
+    'macroregiones' => $macroregiones,
+    'microregiones' => $microregiones,
+    'municipios' => $municipios,
+    'niveles' => $niveles
+    ])
+</x-modal-filtros>
+
+<x-modal-filtros
+    id="modal-sanitarios"
+    formId="form-sanitarios"
+    titulo="Filtro por número y estado de sanitarios">
+    @include('partials.filtro_sanitarios', [
+    'macroregiones' => $macroregiones,
+    'microregiones' => $microregiones,
+    'municipios' => $municipios,
+    'niveles' => $niveles
+    ])
+</x-modal-filtros>
+
+<x-modal-filtros
+    id="modal-superficie"
+    formId="form-superficie"
+    titulo="Filtro por superficie del inmueble">
+    @include('partials.filtro_superficie', [
+    'macroregiones' => $macroregiones,
+    'microregiones' => $microregiones,
+    'municipios' => $municipios,
+    'niveles' => $niveles,
+    'rangosSuperficie' => $rangosSuperficie
+    ])
+</x-modal-filtros>
 
 @endsection

@@ -17,13 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
     formEnergia?.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        // ✅ Primero obtenemos los valores
+        //  Primero obtenemos los valores
         const macroregion = document.getElementById('energia-macroregion').value;
         const microregion = document.getElementById('energia-microregion').value;
         const municipio = document.getElementById('energia-municipio').value;
         const nivel = document.getElementById('energia-nivel').value.trim();
 
-        // 🔹 Validación de orden
+        //  Validación de orden
         if (!macroregion && !microregion && !municipio) {
             alert('Debes seleccionar al menos una región (macroregión, microregión o municipio).');
             return;
