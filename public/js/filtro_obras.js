@@ -17,10 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
     formObras?.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        const macroregion = document.getElementById('obras-macroregion').value;
-        const microregion = document.getElementById('obras-microregion').value;
-        const municipio = document.getElementById('obras-municipio').value;
+        const macroregionSelect = document.getElementById('obras-macroregion');
+        const macroregion = macroregionSelect.value;
+        const macroregionNombre = macroregionSelect.value !== '' ? macroregionSelect.options[macroregionSelect.selectedIndex].text : '';
+
+        const microregionSelect = document.getElementById('obras-microregion');
+        const microregion = microregionSelect.value;
+        const microregionNombre = microregionSelect.value !== '' ? microregionSelect.options[microregionSelect.selectedIndex].text : '';
+
+        const municipioSelect = document.getElementById('obras-municipio');
+        const municipio = municipioSelect.value;
+        const municipioNombre = municipioSelect.value !== '' ? municipioSelect.options[municipioSelect.selectedIndex].text : '';
+
+        const regionNombre = macroregionNombre || microregionNombre || municipioNombre || '—';
+
         const nivel = document.getElementById('obras-nivel').value.trim();
+
 
         if (!macroregion && !microregion && !municipio) {
             alert('Debes seleccionar al menos una región (macroregión, microregión o municipio).');
@@ -42,26 +54,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Agregar checkboxes marcados
-        [
-            'rehabilitacion_realizada',
-            'rehabilitacion_impermeabilizacion',
-            'rehabilitacion_albanileria',
-            'rehabilitacion_pintura',
-            'rehabilitacion_red_hidraulica',
-            'rehabilitacion_red_sanitaria',
-            'rehabilitacion_estructural',
-            'obras_nuevas',
-            'construccion_educativa',
-            'construccion_deportiva',
-            'construccion_sanitaria',
-            'construccion_complementos',
-            'contruccion_otros'
-        ].forEach(campo => {
-            const checkbox = document.getElementById(campo);
-            if (checkbox?.checked) {
-                params.append(campo, 1);
-            }
-        });
+        const obrasCampos = [
+        'rehabilitacion_realizada',
+        'rehabilitacion_impermeabilizacion',
+        'rehabilitacion_albanileria',
+        'rehabilitacion_pintura',
+        'rehabilitacion_red_hidraulica',
+        'rehabilitacion_red_sanitaria',
+        'rehabilitacion_estructural',
+        'obras_nuevas',
+        'construccion_educativa',
+        'construccion_deportiva',
+        'construccion_sanitaria',
+        'construccion_complementos',
+        'construccion_otro'
+        ]; 
+
+        const obrasSeleccionadas = obrasCampos
+        .filter(campo => document.getElementById(campo)?.checked)
+        .map(campo => {
+        params.append(campo, 1); //  se manda al backend
+          return campo.replace(/_/g, ' ');
+        })
+        .map(texto => texto.charAt(0).toUpperCase() + texto.slice(1))
+        .join(', ');
+
+  // Actualizar leyenda visual
+        document.getElementById('leyenda-obras-nivel').textContent = nivel || '—';
+        document.getElementById('leyenda-obras-region').textContent = regionNombre || '—';
+        document.getElementById('leyenda-obras-tipo').textContent = obrasSeleccionadas || '—';
+        document.getElementById('leyenda-obras').style.display = 'block';
 
         console.log('Parámetros enviados (obras):', params.toString());
 
@@ -74,6 +96,10 @@ document.addEventListener('DOMContentLoaded', () => {
                     alert('No se encontraron planteles con los filtros seleccionados.');
                     return;
                 }
+
+
+        document.getElementById('contador-planteles-numero').textContent = planteles.length;
+        document.getElementById('contador-planteles').style.display = 'block';
 
                 map.eachLayer(layer => {
                     if (layer instanceof L.Marker) {

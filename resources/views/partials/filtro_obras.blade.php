@@ -27,7 +27,9 @@
     <select id="obras-nivel" name="nivel" class="filtro-select">
         <option value="">Seleccione</option>
         @foreach($niveles as $nivel)
-        <option value="{{ $nivel->nivel }}">{{ ucfirst($nivel->nivel) }}</option>
+        <option value="{{ $nivel->nivel }}">
+            {{ ucwords(str_replace('_', ' ', $nivel->nivel)) }}
+        </option>
         @endforeach
     </select>
 </div>
@@ -49,5 +51,5 @@
     <label><input type="checkbox" id="construccion_deportiva" name="construccion_deportiva" value="1"> ¿Se han hecho construcciones en espacios deportivos o recreativos en los últimimos cinco años?</label><br>
     <label><input type="checkbox" id="construccion_sanitaria" name="construccion_sanitaria" value="1"> ¿Se han hecho construcciones en sanitarios en los últimos cinco años?</label><br>
     <label><input type="checkbox" id="construccion_complementos" name="construccion_complementos" value="1"> ¿Incluye construcción de complementos?</label><br>
-    <label><input type="checkbox" id="contruccion_otros" name="contruccion_otros" value="1"> ¿Incluye otros tipos de construcción?</label>
+    <label><input type="checkbox" id="construccion_otro" name="construccion_otro" value="1"> ¿Incluye otros tipos de construcción?</label>
 </div>

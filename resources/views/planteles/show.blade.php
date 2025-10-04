@@ -660,7 +660,7 @@ default => ['fas fa-file', 'text-dark'],
                     'construccion_sanitaria'=> 'Construcciones en espacios sanitarios',
                     'construccion_complementos'=>'Construcción en complementos de instalaciones',
                     'construccion_total'=>'Construcción en todos los espacios del inmueble',
-                    'construccion_otro'=>'Construccion en otro tipo de construcción'
+                    'construccion_otro'=>'Construccion de otro tipo'
                     ] as $campo => $etiqueta)
                     @if($plantel->obras->$campo)
                     <li class="list-group-item d-flex justify-content-between align-items-center">

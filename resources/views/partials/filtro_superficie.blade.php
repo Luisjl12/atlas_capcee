@@ -29,7 +29,10 @@
     <select id="filtro-nivel" name="nivel">
         <option value="">-- Selecciona --</option>
         @foreach($niveles as $nivel)
-        <option value="{{ $nivel->nivel }}">{{ ucfirst($nivel->nivel) }}</option>
+        <option value="{{ $nivel->nivel }}">
+            {{ ucwords(str_replace('_', ' ', $nivel->nivel)) }}
+        </option>
+
         @endforeach
     </select>
 

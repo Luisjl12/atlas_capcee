@@ -2400,4 +2400,46 @@ Estilos para menu flotante
   color: #000;
 }
 
+/*
+Contador de planteles y leyenda
+*/
+.contenedor-leyenda {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    /* Estilo visual limpio */
+    background-color: #eff5e8; /* fondo claro */
+    color: #33691e; /* texto verde oscuro */
+    border: 1px solid #c5e1a5;
+    padding: 12px 16px;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    width: 280px;
+   
+}
+.leyenda-superficie,
+.contador-planteles {
+    position: relative;
+    width: 250px;
+}
+
+.leyenda.badge {
+    background-color: #aed581;
+    color: #1b5e20; /* más oscuro para mejor contraste */
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 500;
+}
+
+
+
+
+
+
+
 

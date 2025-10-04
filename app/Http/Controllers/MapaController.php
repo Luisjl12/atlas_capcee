@@ -124,8 +124,6 @@ class MapaController extends Controller
                 });
             }
 
-
-
             $query->whereNotNull('latitud')->whereNotNull('longitud');
 
             $planteles = $query->with(['niveles', 'superficies', 'municipio', 'localidad'])->get();
@@ -141,7 +139,6 @@ class MapaController extends Controller
     }
 
     //Filtro para agua
-
     public function filtrarAgua(Request $request)
     {
         try {
@@ -198,7 +195,6 @@ class MapaController extends Controller
     }
 
     //Filtro para energia
-
     public function filtrarPlantelesEnergia(Request $request)
     {
         $query = Plantel::query()->with(['energia', 'municipio', 'localidad', 'niveles']);
@@ -437,8 +433,8 @@ class MapaController extends Controller
             $query->whereHas('obras', fn($q) => $q->where('construccion_complementos', 1));
         }
 
-        if ($request->has('contruccion_otro')) {
-            $query->whereHas('obras', fn($q) => $q->where('contruccion_otro', 1));
+        if ($request->has('construccion_otro')) {
+            $query->whereHas('obras', fn($q) => $q->where('construccion_otro', 1));
         }
 
         //  Solo planteles con coordenadas

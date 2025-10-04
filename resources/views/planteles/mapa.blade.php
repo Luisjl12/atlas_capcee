@@ -12,7 +12,6 @@
 </div>
 
 
-
 <div style="display: flex; gap: 20px;">
 
     <div class="sidebar-filtros">
@@ -70,6 +69,7 @@
     </div>
 
     <div style="flex:1; position: relative;">
+
         <!-- Botón flotante con menú de filtros -->
         <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
             <div class="dropdown">
@@ -77,20 +77,37 @@
                     Aplicar filtros
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-superficie">Filtrar por superficie </a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-agua">Filtrar por accesibilidad hidraulica </a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-energia">Filtrar por accesibilidad energetica </a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-drenaje">Filtrar por accesibilidad drenaje </a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-estado">Filtrar por estado de conservación hidraulica, sanitaria y energetica</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-obras">Filtrar por obras realizadas en los últimos cinco años</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-seguridad">Filtrar por seguridad y protección civil</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-accesibilidad">Filtrar por accesibilidad </a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-sanitarios">Filtrar por número y estado de sanitarios</a></li>
+                    <li>
+                        <h6 class="dropdown-header">Infraestructura</h6>
+                    </li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-superficie">Superficie</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-obras">Obras recientes</a></li>
 
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <h6 class="dropdown-header">Accesibilidad</h6>
+                    </li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-agua">Hidráulica</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-energia">Energética</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-drenaje">Drenaje</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-accesibilidad">General</a></li>
+
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <h6 class="dropdown-header">Condiciones</h6>
+                    </li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-estado">Estado de conservación</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-sanitarios">Sanitarios</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-seguridad">Seguridad</a></li>
                 </ul>
+
             </div>
         </div>
-        <!---->
+
         <div id="loader" style="
             display: none;
             position: absolute;
@@ -107,6 +124,36 @@
         ">
             Cargando mapa...
         </div>
+
+        <!--Leyenda flotante sobre el mapa-->
+        <div class="contenedor-leyenda">
+            <!-- Leyenda de filtros para superficie -->
+            <div id="leyenda-superficie" class="leyenda-superficie" style="display: none;">
+                <strong>Filtros activos:</strong>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <li><b>Superficie:</b> <span class="leyenda-badge" id="leyenda-superficie-texto"></span></li>
+                    <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-nivel-texto"></span></li>
+                    <li><b>Región:</b> <span class="leyenda-badge" id="leyenda-region-texto"></span></li>
+                </ul>
+            </div>
+
+            <!--Leyenda de filtros para obras nuevas -->
+            <div id="leyenda-obras" class="leyenda-obras" style="display: none;">
+                <strong>Obras filtradas:</strong>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-obras-nivel"></span></li>
+                    <li><b>Región:</b> <span class="leyenda-badge" id="leyenda-obras-region"></span></li>
+                    <li><b>Intervenciones:</b> <span class="leyenda-badge" id="leyenda-obras-tipo"></span></li>
+                </ul>
+            </div>
+
+
+            <!-- Contador de planteles -->
+            <div id="contador-planteles" class="contador-planteles" style="display: none;">
+                <strong>Planteles encontrados:</strong> <span class="leyenda-badge" id="contador-planteles-numero">0</span>
+            </div>
+        </div>
+
 
         <div id="map" style="height: 500px; border-radius: 8px;"></div>
     </div>
