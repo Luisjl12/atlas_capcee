@@ -17,11 +17,43 @@ document.addEventListener('DOMContentLoaded', () => {
     formAccesibilidad?.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        const macroregion = document.getElementById('accesibilidad-macroregion').value;
-        const microregion = document.getElementById('accesibilidad-microregion').value;
-        const municipio = document.getElementById('accesibilidad-municipio').value;
-        const nivel = document.getElementById('accesibilidad-nivel').value.trim();
+        const macroregionSelect = document.getElementById('accesibilidad-macroregion');
+        const macroregion = macroregionSelect.value;
+        const macroregionNombre = macroregionSelect.value !== '' ? macroregionSelect.options[macroregionSelect.selectedIndex].text : '';
+
+        const microregionSelect = document.getElementById('accesibilidad-microregion');
+        const microregion = microregionSelect.value; 
+        const microregionNombre = microregionSelect.value !== '' ? microregionSelect.options[microregionSelect.selectedIndex].text : '';
+
+        const municipioSelect = document.getElementById('accesibilidad-municipio');
+        const municipio = municipioSelect.value;
+
+        const municipioNombre = municipioSelect.value !== '' ? municipioSelect.options[municipioSelect.selectedIndex].text : '';
+
+        const regiones = [];
+            if (macroregionNombre) regiones.push(macroregionNombre);
+            if (microregionNombre) regiones.push(microregionNombre);
+            if (municipioNombre) regiones.push(municipioNombre);
+        const regionNombre = regiones.length > 0 ? regiones.join(', ') : '—';
+
+        const tipoAccesibilidad = ['infraestructura_discapacidad', 'sin_infraestructura_discapacidad']
+    .map(campo => {
+        const radio = document.querySelector(`input[name="${campo}"]:checked`);
+        return radio ? radio.labels?.[0]?.textContent.trim() : null;
+    })
+    .filter(Boolean)
+    .join(', ') || '—';
+
+    const nivel = document.getElementById('accesibilidad-nivel').value.trim();
         const categoria = document.getElementById('equipo_discapacidad_categoria').value;
+
+        document.getElementById('leyenda-accesibilidad-nivel').textContent = nivel || '—';
+        document.getElementById('leyenda-accesibilidad-region').textContent = regionNombre;
+        document.getElementById('leyenda-accesibilidad-categoria').textContent = categoria || '—';
+        document.getElementById('leyenda-accesibilidad-tipo').textContent = tipoAccesibilidad;
+        document.getElementById('leyenda-accesibilidad').style.display = 'block';
+
+        
 
         //Validaciones obligatorias 
         if (!macroregion && !microregion && !municipio) {
@@ -56,6 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(respuesta => {
                 const planteles = respuesta.data || [];
 
+                const visibles = planteles.filter(p => p.latitud && p.longitud);
+                document.getElementById('contador-planteles-numero').textContent = visibles.length;
+                document.getElementById('contador-planteles').style.display = 'block';
+
+
                 if (planteles.length === 0) {
                     alert('No se encontraron planteles con los filtros seleccionados.');
                     return;
@@ -82,8 +119,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                planteles.forEach(p => {
+                visibles.forEach(p => {
                     if (p.latitud && p.longitud) {
+                        const niveles = Array.isArray(p.niveles)
+                        ? p.niveles.map(n => n.nivel.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
+                        : 'Sin nivel registrado';
+
                         L.marker([parseFloat(p.latitud), parseFloat(p.longitud)], {
                         icon: crearIconoPorEstado(p.estatus_plantel)
                         })
@@ -92,6 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             CCT: ${p.cct}<br>
                             Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
                             Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
+                            <b>Nivel educativo:</b> ${niveles}<br>
                             <b>Accesibilidad:</b>
                             <br>Infraestructura: ${p.seguridad?.infraestructura_discapacidad ? 'Sí' : 'No'}
                             <br>Sin infraestructura: ${p.seguridad?.sin_infraestructura_discapacidad ? 'Sí' : 'No'}

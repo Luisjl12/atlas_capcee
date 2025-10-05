@@ -2389,6 +2389,9 @@ Estilos para menu flotante
   background-color: #f8f9fa !important; /* gris claro amigable */
   border: 1px solid #dee2e6;
   border-radius: 8px;
+  max-height: 400px;
+  overflow-y: auto;
+  scroll-behavior: smooth;
 }
 
 .dropdown-menu .dropdown-item {

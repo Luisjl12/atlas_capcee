@@ -29,7 +29,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const municipio = municipioSelect.value;
         const municipioNombre = municipioSelect.value !== '' ? municipioSelect.options[municipioSelect.selectedIndex].text : '';
 
-        const regionNombre = macroregionNombre || microregionNombre || municipioNombre || '—';
+        const regiones = [];
+
+        if (macroregionNombre) regiones.push(macroregionNombre);
+        if (microregionNombre) regiones.push(microregionNombre);
+        if (municipioNombre) regiones.push(municipioNombre);
+
+        const regionNombre = regiones.length > 0 ? regiones.join(', ') : '—';
 
         const nivel = document.getElementById('obras-nivel').value.trim();
 
@@ -97,9 +103,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-
-        document.getElementById('contador-planteles-numero').textContent = planteles.length;
-        document.getElementById('contador-planteles').style.display = 'block';
+            const visibles = planteles.filter(p => p.latitud && p.longitud);
+            document.getElementById('contador-planteles-numero').textContent = visibles.length;
+            document.getElementById('contador-planteles').style.display = 'block';
 
                 map.eachLayer(layer => {
                     if (layer instanceof L.Marker) {
@@ -122,17 +128,44 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                planteles.forEach(p => {
+                visibles.forEach(p => {
                     if (p.latitud && p.longitud) {
+
+                        const obras = [];
+                        const o = p.obras;
+
+                        if (o?.rehabilitacion_realizada) obras.push('Rehabilitación general');
+                        if (o?.rehabilitacion_impermeabilizacion) obras.push('Impermeabilización');
+                        if (o?.rehabilitacion_albanileria) obras.push('Albañilería');
+                        if (o?.rehabilitacion_pintura) obras.push('Pintura');
+                        if (o?.rehabilitacion_red_hidraulica) obras.push('Red hidráulica');
+                        if (o?.rehabilitacion_red_sanitaria) obras.push('Red sanitaria');
+                        if (o?.rehabilitacion_estructural) obras.push('Rehabilitación estructural');
+                        if (o?.obras_nuevas) obras.push('Obras nuevas');
+                        if (o?.construccion_educativa) obras.push('Construcción educativa');
+                        if (o?.construccion_deportiva) obras.push('Construcción deportiva');
+                        if (o?.construccion_sanitaria) obras.push('Construcción sanitaria');
+                        if (o?.construccion_complementos) obras.push('Complementos');
+                        if (o?.construccion_otro) obras.push('Otros');
+
+                        const obrasTexto = obras.length > 0 ? obras.join(', ') : 'Sin obras registradas';
+
+                        const niveles = Array.isArray(p.niveles)
+                        ? p.niveles.map(n => n.nivel.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
+                        : 'Sin nivel registrado';
+
+
                         L.marker([parseFloat(p.latitud), parseFloat(p.longitud)], {
                             icon: crearIconoPorEstado(p.estatus_plantel)
                         }).addTo(map).bindPopup(`
                             <b>${p.nombre_escuela}</b><br>
                             CCT: ${p.cct}<br>
+                            <b>Nivel educativo:</b> ${niveles}<br>
                             Estado: ${normalizarEstado(p.estatus_plantel)}<br>
                             Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
                             Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
-                            <a href="/planteles/${p.id}" target="_blank">Para ver todos sus detalles da click aquí</a>
+                            <b>Obras realizadas:</b> ${obrasTexto}<br>
+                          <a href="/planteles/${p.id}" target="_blank">Para ver todos sus detalles da click aquí</a>
                         `);
                     }
                 });

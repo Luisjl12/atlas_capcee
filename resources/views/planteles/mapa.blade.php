@@ -92,7 +92,7 @@
                     <li><a class="dropdown-item" href="#" id="btn-filtros-agua">Hidráulica</a></li>
                     <li><a class="dropdown-item" href="#" id="btn-filtros-energia">Energética</a></li>
                     <li><a class="dropdown-item" href="#" id="btn-filtros-drenaje">Drenaje</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-accesibilidad">General</a></li>
+                    <li><a class="dropdown-item" href="#" id="btn-filtros-accesibilidad">Accesibilidad</a></li>
 
                     <li>
                         <hr class="dropdown-divider">
@@ -104,7 +104,6 @@
                     <li><a class="dropdown-item" href="#" id="btn-filtros-sanitarios">Sanitarios</a></li>
                     <li><a class="dropdown-item" href="#" id="btn-filtros-seguridad">Seguridad</a></li>
                 </ul>
-
             </div>
         </div>
 
@@ -147,6 +146,46 @@
                 </ul>
             </div>
 
+            <!--Leyendad de filtros para aguas-->
+            <div id="leyenda-agua" class="leyenda-agua" style="display: none;">
+                <strong>Detalle hidráulico filtrado:</strong>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-agua-nivel"></span></li>
+                    <li><b>Región:</b> <span class="leyenda-badge" id="leyenda-agua-region"></span></li>
+                    <li><b>Características:</b> <span class="leyenda-badge" id="leyenda-agua-tipo"></span></li>
+                </ul>
+            </div>
+
+            <!--Lyenda para filtros electricidad-->
+            <div id="leyenda-energia" class="leyenda-energia" style="display: none;">
+                <strong>Infraestructura energética filtrada:</strong>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-energia-nivel"></span></li>
+                    <li><b>Región:</b> <span class="leyenda-badge" id="leyenda-energia-region"></span></li>
+                    <li><b>Características:</b> <span class="leyenda-badge" id="leyenda-energia-tipo"></span></li>
+                </ul>
+            </div>
+
+            <!--Leynda para filtros de drenaje--->
+            <div id="leyenda-drenaje" class="leyenda-drenaje" style="display: none;">
+                <strong>Infraestructura de drenaje filtrada:</strong>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-drenaje-nivel"></span></li>
+                    <li><b>Región:</b> <span class="leyenda-badge" id="leyenda-drenaje-region"></span></li>
+                    <li><b>Características:</b> <span class="leyenda-badge" id="leyenda-drenaje-tipo"></span></li>
+                </ul>
+            </div>
+
+            <!--Leyenda para filtros de accesibilidad-->
+            <div id="leyenda-accesibilidad" class="leyenda-accesibilidad" style="display: none;">
+                <strong>Filtros de accesibilidad aplicados:</strong>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-accesibilidad-nivel"></span></li>
+                    <li><b>Región:</b> <span class="leyenda-badge" id="leyenda-accesibilidad-region"></span></li>
+                    <li><b>Categoría:</b> <span class="leyenda-badge" id="leyenda-accesibilidad-categoria"></span></li>
+                    <li><b>Infraestructura:</b> <span class="leyenda-badge" id="leyenda-accesibilidad-tipo"></span></li>
+                </ul>
+            </div>
 
             <!-- Contador de planteles -->
             <div id="contador-planteles" class="contador-planteles" style="display: none;">

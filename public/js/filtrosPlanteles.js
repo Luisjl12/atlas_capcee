@@ -95,7 +95,9 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => res.json())
             .then(respuesta => {
                 const planteles = respuesta.data || [];
-                document.getElementById('contador-planteles-numero').textContent = planteles.length;
+                const visibles = planteles.filter(p => p.latitud && p.longitud);
+                document.getElementById('contador-planteles-numero').textContent = visibles.length;
+
                 document.getElementById('contador-planteles').style.display = 'block';
 
                 if (planteles.length === 0) {
@@ -124,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                planteles.forEach(p => {
+                visibles.forEach(p => {
                     if (p.latitud && p.longitud) {
                         L.marker([parseFloat(p.latitud), parseFloat(p.longitud)], {
                             icon: crearIconoPorEstado(p.estatus_plantel)

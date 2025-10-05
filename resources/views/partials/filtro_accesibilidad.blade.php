@@ -28,7 +28,9 @@
     <select name="nivel" id="accesibilidad-nivel" class="filtro-select">
         <option value="">Seleccione</option>
         @foreach($niveles as $nivel)
-        <option value="{{ $nivel->nivel }}">{{ ucfirst($nivel->nivel) }}</option>
+        <option value="{{ $nivel->nivel }}">
+            {{ ucwords(str_replace('_', ' ', $nivel->nivel)) }}
+        </option>
         @endforeach
     </select>
 </div>

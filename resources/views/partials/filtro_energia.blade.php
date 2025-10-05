@@ -27,7 +27,9 @@
     <select id="energia-nivel" name="nivel" class="filtro-select">
         <option value="">--Selecciona--</option>
         @foreach($niveles as $n)
-        <option value="{{ $n->nivel }}">{{ $n->nivel }}</option>
+        <option value="{{ $n->nivel }}">
+            {{ ucwords(str_replace('_', ' ', $n->nivel)) }}
+        </option>
         @endforeach
     </select>
 </div>
