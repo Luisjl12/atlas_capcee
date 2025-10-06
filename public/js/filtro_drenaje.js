@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const cerrarDrenaje = modalDrenaje?.querySelector('.close');
     const formDrenaje = document.getElementById('form-drenaje');
 
+    formDrenaje?.querySelectorAll('.filtro-select').forEach(select => {
+    select.addEventListener('change', () => {
+        if (select.value !== "") {
+            select.classList.add('activo');
+        } else {
+            select.classList.remove('activo');
+        }
+    });
+    });
+
     if (btnDrenaje && modalDrenaje) {
         btnDrenaje.addEventListener('click', () => modalDrenaje.style.display = 'flex');
         cerrarDrenaje?.addEventListener('click', () => modalDrenaje.style.display = 'none');

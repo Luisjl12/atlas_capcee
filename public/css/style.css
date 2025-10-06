@@ -2364,6 +2364,11 @@ Diseño de modal para los filtros
 
 .filtro-bloque {
     margin-bottom: 1.5rem;
+    padding: 1rem;
+    background-color: #f8f8f8;
+    border-left: 4px solid #5f1d0d;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .filtro-bloque label {
@@ -2380,6 +2385,31 @@ Diseño de modal para los filtros
     border: 1px solid #ccc;
     border-radius: 4px;
 }
+
+.filtro-bloque input[type="checkbox"] {
+  accent-color: #5f1d0d;
+  transform: scale(1.2);
+  margin-right: 0.5rem;
+}
+.filtro-select.activo,
+.filtro-bloque input[type="checkbox"]:checked {
+  border-color: #5f1d0d;
+  background-color: #fff7f4;
+}
+
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  #form-filtros button {
+    width: 100%;
+  }
+}
+
+
 
 
 /*

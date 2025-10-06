@@ -27,6 +27,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('modal-superficie');
     const cerrar = modal?.querySelector('.close');
     const form = document.getElementById('form-superficie');
+    form?.querySelectorAll('.filtro-select').forEach(select => {
+    select.addEventListener('change', () => {
+        if (select.value !== "") {
+            select.classList.add('activo');
+        } else {
+            select.classList.remove('activo');
+        }
+    });
+    });
 
     btnAbrir?.addEventListener('click', () => {
         modal.style.display = 'flex';

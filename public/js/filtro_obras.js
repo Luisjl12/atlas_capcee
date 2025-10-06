@@ -3,6 +3,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalObras = document.getElementById('modal-obras');
     const cerrarObras = modalObras?.querySelector('.close');
     const formObras = document.getElementById('form-obras');
+    formObras?.querySelectorAll('.filtro-select').forEach(select => {
+    select.addEventListener('change', () => {
+        if (select.value !== "") {
+            select.classList.add('activo');
+        } else {
+            select.classList.remove('activo');
+        }
+    });
+    });
 
     if (btnObras && modalObras) {
         btnObras.addEventListener('click', () => {

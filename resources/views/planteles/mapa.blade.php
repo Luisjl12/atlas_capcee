@@ -187,6 +187,43 @@
                 </ul>
             </div>
 
+            <!--Leyenda para filtros segun el estado de conservacion-->
+            <div id="leyenda-estado" class="leyenda-estado" style="display: none;">
+                <strong>Filtros de conservación aplicados:</strong>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-estado-nivel"></span></li>
+                    <li><b>Región:</b> <span class="leyenda-badge" id="leyenda-estado-region"></span></li>
+                    <li><b>Red hidráulica:</b> <span class="leyenda-badge" id="leyenda-estado-red"></span></li>
+                    <li><b>Instalación sanitaria:</b> <span class="leyenda-badge" id="leyenda-estado-sanitaria"></span></li>
+                    <li><b>Instalación eléctrica:</b> <span class="leyenda-badge" id="leyenda-estado-electrica"></span></li>
+                </ul>
+            </div>
+
+            <!--Leyenda para filtros segun sanitarios-->
+            <div id="leyenda-sanitarios" class="leyenda-sanitarios" style="display: none;">
+                <strong>Filtros de sanitarios aplicados:</strong>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-sanitarios-nivel"></span></li>
+                    <li><b>Región:</b> <span class="leyenda-badge" id="leyenda-sanitarios-region"></span></li>
+                    <li><b>Estado baños:</b> <span class="leyenda-badge" id="leyenda-sanitarios-banos"></span></li>
+                    <li><b>Estado lavamanos:</b> <span class="leyenda-badge" id="leyenda-sanitarios-lavamanos"></span></li>
+                    <li><b>Estado bebederos:</b> <span class="leyenda-badge" id="leyenda-sanitarios-bebederos"></span></li>
+                </ul>
+            </div>
+
+            <!--Leyenda para filtros segun la seguridad-->
+            <div id="leyenda-seguridad" class="leyenda-seguridad" style="display: none;">
+                <strong>Filtros de seguridad aplicados:</strong>
+                <ul style="margin: 0; padding-left: 18px;">
+                    <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-seguridad-nivel"></span></li>
+                    <li><b>Región:</b> <span class="leyenda-badge" id="leyenda-seguridad-region"></span></li>
+                    <li><b>Protección Civil:</b> <span class="leyenda-badge" id="leyenda-seguridad-pc"></span></li>
+                    <li><b>Barda completa:</b> <span class="leyenda-badge" id="leyenda-seguridad-barda"></span></li>
+                    <li><b>Estado barda:</b> <span class="leyenda-badge" id="leyenda-seguridad-estado-barda"></span></li>
+                    <li><b>Estado cerca:</b> <span class="leyenda-badge" id="leyenda-seguridad-estado-cerca"></span></li>
+                </ul>
+            </div>
+
             <!-- Contador de planteles -->
             <div id="contador-planteles" class="contador-planteles" style="display: none;">
                 <strong>Planteles encontrados:</strong> <span class="leyenda-badge" id="contador-planteles-numero">0</span>

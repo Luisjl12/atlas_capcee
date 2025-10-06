@@ -485,7 +485,7 @@ class MapaController extends Controller
         }
 
         if ($request->filled('estado_cerco')) {
-            $query->whereHas('seguridad', fn($q) => $q->where('estado_cerco', $request->estado_cerca));
+            $query->whereHas('seguridad', fn($q) => $q->where('estado_cerco', $request->estado_cerco));
         }
 
         // Solo planteles con coordenadas

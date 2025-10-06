@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const cerrarAccesibilidad = modalAccesibilidad?.querySelector('.close');
     const formAccesibilidad = document.getElementById('form-accesibilidad');
 
+    formAccesibilidad?.querySelectorAll('.filtro-select').forEach(select => {
+    select.addEventListener('change', () => {
+        if (select.value !== "") {
+            select.classList.add('activo');
+        } else {
+            select.classList.remove('activo');
+        }
+    });
+    });
+
     // Abrir modal
     btnAccesibilidad?.addEventListener('click', () => {
         modalAccesibilidad.style.display = 'flex';
@@ -134,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
                             Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
                             <b>Nivel educativo:</b> ${niveles}<br>
-                            <b>Accesibilidad:</b>
+                            <b>Accesibilidad de infraestructura para personas discapacitadas :</b>
                             <br>Infraestructura: ${p.seguridad?.infraestructura_discapacidad ? 'Sí' : 'No'}
                             <br>Sin infraestructura: ${p.seguridad?.sin_infraestructura_discapacidad ? 'Sí' : 'No'}
                             <br>Equipo total: ${p.seguridad?.equipo_discapacidad_total ?? 'N/A'}

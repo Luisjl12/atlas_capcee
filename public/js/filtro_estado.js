@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const cerrarEstado = modalEstado?.querySelector('.close');
     const formEstado = document.getElementById('form-instalaciones');
 
+    formEstado?.querySelectorAll('.filtro-select').forEach(select => {
+    select.addEventListener('change', () => {
+        if (select.value !== "") {
+            select.classList.add('activo');
+        } else {
+            select.classList.remove('activo');
+        }
+    });
+    });
+
     if (btnEstado && modalEstado) {
         btnEstado.addEventListener('click', () => modalEstado.style.display = 'flex');
         cerrarEstado?.addEventListener('click', () => modalEstado.style.display = 'none');
@@ -13,16 +23,37 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
 
         // Obtener valores
-        const macroregion = document.getElementById('estado-macroregion').value;
-        const microregion = document.getElementById('estado-microregion').value;
-        const municipio = document.getElementById('estado-municipio').value;
-        const nivel = document.getElementById('estado-nivel').value.trim();
+        const macroregionSelect = document.getElementById('estado-macroregion');
+        const macroregion = macroregionSelect.value;
+        const macroregionNombre = macroregionSelect.value !== '' ? macroregionSelect.options[macroregionSelect.selectedIndex].text : '';
 
+        const microregionSelect = document.getElementById('estado-microregion');
+        const microregion = microregionSelect.value;
+        const microregionNombre = microregionSelect.value !== '' ? microregionSelect.options[microregionSelect.selectedIndex].text : '';
+
+        const municipioSelect = document.getElementById('estado-municipio');
+        const municipio = municipioSelect.value;
+        const municipioNombre = municipioSelect.value !== '' ? municipioSelect.options[municipioSelect.selectedIndex].text : '';
+
+        const regiones = [];
+        if (macroregionNombre) regiones.push(macroregionNombre);
+        if (microregionNombre) regiones.push(microregionNombre);
+        if (municipioNombre) regiones.push(municipioNombre);
+        const regionNombre = regiones.length > 0 ? regiones.join(', ') : '—';
+
+        const nivel = document.getElementById('estado-nivel').value.trim();
         const estadoRed = document.getElementById('estado_red_hidraulica').value;
         const estadoSanitaria = document.getElementById('estado_instalacion_sanitaria').value;
         const estadoElectrica = document.getElementById('estado_instalacion_electrica').value;
 
-        // 🔹 Validación de orden
+        document.getElementById('leyenda-estado-nivel').textContent = nivel || '—';
+        document.getElementById('leyenda-estado-region').textContent = regionNombre;
+        document.getElementById('leyenda-estado-red').textContent = estadoRed || '—';
+        document.getElementById('leyenda-estado-sanitaria').textContent = estadoSanitaria || '—';
+        document.getElementById('leyenda-estado-electrica').textContent = estadoElectrica || '—';
+        document.getElementById('leyenda-estado').style.display = 'block';
+
+        //  Validación de orden
         if (!macroregion && !microregion && !municipio) {
             alert('Debes seleccionar al menos una región (macroregión, microregión o municipio).');
             return;
@@ -54,6 +85,10 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(res => res.json())
             .then(respuesta => {
                 const planteles = respuesta.data || [];
+                const visibles = planteles.filter(p => p.latitud && p.longitud);
+                document.getElementById('contador-planteles-numero').textContent = visibles.length;
+                document.getElementById('contador-planteles').style.display = 'block';
+
 
                 if (planteles.length === 0) {
                     alert('No se encontraron planteles con los filtros seleccionados.');
@@ -79,16 +114,25 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                planteles.forEach(p => {
+                visibles.forEach(p => {
                     if (p.latitud && p.longitud) {
+                        const niveles = Array.isArray(p.niveles)
+                        ? p.niveles.map(n => n.nivel.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
+                        : 'Sin nivel registrado';
+
                         L.marker([parseFloat(p.latitud), parseFloat(p.longitud)], {
                             icon: crearIconoPorEstado(p.estatus_plantel)
                         }).addTo(map).bindPopup(`
                             <b>${p.nombre_escuela}</b><br>
                             CCT: ${p.cct}<br>
+                            <b>Nivel educativo:</b> ${niveles}<br>
                             Estado: ${normalizarEstado(p.estatus_plantel)}<br>
                             Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
                             Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
+                            <b>Estado de conservación:</b><br>
+                            Red hidráulica: ${p.agua?.estado_red_hidraulica || 'Sin dato'}<br>
+                            Instalación sanitaria: ${p.sanitario?.estado_instalacion_sanitaria || 'Sin dato'}<br>
+                            Instalación eléctrica: ${p.energia?.estado_instalacion_electrica || 'Sin dato'}<br>
                             <a href="/planteles/${p.id}" target="_blank">Ver ficha completa</a>
                         `);
                     }

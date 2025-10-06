@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const cerrarAgua = modalAgua?.querySelector('.close');
     const formAgua = document.getElementById('form-agua');
 
+    formAgua?.querySelectorAll('.filtro-select').forEach(select => {
+    select.addEventListener('change', () => {
+        if (select.value !== "") {
+            select.classList.add('activo');
+        } else {
+            select.classList.remove('activo');
+        }
+    });
+    });
+
     if (btnAgua && modalAgua) {
         btnAgua.addEventListener('click', () => modalAgua.style.display = 'flex');
         cerrarAgua?.addEventListener('click', () => modalAgua.style.display = 'none');

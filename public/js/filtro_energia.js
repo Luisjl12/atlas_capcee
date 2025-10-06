@@ -3,6 +3,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const modalEnergia = document.getElementById('modal-energia');
     const cerrarEnergia = modalEnergia?.querySelector('.close');
     const formEnergia = document.getElementById('form-energia');
+    formEnergia?.querySelectorAll('.filtro-select').forEach(select => {
+    select.addEventListener('change', () => {
+        if (select.value !== "") {
+            select.classList.add('activo');
+        } else {
+            select.classList.remove('activo');
+        }
+    });
+    });
 
     if (btnEnergia && modalEnergia) {
         btnEnergia.addEventListener('click', () => {

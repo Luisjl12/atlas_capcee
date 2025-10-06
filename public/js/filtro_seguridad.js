@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const cerrarSeguridad = modalSeguridad?.querySelector('.close');
     const formSeguridad = document.getElementById('form-seguridad');
 
+    formSeguridad?.querySelectorAll('.filtro-select').forEach(select => {
+    select.addEventListener('change', () => {
+        if (select.value !== "") {
+            select.classList.add('activo');
+        } else {
+            select.classList.remove('activo');
+        }
+    });
+    });
+
     // Abrir modal
     if (btnSeguridad && modalSeguridad) {
         btnSeguridad.addEventListener('click', () => {
@@ -52,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         // Agregar selects (strings)
-        ['estado_barda', 'estado_cerca'].forEach(campo => {
+        ['estado_barda', 'estado_cerco'].forEach(campo => {
             const select = document.getElementById(campo);
             if (select && select.value.trim() !== '') {
                 params.append(campo, select.value.trim());
@@ -60,12 +70,37 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         console.log('Parámetros enviados (seguridad):', params.toString());
+        document.getElementById('leyenda-seguridad').style.display = 'block';
+        document.getElementById('leyenda-seguridad-nivel').textContent = nivel;
+
+        const macroregionSelect = document.getElementById('seguridad-macroregion');
+        const macroregionNombre = macroregionSelect.value !== '' ? macroregionSelect.options[macroregionSelect.selectedIndex].text : '';
+
+        const microregionSelect = document.getElementById('seguridad-microregion');
+        const microregionNombre = microregionSelect.value !== '' ? microregionSelect.options[microregionSelect.selectedIndex].text : '';
+
+        const municipioSelect = document.getElementById('seguridad-municipio');
+        const municipioNombre = municipioSelect.value !== '' ? municipioSelect.options[municipioSelect.selectedIndex].text : '';
+
+        const regionTexto = municipioNombre || microregionNombre || macroregionNombre || 'Sin dato';
+        document.getElementById('leyenda-seguridad-region').textContent = regionTexto;
+
+        document.getElementById('leyenda-seguridad-pc').textContent = document.getElementById('proteccion_civil')?.checked ? 'Sí' : 'No';
+        document.getElementById('leyenda-seguridad-barda').textContent = document.getElementById('barda_completa')?.checked ? 'Sí' : 'No';
+        document.getElementById('leyenda-seguridad-estado-barda').textContent = document.getElementById('estado_barda')?.value || 'Sin dato';
+        document.getElementById('leyenda-seguridad-estado-cerca').textContent = document.getElementById('estado_cerca')?.value || 'Sin dato';
+
 
         fetch('/filtrar-seguridad?' + params.toString())
             .then(res => res.json())
             .then(respuesta => {
-                const planteles = respuesta.data || [];
 
+                const planteles = respuesta.data || [];
+                const visibles = planteles.filter(p => p.latitud && p.longitud);
+                document.getElementById('contador-planteles-numero').textContent = visibles.length;
+                document.getElementById('contador-planteles').style.display = 'block';
+
+            
                 if (planteles.length === 0) {
                     alert('No se encontraron planteles con los filtros seleccionados.');
                     return;
@@ -92,8 +127,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     });
                 }
 
-                planteles.forEach(p => {
+                visibles.forEach(p => {
                     if (p.latitud && p.longitud) {
+                        const niveles = Array.isArray(p.niveles)
+                        ? p.niveles.map(n => n.nivel.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
+                        : 'Sin nivel registrado';
+
                         L.marker([parseFloat(p.latitud), parseFloat(p.longitud)], {
                             icon: crearIconoPorEstado(p.estatus_plantel)
                         }).addTo(map).bindPopup(`
@@ -101,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             CCT: ${p.cct}<br>
                             Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
                             Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
+                            <b>Nivel Educativo: </b>${niveles}<br>
                             <b>Seguridad:</b>
                             <br>Protección Civil: ${p.seguridad?.proteccion_civil ? 'Sí' : 'No'}
                             <br>Barda completa: ${p.seguridad?.barda_completa ? 'Sí' : 'No'}

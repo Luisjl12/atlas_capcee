@@ -4,6 +4,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const cerrarSanitarios = modalSanitarios?.querySelector('.close');
     const formSanitarios = document.getElementById('form-sanitarios');
 
+    formSanitarios?.querySelectorAll('.filtro-select').forEach(select => {
+    select.addEventListener('change', () => {
+        if (select.value !== "") {
+            select.classList.add('activo');
+        } else {
+            select.classList.remove('activo');
+        }
+    });
+    });
+
     btnSanitarios?.addEventListener('click', () => {
         modalSanitarios.style.display = 'flex';
     });
@@ -15,9 +25,24 @@ document.addEventListener('DOMContentLoaded', () => {
     formSanitarios?.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        const macroregion = document.getElementById('sanitarios-macroregion').value;
-        const microregion = document.getElementById('sanitarios-microregion').value;
-        const municipio = document.getElementById('sanitarios-municipio').value;
+        const macroregionSelect = document.getElementById('sanitarios-macroregion');
+        const macroregion = macroregionSelect.value;
+        const macroregionNombre = macroregionSelect.value !== ''
+         ? macroregionSelect.options[macroregionSelect.selectedIndex].text
+     : '';
+
+        const microregionSelect = document.getElementById('sanitarios-microregion');
+        const microregion = microregionSelect.value;
+        const microregionNombre = microregionSelect.value !== ''
+           ? microregionSelect.options[microregionSelect.selectedIndex].text
+           : '';
+
+        const municipioSelect = document.getElementById('sanitarios-municipio');
+        const municipio = municipioSelect.value;
+        const municipioNombre = municipioSelect.value !== ''
+        ? municipioSelect.options[municipioSelect.selectedIndex].text
+        : '';
+
         const nivel = document.getElementById('sanitarios-nivel').value.trim();
 
         if (!macroregion && !microregion && !municipio) {
@@ -51,10 +76,41 @@ document.addEventListener('DOMContentLoaded', () => {
 
         modalSanitarios.style.display = 'none';
 
+        // Mostrar leyenda con filtros aplicados
+        document.getElementById('leyenda-sanitarios').style.display = 'block';
+
+        // Nivel educativo
+        document.getElementById('leyenda-sanitarios-nivel').textContent = nivel;
+
+        // Región (prioridad: municipio > micro > macro)
+        let regionTexto = municipioNombre || microregionNombre || macroregionNombre || 'Sin dato';
+        document.getElementById('leyenda-sanitarios-region').textContent = regionTexto;
+
+        // Estado baños
+        const estadoBanos = formSanitarios.querySelector('[name="estado_banos"]')?.value || 'Sin dato';
+        document.getElementById('leyenda-sanitarios-banos').textContent = estadoBanos;
+
+        // Estado lavamanos
+        const estadoLavamanos = formSanitarios.querySelector('[name="estado_lavamanos"]')?.value || 'Sin dato';
+        document.getElementById('leyenda-sanitarios-lavamanos').textContent = estadoLavamanos;
+
+        // Estado bebederos
+        const estadoBebederos = formSanitarios.querySelector('[name="estado_bebederos"]')?.value || 'Sin dato';
+        document.getElementById('leyenda-sanitarios-bebederos').textContent = estadoBebederos;
+
+
         fetch('/filtrar-sanitarios?' + params.toString())
             .then(res => res.json())
             .then(respuesta => {
+
                 const planteles = respuesta.data || [];
+                // Mostrar y actualizar contador de planteles
+                const contador = document.getElementById('contador-planteles');
+                const contadorNumero = document.getElementById('contador-planteles-numero');
+
+            contadorNumero.textContent = planteles.length;
+            contador.style.display = 'block';
+
 
                 if (planteles.length === 0) {
                     alert('No se encontraron planteles con los filtros seleccionados.');
@@ -92,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }).addTo(map).bindPopup(`
                             <b>${p.nombre_escuela}</b><br>
                             CCT: ${p.cct}<br>
+                            <br><b>Niveles educativos:</b> ${(p.niveles?.map(n => n.nivel).join(', ') || 'Sin dato')}<br>
                             Estado: ${normalizarEstado(estado)}<br>
                             Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
                             Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
