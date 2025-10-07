@@ -25,6 +25,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const btnCerrarLeyendaSeguridad = document.getElementById('cerrar-leyenda-seguridad');
+    btnCerrarLeyendaSeguridad?.addEventListener('click', () => {
+    document.getElementById('leyenda-seguridad').style.display = 'none';
+    });
+
+
     // Enviar formulario
     formSeguridad?.addEventListener('submit', function (e) {
         e.preventDefault();

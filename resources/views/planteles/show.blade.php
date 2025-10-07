@@ -484,7 +484,7 @@ default => ['fas fa-file', 'text-dark'],
 
                 <div class="mb-4">
                     <h4><i class=" fas fa-graduation-cap"></i>
-                        Nivel educativo
+                        Escolaridad que se imparte
                     </h4>
 
                     @if($plantel->niveles->isEmpty())

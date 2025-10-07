@@ -382,7 +382,7 @@ class PlantelController extends Controller
                     'brigadas_conformadas' => 'nullable|boolean',
                     'botiquin_existencia' => 'nullable|boolean',
                     'botiquin_estado' => 'nullable|string',
-                    'simulacros_ultimo_anio' => 'nullable|integer|min:0',
+                    'simulacros_ultimo_anio' => 'required|integer|min:0',
                 ];
                 break;
 

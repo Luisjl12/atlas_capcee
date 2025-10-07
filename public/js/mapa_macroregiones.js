@@ -1,23 +1,60 @@
 document.addEventListener('DOMContentLoaded', function () {
-    window.map = L.map('map').setView([19.0414, -98.2063], 9);
+    window.map = L.map('map', {
+    minZoom: 8
+    }).setView([19.0414, -98.2063], 7);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
 
-    fetch('/geojson/puebla_limpio_dos.json')
+    let capaPuebla;
+    let municipioSeleccionado = null;
+    fetch('/geojson/municipios_limpios_dos.json')
         .then(res => res.json())
         .then(data => {
-            const capaPuebla = L.geoJSON(data, {
+            capaPuebla = L.geoJSON(data, {
                 style: {
-                    color: '#0a0a0aff',
-                    weight: 2,
+                    color: '#7a0019',
+                    weight: 1,
                     fillOpacity: 0
                 }
             }).addTo(map);
-            map.fitBounds(capaPuebla.getBounds());
+
+            map.fitBounds(capaPuebla.getBounds(), { padding: [0, 0] });
+            map.setZoom(map.getZoom() + 2);
         })
         .catch(err => console.error('Error al cargar el GeoJSON de Puebla:', err));
+
+    function mostrarMunicipio(nombreMunicipio) {
+        if (municipioSeleccionado) {
+            municipioSeleccionado.setStyle({
+                color: '#7a0019',
+                weight: 1.5,
+                fillOpacity: 0
+            });
+            municipioSeleccionado.closePopup();
+            municipioSeleccionado = null;
+        }
+
+        capaPuebla.eachLayer(layer => {
+            const props = layer.feature.properties;
+            if (props.NOMGEO.toLowerCase() === nombreMunicipio.toLowerCase()) {
+                layer.setStyle({
+                    color: '#cc0000',
+                    weight: 3,
+                    fillColor: '#a52a2a',
+                    fillOpacity: 0.4
+                });
+                map.fitBounds(layer.getBounds());
+                layer.bindPopup(`<b>${props.NOMGEO}</b>`).openPopup();
+                municipioSeleccionado = layer;
+            }
+        });
+    }
+
+    document.querySelectorAll('.filtro-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const nombre = btn.textContent.trim();
+            mostrarMunicipio(nombre);
+        });
+    });
 
     fetch('/geojson/municipios_limpios_dos.json')
         .then(res => res.json())
@@ -108,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
         "Angelópolis": [
             "Acajete", "Amozoc", "Calpan", "Chiautzingo", "Coronango", "Cuautinchán", "Cuautlancingo", "Domingo Arenas",
-            "Huejotzingo", "Juan C. Bonilla", "Puebla", "Puebla", "Puebla", "Puebla", "San Andrés Cholula",
+            "Huejotzingo", "Juan C. Bonilla", "Puebla", "San Andrés Cholula",
             "San Felipe Teotlalcingo", "San Martín Texmelucan", "San Matías Tlalancaleca", "San Miguel Xoxtla", "San Pedro Cholula",
             "San Salvador el Verde", "Tecali de Herrera", "Tepatlaxco de Hidalgo", "Tlahuapan", "Tlaltenango"
         ],
@@ -174,14 +211,7 @@ document.addEventListener('DOMContentLoaded', function () {
         ]
     };
 
-    const coloresMacro = [
-        "#cc0000", "#0066cc", "#009933", "#ff9900", "#6600cc", "#ff3399",
-        "#00cccc", "#c48e8b", "#504b06", "#00cc00", "#200703",
-        "#ff6600", "#9933cc", "#66ff66", "#3366ff", "#ff0066",
-        "#00ffcc", "#cc9966", "#6666ff", "#ccff33", "#ffcc00",
-        "#9900ff", "#33cccc", "#ff33cc", "#669900", "#cc3333", "#006633"
-    ];
-
+    const coloresMacro = ["#7a0019"];
     let capasActivas = [];
 
     function limpiarMapa() {
@@ -239,9 +269,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 map.fitBounds(bounds);
             }
         }
-
         procesarLote();
-
     }
 
 
@@ -265,9 +293,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 map.fitBounds(bounds);
             }
         }
-
         procesarLote();
-
     }
 
     const planteles = window.planteles || [];
@@ -362,53 +388,6 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 boton.style.display = 'none';
             }
-        });
-    });
-
-    //Filtro por localidades
-    document.getElementById('filtro-localidad').addEventListener('change', function () {
-    const localidadId = this.value;
-    const url = '/mapa-planteles?' + new URLSearchParams({ localidad: localidadId });
-
-    console.log('Localidad seleccionada:', localidadId);
-
-    fetch(url)
-        .then(res => res.json())
-        .then(respuesta => {
-            
-            const planteles = respuesta.data || [];
-
-            map.eachLayer(layer => {
-                if (layer instanceof L.Marker) {
-                    map.removeLayer(layer);
-                }
-            });
-
-            const markers = [];
-
-            planteles.forEach(plantel => {
-                if (plantel.lat && plantel.lng) {
-                    const marker = L.marker([parseFloat(plantel.lat), parseFloat(plantel.lng)], {
-                        icon: crearIconoPorEstado(plantel.estatus_plantel)
-                    }).addTo(map).bindPopup(`
-                        <b>${plantel.nombre}</b><br>
-                        CCT: ${plantel.cct}<br>
-                        Estado: ${normalizarEstado(plantel.estatus_plantel).charAt(0).toUpperCase() + normalizarEstado(plantel.estatus_plantel).slice(1)}<br>
-                        Municipio: ${plantel.municipio?.nombre_municipio || 'Sin dato'}<br>
-                        Localidad: ${plantel.localidad?.nombre_localidad || 'Sin dato'}<br>
-                        <a href="/planteles/${plantel.id}" target="_blank">Ver ficha completa</a>
-                    `);
-
-                    markers.push({
-                        cct: (plantel.cct || '').toLowerCase(),
-                        nombre: (plantel.nombre || '').toLowerCase(),
-                        marker
-                    });
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Error al cargar los planteles:', error);
         });
     });
 });

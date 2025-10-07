@@ -23,6 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    const btnCerrarLeyendaObras = document.getElementById('cerrar-leyenda-obras');
+    btnCerrarLeyendaObras?.addEventListener('click', () => {
+    document.getElementById('leyenda-obras').style.display = 'none';
+    });
+
+
     formObras?.addEventListener('submit', function (e) {
         e.preventDefault();
 

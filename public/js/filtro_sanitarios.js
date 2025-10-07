@@ -22,6 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
         modalSanitarios.style.display = 'none';
     });
 
+    const btnCerrarLeyendaSanitarios = document.getElementById('cerrar-leyenda-sanitarios');
+    btnCerrarLeyendaSanitarios?.addEventListener('click', () => {
+    document.getElementById('leyenda-sanitarios').style.display = 'none';
+    });
+
+
     formSanitarios?.addEventListener('submit', function (e) {
         e.preventDefault();
 

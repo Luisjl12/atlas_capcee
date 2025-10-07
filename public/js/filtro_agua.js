@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
         btnAgua.addEventListener('click', () => modalAgua.style.display = 'flex');
         cerrarAgua?.addEventListener('click', () => modalAgua.style.display = 'none');
     }
+    const btnCerrarLeyendaAgua = document.getElementById('cerrar-leyenda-agua');
+    btnCerrarLeyendaAgua?.addEventListener('click', () => {
+    document.getElementById('leyenda-agua').style.display = 'none';
+    });
+
 
     formAgua?.addEventListener('submit', function (e) {
         e.preventDefault();

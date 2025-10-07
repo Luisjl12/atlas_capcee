@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cerrarEstado?.addEventListener('click', () => modalEstado.style.display = 'none');
     }
 
+    const btnCerrarLeyendaEstado = document.getElementById('cerrar-leyenda-estado');
+    btnCerrarLeyendaEstado?.addEventListener('click', () => {
+    document.getElementById('leyenda-estado').style.display = 'none';
+    });
+
+
     formEstado?.addEventListener('submit', function (e) {
         e.preventDefault();
 

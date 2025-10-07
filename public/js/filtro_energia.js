@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
             select.classList.remove('activo');
         }
     });
-    });
+     });
 
     if (btnEnergia && modalEnergia) {
         btnEnergia.addEventListener('click', () => {
@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modalEnergia.style.display = 'none';
         });
     }
+
 
     formEnergia?.addEventListener('submit', function (e) {
         e.preventDefault();
@@ -61,6 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('leyenda-energia-tipo').textContent = energiaSeleccionada || '—';
         document.getElementById('leyenda-energia').style.display = 'block';
 
+        const btnCerrarLeyendaEnergia = document.getElementById('cerrar-leyenda-energia');
+        btnCerrarLeyendaEnergia?.addEventListener('click', () => {
+        document.getElementById('leyenda-energia').style.display = 'none';
+        });
 
         //  Validación de orden
         if (!macroregion && !microregion && !municipio) {

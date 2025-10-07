@@ -11,9 +11,7 @@
     </a>
 </div>
 
-
 <div style="display: flex; gap: 20px;">
-
     <div class="sidebar-filtros">
         <h4>Regiones</h4>
         <input type="text" id="buscadorRegion" placeholder="Buscar región...">
@@ -45,31 +43,31 @@
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Xicotepec">Xicotepec</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Huauchinango">Huauchinango</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Zacapoaxtla">Zacapoaxtla</button>
-                <button class="filtro-btn" data-tipo="micro" data-nombre="Teziutlan">Teziutlan</button>
+                <button class="filtro-btn" data-tipo="micro" data-nombre="Teziutlan">Teziutlán</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Tlatlauquitepec">Tlatlauquitepec</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Libres">Libres</button>
-                <button class="filtro-btn" data-tipo="micro" data-nombre="Ciudad Serdan">Ciudad Serdan</button>
+                <button class="filtro-btn" data-tipo="micro" data-nombre="Ciudad Serdan">Ciudad Serdán</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="tecamachalco">Tecamachalco</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Acatzingo">Acatzingo</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Tepeaca">Tepeaca</button>
-                <button class="filtro-btn" data-tipo="micro" data-nombre="Puebla Capital">Puebla Capital</button>
+                <button class="filtro-btn" data-tipo="micro" data-nombre="Puebla Capital">Puebla</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Amozoc">Amozoc</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Cholula">Cholula</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Huejotzingo">Huejotzingo</button>
-                <button class="filtro-btn" data-tipo="micro" data-nombre="Texmelucan">Texmelucan</button>
+                <button class="filtro-btn" data-tipo="micro" data-nombre="Texmelucan">San Martín Texmelucan</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Atlixco">Atlixco</button>
-                <button class="filtro-btn" data-tipo="micro" data-nombre="Izucar">Izucar</button>
-                <button class="filtro-btn" data-tipo="micro" data-nombre="Acatlan">Acatlan</button>
+                <button class="filtro-btn" data-tipo="micro" data-nombre="Izucar">Izúcar</button>
+                <button class="filtro-btn" data-tipo="micro" data-nombre="Acatlan">Acatlán</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Chiautla">Chiautla</button>
-                <button class="filtro-btn" data-tipo="micro" data-nombre="Tepexi">Tepexi</button>
-                <button class="filtro-btn" data-tipo="micro" data-nombre="Tehuacan">Tehuacan</button>
+                <button class="filtro-btn" data-tipo="micro" data-nombre="Tepexi">Tepexi de Rodríguez</button>
+                <button class="filtro-btn" data-tipo="micro" data-nombre="Tehuacan">Tehuacán</button>
                 <button class="filtro-btn" data-tipo="micro" data-nombre="Ajalpan">Ajalpan</button>
             </div>
+
         </div>
     </div>
 
     <div style="flex:1; position: relative;">
-
         <!-- Botón flotante con menú de filtros -->
         <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
             <div class="dropdown">
@@ -106,7 +104,6 @@
                 </ul>
             </div>
         </div>
-
         <div id="loader" style="
             display: none;
             position: absolute;
@@ -128,6 +125,7 @@
         <div class="contenedor-leyenda">
             <!-- Leyenda de filtros para superficie -->
             <div id="leyenda-superficie" class="leyenda-superficie" style="display: none;">
+                <button id="cerrar-leyenda-superficie" class="cerrar-leyenda" title="Ocultar leyenda">✖</button>
                 <strong>Filtros activos:</strong>
                 <ul style="margin: 0; padding-left: 18px;">
                     <li><b>Superficie:</b> <span class="leyenda-badge" id="leyenda-superficie-texto"></span></li>
@@ -138,6 +136,7 @@
 
             <!--Leyenda de filtros para obras nuevas -->
             <div id="leyenda-obras" class="leyenda-obras" style="display: none;">
+                <button id="cerrar-leyenda-obras" class="cerrar-leyenda" title="Ocultar leyenda">✖</button>
                 <strong>Obras filtradas:</strong>
                 <ul style="margin: 0; padding-left: 18px;">
                     <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-obras-nivel"></span></li>
@@ -148,6 +147,7 @@
 
             <!--Leyendad de filtros para aguas-->
             <div id="leyenda-agua" class="leyenda-agua" style="display: none;">
+                <button id="cerrar-leyenda-agua" class="cerrar-leyenda" title="Ocultar leyenda">✖</button>
                 <strong>Detalle hidráulico filtrado:</strong>
                 <ul style="margin: 0; padding-left: 18px;">
                     <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-agua-nivel"></span></li>
@@ -158,6 +158,7 @@
 
             <!--Lyenda para filtros electricidad-->
             <div id="leyenda-energia" class="leyenda-energia" style="display: none;">
+                <button id="cerrar-leyenda-energia" class="cerrar-leyenda" title="Ocultar leyenda">✖</button>
                 <strong>Infraestructura energética filtrada:</strong>
                 <ul style="margin: 0; padding-left: 18px;">
                     <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-energia-nivel"></span></li>
@@ -168,6 +169,7 @@
 
             <!--Leynda para filtros de drenaje--->
             <div id="leyenda-drenaje" class="leyenda-drenaje" style="display: none;">
+                <button id="cerrar-leyenda-drenaje" class="cerrar-leyenda" title="Ocultar leyenda">✖</button>
                 <strong>Infraestructura de drenaje filtrada:</strong>
                 <ul style="margin: 0; padding-left: 18px;">
                     <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-drenaje-nivel"></span></li>
@@ -178,6 +180,7 @@
 
             <!--Leyenda para filtros de accesibilidad-->
             <div id="leyenda-accesibilidad" class="leyenda-accesibilidad" style="display: none;">
+                <button id="cerrar-leyenda-accesibilidad" class="cerrar-leyenda" title="Ocultar leyenda">✖</button>
                 <strong>Filtros de accesibilidad aplicados:</strong>
                 <ul style="margin: 0; padding-left: 18px;">
                     <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-accesibilidad-nivel"></span></li>
@@ -189,6 +192,7 @@
 
             <!--Leyenda para filtros segun el estado de conservacion-->
             <div id="leyenda-estado" class="leyenda-estado" style="display: none;">
+                <button id="cerrar-leyenda-estado" class="cerrar-leyenda" title="Ocultar leyenda">✖</button>
                 <strong>Filtros de conservación aplicados:</strong>
                 <ul style="margin: 0; padding-left: 18px;">
                     <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-estado-nivel"></span></li>
@@ -201,6 +205,7 @@
 
             <!--Leyenda para filtros segun sanitarios-->
             <div id="leyenda-sanitarios" class="leyenda-sanitarios" style="display: none;">
+                <button id="cerrar-leyenda-sanitarios" class="cerrar-leyenda" title="Ocultar leyenda">✖</button>
                 <strong>Filtros de sanitarios aplicados:</strong>
                 <ul style="margin: 0; padding-left: 18px;">
                     <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-sanitarios-nivel"></span></li>
@@ -213,6 +218,7 @@
 
             <!--Leyenda para filtros segun la seguridad-->
             <div id="leyenda-seguridad" class="leyenda-seguridad" style="display: none;">
+                <button id="cerrar-leyenda-seguridad" class="cerrar-leyenda" title="Ocultar leyenda">✖</button>
                 <strong>Filtros de seguridad aplicados:</strong>
                 <ul style="margin: 0; padding-left: 18px;">
                     <li><b>Nivel:</b> <span class="leyenda-badge" id="leyenda-seguridad-nivel"></span></li>
@@ -230,11 +236,10 @@
             </div>
         </div>
 
+        <div id="map" style="height: 600px; border-radius: 8px; background: #fafafa;"></div>
 
-        <div id="map" style="height: 500px; border-radius: 8px;"></div>
     </div>
 </div>
-
 
 
 {{-- Estilos de Leaflet --}}
@@ -244,12 +249,9 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
-<script src="https://unpkg.com/@turf/turf@6.5.0/turf.min.js"></script>
-
-
-
 <!--Script para graficar los mapas-->
 <script src="{{ asset('js/mapa_macroregiones.js') }}"></script>
+
 
 <!--Script para los filtros-->
 <script src="{{ asset('js/filtrosPlanteles.js') }}"></script>
@@ -277,8 +279,6 @@
 
 <!--script para filtrar por número y estado de sanitarios-->
 <script src="{{ asset('js/filtro_sanitarios.js') }}"></script>
-
-
 
 
 <x-modal-filtros

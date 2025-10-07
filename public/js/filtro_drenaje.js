@@ -19,6 +19,12 @@ document.addEventListener('DOMContentLoaded', () => {
         cerrarDrenaje?.addEventListener('click', () => modalDrenaje.style.display = 'none');
     }
 
+    const btnCerrarLeyendaDrenaje = document.getElementById('cerrar-leyenda-drenaje');
+    btnCerrarLeyendaDrenaje?.addEventListener('click', () => {
+    document.getElementById('leyenda-drenaje').style.display = 'none';
+    });
+
+
     formDrenaje?.addEventListener('submit', function(e) {
         e.preventDefault();
 

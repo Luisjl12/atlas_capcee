@@ -22,6 +22,11 @@ document.addEventListener('DOMContentLoaded', () => {
     cerrarAccesibilidad?.addEventListener('click', () => {
         modalAccesibilidad.style.display = 'none';
     });
+    const btnCerrarLeyendaAccesibilidad = document.getElementById('cerrar-leyenda-accesibilidad');
+    btnCerrarLeyendaAccesibilidad?.addEventListener('click', () => {
+    document.getElementById('leyenda-accesibilidad').style.display = 'none';
+    });
+
 
     // Enviar formulario
     formAccesibilidad?.addEventListener('submit', function (e) {

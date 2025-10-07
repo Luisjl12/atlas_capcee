@@ -272,3 +272,5 @@ Route::get('/filtrar-seguridad', [MapaController::class, 'filtrarPlantelesSeguri
 Route::get('/filtrar-accesibilidad', [MapaController::class, 'filtrarPlantelesAccesibilidad']);
 
 Route::get('/filtrar-sanitarios', [MapaController::class, 'filtrarPlantelesSanitarios']);
+
+Route::get('/filtrar-avanzado', [MapaController::class, 'filtrarAvanzado']);

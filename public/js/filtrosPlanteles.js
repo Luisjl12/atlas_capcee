@@ -45,6 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.style.display = 'none';
     });
 
+    const btnCerrarLeyendaSuperficie = document.getElementById('cerrar-leyenda-superficie');
+    btnCerrarLeyendaSuperficie?.addEventListener('click', () => {
+    document.getElementById('leyenda-superficie').style.display = 'none';
+    });
+
+
     form?.addEventListener('submit', function (e) {
         e.preventDefault();
 

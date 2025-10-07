@@ -54,8 +54,8 @@
         <option value="malo">Malo</option>
     </select>
 
-    <label for="estado_cerca">¿Cuál es el estado de la cerca?</label>
-    <select name="estado_cerca" id="estado_cerca" class="filtro-select">
+    <label for="estado_cerco">¿Cuál es el estado de la cerca?</label>
+    <select name="estado_cerco" id="estado_cerco" class="filtro-select">
         <option value="">-- Selecciona --</option>
         <option value="bueno">Bueno</option>
         <option value="regular">Regular</option>

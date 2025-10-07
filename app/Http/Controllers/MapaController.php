@@ -8,10 +8,13 @@ use App\Models\Localidad;
 use App\Models\Macroregion;
 use App\Models\InmuebleAgua;
 use Illuminate\Support\Facades\Log;
+use App\Traits\FiltrablePorTerritorioYNivel;
 
 
 class MapaController extends Controller
 {
+    use FiltrablePorTerritorioYNivel;
+
     public function mapa(Request $request)
     {
         // Construye el query sin ejecutarlo aún
@@ -62,6 +65,7 @@ class MapaController extends Controller
             'almacenamiento_otro' => 'Otro tipo de almacenamiento'
         ];
 
+
         return view('planteles.mapa', compact(
             'localidades',
             'macroregiones',
@@ -79,7 +83,7 @@ class MapaController extends Controller
             'energia_planta'          => 'Planta eléctrica'
         ];
 
-        return view('planteles.mapa', compact('localidades', 'macroregiones', 'microregiones', 'municipios',  'niveles', 'rangosSuperficie', 'tiposEnergia'));
+        return view('planteles.mapa', compact('localidades', 'macroregiones', 'microregiones', 'municipios',  'niveles', 'rangosSuperficie', 'tiposEnergia', 'tiposAgua'));
     }
 
     //Filtro para superficies
@@ -605,6 +609,17 @@ class MapaController extends Controller
         if ($request->filled('estado_bebederos')) {
             $query->whereHas('sanitario', fn($q) => $q->where('estado_bebederos', $request->estado_bebederos));
         }
+
+        $query->whereNotNull('latitud')->whereNotNull('longitud');
+
+        return response()->json(['data' => $query->get()]);
+    }
+
+    public function filtrarAvanzado(Request $request)
+    {
+        $query = Plantel::query()->with(['energia', 'drenaje', 'municipio', 'localidad', 'niveles']);
+
+        $this->aplicarFiltrosTerritorialesYNivel($query, $request);
 
         $query->whereNotNull('latitud')->whereNotNull('longitud');
 
