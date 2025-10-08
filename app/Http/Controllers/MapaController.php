@@ -7,13 +7,14 @@ use App\Models\Plantel;
 use App\Models\Localidad;
 use App\Models\Macroregion;
 use App\Models\InmuebleAgua;
+use App\Traits\FiltrablePorCategoria;
 use Illuminate\Support\Facades\Log;
 use App\Traits\FiltrablePorTerritorioYNivel;
 
 
 class MapaController extends Controller
 {
-    use FiltrablePorTerritorioYNivel;
+    use FiltrablePorTerritorioYNivel, FiltrablePorCategoria;
 
     public function mapa(Request $request)
     {
@@ -617,9 +618,13 @@ class MapaController extends Controller
 
     public function filtrarAvanzado(Request $request)
     {
-        $query = Plantel::query()->with(['energia', 'drenaje', 'municipio', 'localidad', 'niveles']);
+        $query = Plantel::query()->with(['energia', 'drenaje', 'agua', 'obras', 'superficies', 'municipio', 'localidad', 'niveles', 'seguridad', 'sanitario']);
 
         $this->aplicarFiltrosTerritorialesYNivel($query, $request);
+
+        foreach (['energia', 'drenaje', 'agua', 'obras', 'superficie', 'accesibilidad', 'estado_conservacion', 'sanitario', 'seguridad'] as $categoria) {
+            $this->aplicarFiltrosPorCategoria($query, $request, $categoria);
+        }
 
         $query->whereNotNull('latitud')->whereNotNull('longitud');
 

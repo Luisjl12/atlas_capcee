@@ -4,6 +4,9 @@
 
 @section('content')
 
+@include('partials.multifiltro')
+
+
 <div class="card-header-custom">
     <a href="{{ route('dashboard.admin') }}" class="btn-icon-only">
         <i class="fas fa-arrow-left" style="font-size:1.5rem;"></i>
@@ -75,6 +78,13 @@
                     Aplicar filtros
                 </button>
                 <ul class="dropdown-menu">
+                    <li>
+                        <h6 class="dropdown-header">Filtro avanzado</h6>
+                    </li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalMultifiltro">Multifiltro</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
                     <li>
                         <h6 class="dropdown-header">Infraestructura</h6>
                     </li>
@@ -249,6 +259,8 @@
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
 
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
 <!--Script para graficar los mapas-->
 <script src="{{ asset('js/mapa_macroregiones.js') }}"></script>
 
@@ -279,6 +291,10 @@
 
 <!--script para filtrar por número y estado de sanitarios-->
 <script src="{{ asset('js/filtro_sanitarios.js') }}"></script>
+
+<!--script para el multifiltro-->
+<script src="{{ asset('js/filtro_multiple.js') }}"></script>
+
 
 
 <x-modal-filtros
@@ -393,5 +409,7 @@
     'rangosSuperficie' => $rangosSuperficie
     ])
 </x-modal-filtros>
+
+
 
 @endsection
