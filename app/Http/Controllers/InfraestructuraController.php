@@ -29,12 +29,12 @@ class InfraestructuraController extends Controller
     public function updateServicios(Request $request, $cct)
     {
         $validated = $request->validate([
-            'electricidad_contrato' => 'nullable|boolean',
-            'telefonia_fija' => 'nullable|boolean',
-            'internet_acceso' => 'nullable|boolean',
-            'gas_tipo' => 'nullable|string|max:255',
-            'internet_tipo' => 'nullable|string|max:255',
-            'observaciones' => 'nullable|string|max:255',
+            'electricidad_contrato' => 'required|boolean',
+            'telefonia_fija' => 'required|boolean',
+            'internet_acceso' => 'required|boolean',
+            'gas_tipo' => 'required|string|max:255',
+            'internet_tipo' => 'required|string|max:255',
+            'observaciones' => 'required|string|max:255',
         ]);
 
         $servicio = DetalleServicio::firstOrNew(['cct' => $cct]);
@@ -66,16 +66,16 @@ class InfraestructuraController extends Controller
     public function updateHidrosanitario(Request $request, $cct)
     {
         $validated = $request->validate([
-            'fuente_agua' => 'nullable|string|max:255',
-            'tipo_drenaje' => 'nullable|string|max:255',
-            'hidrosanitaria' => 'nullable|string|max:255',
-            'almacenamiento_agua' => 'nullable|string|max:255',
-            'tipo_drena' => 'nullable|string|max:255',
-            'sanitarios_hombres_wc' =>  'nullable|integer|min:0',
-            'sanitarios_hombres_lavabos' => 'nullable|integer|min:0',
-            'sanitarios_mujeres_wc' =>  'nullable|integer|min:0',
-            'sanitarios_mujeres_lavabos' =>  'nullable|integer|min:0',
-            'observaciones' => 'nullable|string|max:255',
+            'fuente_agua' => 'required|string|max:255',
+            'tipo_drenaje' => 'required|string|max:255',
+            'hidrosanitaria' => 'required|string|max:255',
+            'almacenamiento_agua' => 'required|string|max:255',
+            'tipo_drena' => 'required|string|max:255',
+            'sanitarios_hombres_wc' =>  'required|integer|min:0',
+            'sanitarios_hombres_lavabos' => 'required|integer|min:0',
+            'sanitarios_mujeres_wc' =>  'required|integer|min:0',
+            'sanitarios_mujeres_lavabos' =>  'required|integer|min:0',
+            'observaciones' => 'required|string|max:255',
 
         ]);
 

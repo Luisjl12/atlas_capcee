@@ -27,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
     formEnergia?.addEventListener('submit', function (e) {
         e.preventDefault();
 
-        //  Primero obtenemos los valores
+        
         const macroregionSelect = document.getElementById('energia-macroregion');
         const macroregion = macroregionSelect.value;
         const macroregionNombre = macroregionSelect.value !== '' ? macroregionSelect.options[macroregionSelect.selectedIndex].text : '';

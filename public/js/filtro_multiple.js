@@ -8,6 +8,7 @@ document.getElementById('btnAplicarFiltros').addEventListener('click', function 
             params[key] = value;
         }
     }
+    
 
     //Validacion de nivel academico y region obligatoria 
      const tieneRegion = params.macroregion || params.microregion || params.municipio;
@@ -28,6 +29,8 @@ document.getElementById('btnAplicarFiltros').addEventListener('click', function 
             const planteles = response.data.data;
             console.log('Resultados filtrados:', planteles);
             mostrarPlantelesEnMapa(planteles);
+            mostrarLeyendaFiltros(params);
+
         })
         .catch(error => {
             console.error('Error al aplicar filtros:', error);
@@ -37,7 +40,6 @@ document.getElementById('btnAplicarFiltros').addEventListener('click', function 
     modal.hide();
 });
 
-//  Función definida una sola vez
 function mostrarPlantelesEnMapa(planteles) {
     const visibles = planteles.filter(p => p.latitud && p.longitud);
     document.getElementById('contador-planteles-numero').textContent = visibles.length;
@@ -91,9 +93,71 @@ function mostrarPlantelesEnMapa(planteles) {
                 Estado: ${normalizarEstado(p.estatus_plantel)}<br>
                 Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
                 Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
-                <b>Infraestructura energética:</b> ${energiaTexto}<br>
                 <a href="/planteles/${p.id}" target="_blank">Para ver todos sus detalles da click aquí</a>
             `);
         }
     });
 }
+
+function mostrarLeyendaFiltros(params) {
+  const lista = document.getElementById('lista-filtros-activos');
+  lista.innerHTML = ''; // Limpia leyenda anterior
+
+  const etiquetas = {
+    nivel: 'Nivel educativo',
+    macroregion: 'Macroregión',
+    microregion: 'Microregión',
+    municipio: 'Municipio',
+    superficie: 'Superficie', 
+    suministro_energia: 'Tiene suministro eléctrico?',
+    energia_paneles_solares: 'Tiene paneles solares?',
+    energia_planta: 'Tiene planta eléctrica?',
+    proteccion_civil: 'Cuenta con dictamen de protección Civil?',
+    barda_completa: 'Tiene barda completa?',
+    estado_barda: 'Cual es el estado de la barda?',
+    estado_cerco: 'Cual es el estado del cerco?',
+    infraestructura_discapacidad: 'Cuenta con infraestructura para personas discapacitadas?', 
+    sin_infraestructura_discapacidad: 'El inmueble no cuenta con infraestructura para personas discapacitadas?', 
+    equipo_discapacidad_categoria: 'Cual es el nivel de equipamiento para discapacitados con el que se cuenta?', 
+    rehabilitacion_realizada: '¿Se han realizado obras de rehabilitación en los últimos cinco años?',
+    rehabilitacion_impermeabilizacion:'¿Obras de impermeabilización?', 
+    rehabilitacion_albanileria:'¿Obras de albañilería?' ,
+    rehabilitacion_pintura:'¿Rehabilitación con pintura general?',
+    rehabilitacion_red_hidraulica: '¿Obras en la red hidráulica?',
+    rehabilitacion_red_sanitaria:'¿Obras en la red sanitaria?',
+    rehabilitacion_esctructural:'¿Mejoras estructurales?',
+    obras_nuevas:'¿Obras nuevas en los últimos cinco años?',
+    construccion_educativa:'¿Construcción en espacios educativos?',
+    construccion_deportiva:'¿Construcción en espacios deportivos o recreativos?',
+    construccion_sanitaria:'¿Construcción en sanitarios?',
+    construccion_complementos:'¿Construcción de complementos?',
+    construccion_otro:'¿Otros tipos de construcción?',
+    agua_red_publica: '¿Cuenta con agua de red pública?', 
+    agua_pozo:'¿Tiene acceso a agua de pozo?', 
+    agua_cuerpo: '¿Utiliza agua de cuerpo natural?', 
+    agua_pipas: '¿Recibe agua por pipas?', 
+    agua_otro: '¿Existe otro tipo de suministro?', 
+    cisterna: '¿Dispone de cisterna?', 
+    tinacos: '¿Cuenta con tinacos?', 
+    tanque: '¿Tiene tanque de almacenamiento?', 
+    almacenamiento_otro: '¿Utiliza otro tipo de almacenamiento?', 
+  };
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (!etiquetas[key]) return;
+
+    const texto = (value === '1') ? 'Sí' : (value === '0') ? 'No' : value;
+    const li = document.createElement('li');
+    li.innerHTML = `<b>${etiquetas[key]}:</b> <span class="leyenda-badge">${texto}</span>`;
+    lista.appendChild(li);
+  });
+
+  document.getElementById('leyenda-filtros-activos').style.display = 'block';
+
+  document.getElementById('cerrar-leyenda-general')?.addEventListener('click', () => {
+    document.getElementById('leyenda-filtros-activos').style.display = 'none';
+  });
+}
+
+
+

@@ -240,6 +240,13 @@
                 </ul>
             </div>
 
+            <!--Contenedor de leyendas para el multifiltro-->
+            <div id="leyenda-filtros-activos" class="leyenda-general" style="display: none;">
+                <button id="cerrar-leyenda-general" class="cerrar-leyenda">✖</button>
+                <strong>Filtros aplicados:</strong>
+                <ul id="lista-filtros-activos" style="margin: 0; padding-left: 18px;"></ul>
+            </div>
+
             <!-- Contador de planteles -->
             <div id="contador-planteles" class="contador-planteles" style="display: none;">
                 <strong>Planteles encontrados:</strong> <span class="leyenda-badge" id="contador-planteles-numero">0</span>
@@ -247,7 +254,6 @@
         </div>
 
         <div id="map" style="height: 600px; border-radius: 8px; background: #fafafa;"></div>
-
     </div>
 </div>
 

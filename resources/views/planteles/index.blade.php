@@ -24,10 +24,7 @@
         </a>
     </div>
     @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-        <strong>¡Éxito!</strong> {{ session('success') }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
-    </div>
+    <div class="alert alert-success mt-2">{{ session('success') }}</div>
     @endif
 
     <div class="d-flex align-items-center gap-3 mb-4">

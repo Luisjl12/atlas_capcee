@@ -15,9 +15,7 @@
                     <i class="fas fa-file-upload"></i> Importar Datos
                 </h4>
             </a>
-            <a href="{{ asset('plantillas/guia_importar_datos.pdf') }}" download class="btn btn-danger">
-                <i class="fas fa-file-pdf"></i> Guia de Uso para Importar Datos
-            </a>
+
             <a href="{{ asset('plantillas/plantilla_datos.csv') }}" download class="btn btn-success">
                 <i class="fas fa-file-excel"></i> Descargar Plantilla CSV
             </a>
@@ -66,10 +64,10 @@
             <p>Esta herramienta permite importar datos de planteles desde un archivo CSV. Asegúrese de que el archivo tenga los encabezados correctos:</p>
 
             <ul>
-                <li><strong>CCT</strong> (obligatorio)</li>
-                <li><strong>NOMBRE_ESCUELA</strong> (obligatorio)</li>
-                <li><strong>NOMBRE MUNICIPIO</strong> (obligatorio)</li>
-                <li><strong>NOMBRE CORDE</strong> (obligatorio)</li>
+                <li><strong>CV_CCT</strong> (CCT-obligatorio)</li>
+                <li><strong>NOMBRECT</strong> (Nombre del plantel-obligatorio)</li>
+                <li><strong>C_NOM_MUN</strong> (Nombre del municipio-obligatorio)</li>
+                <li><strong>NOMBRE_CORDE</strong> (Nombre del corde-obligatorio)</li>
 
             </ul>
 
