@@ -79,6 +79,19 @@
                 </button>
                 <ul class="dropdown-menu">
                     <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li>
+                        <h6 class="dropdown-header">Búsqueda rápida</h6>
+                    </li>
+                    <li class="px-3">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control" id="input-cct" placeholder="Ingresa CCT">
+                            <button class="btn btn-primary" type="button" id="btn-buscar-cct">Buscar</button>
+                        </div>
+                    </li>
+
+                    <li>
                         <h6 class="dropdown-header">Filtro avanzado</h6>
                     </li>
                     <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalMultifiltro">Multifiltro</a></li>
@@ -301,6 +314,8 @@
 <!--script para el multifiltro-->
 <script src="{{ asset('js/filtro_multiple.js') }}"></script>
 
+<!--script para buscador rapido--->
+<script src="{{ asset('js/buscador_rapido.js') }}"></script>
 
 
 <x-modal-filtros

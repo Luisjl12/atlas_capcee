@@ -630,4 +630,25 @@ class MapaController extends Controller
 
         return response()->json(['data' => $query->get()]);
     }
+
+    public function buscarPorCCT($cct)
+    {
+        $plantel = Plantel::with(['municipio', 'localidad'])->where('cct', $cct)->first();
+
+        if (!$plantel) {
+            return response()->json(null);
+        }
+
+        return response()->json([
+            'latitud' => $plantel->latitud,
+            'longitud' => $plantel->longitud,
+            'nombre' => $plantel->nombre_escuela,
+            'cct' => $plantel->cct,
+            'estado' => $plantel->estatus_plantel,
+            'nivel_educativo' => $plantel->nivel_educativo,
+            'municipio' => $plantel->municipio->nombre_municipio ?? 'Sin municipio',
+            'localidad' => $plantel->localidad->nombre_localidad ?? 'Sin localidad',
+            'ficha_url' => route('planteles.show', ['id' => $plantel->id]),
+        ]);
+    }
 }

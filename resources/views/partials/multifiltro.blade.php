@@ -19,24 +19,24 @@
                             </h2>
                             <div id="collapseTerritorial" class="accordion-collapse collapse show">
                                 <div class="accordion-body fondo-territorial">
-                                    <label>Macroregión</label>
-                                    <select name="macroregion" class="form-select">
+                                    <label>¿Que macroregión desea filtrar?</label>
+                                    <select name="macroregion" id="macroregion" class="form-select">
                                         <option value="">-- Selecciona --</option>
                                         @foreach($macroregiones as $macro)
                                         <option value="{{ $macro->id }}">{{ $macro->nombre_macroregion }}</option>
                                         @endforeach
                                     </select>
 
-                                    <label class="mt-2">Microregión</label>
-                                    <select name="microregion" class="form-select">
+                                    <label class="mt-2">¿Que microregión desea filtrar?</label>
+                                    <select name="microregion" id="microregion" class="form-select">
                                         <option value="">-- Selecciona --</option>
                                         @foreach($microregiones as $micro)
                                         <option value="{{ $micro->id }}">{{ $micro->nombre_microregiones }}</option>
                                         @endforeach
                                     </select>
 
-                                    <label class="mt-2">Municipio</label>
-                                    <select name="municipio" class="form-select">
+                                    <label class="mt-2">¿Que municipio desea filtrar?</label>
+                                    <select name="municipio" id="municipio" class="form-select">
                                         <option value="">-- Selecciona --</option>
                                         @foreach($municipios as $muni)
                                         <option value="{{ $muni->id }}">{{ $muni->nombre_municipio }}</option>
@@ -55,7 +55,7 @@
                             </h2>
                             <div id="collapseNivel" class="accordion-collapse collapse">
                                 <div class="accordion-body fondo-territorial">
-                                    <label>Nivel</label>
+                                    <label>¿Que nivel escolar deseas filtrar?</label>
                                     <select name="nivel" class="form-select">
                                         <option value="">-- Selecciona --</option>
                                         @foreach($niveles as $nivel)
@@ -77,15 +77,15 @@
                                 <div class="accordion-body fondo-territorial">
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="suministro_energia" value="1">
-                                        <label class="form-check-label">Suministro de energía</label>
+                                        <label class="form-check-label">¿Cuenta con suministro de energia?</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="energia_paneles_solares" value="1">
-                                        <label class="form-check-label">Paneles solares</label>
+                                        <label class="form-check-label">¿Cuenta con paneles solares?</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="checkbox" name="energia_planta" value="1">
-                                        <label class="form-check-label">Planta eléctrica</label>
+                                        <label class="form-check-label">¿Cuenta con planta generadora de energia?</label>
                                     </div>
                                 </div>
                             </div>
@@ -100,7 +100,7 @@
                             </h2>
                             <div id="collapseSuperficie" class="accordion-collapse collapse">
                                 <div class="accordion-body fondo-territorial">
-                                    <label>Rango de superficie</label>
+                                    <label>¿Cual rango de superficie desea filtrar?</label>
                                     <select name="superficie" class="form-select">
                                         <option value="">-- Selecciona --</option>
                                         @foreach($rangosSuperficie as $rango)
@@ -120,7 +120,7 @@
                             </h2>
                             <div id="collapseAccesibilidad" class="accordion-collapse collapse">
                                 <div class="accordion-body fondo-territorial">
-                                    <label>Infraestructura para discapacidad</label><br>
+                                    <label>¿Cuenta con infraestructura para personas discapacitadas?</label><br>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="infraestructura_discapacidad" value="1">
                                         <label class="form-check-label">Sí</label>
@@ -130,7 +130,7 @@
                                         <label class="form-check-label">No</label>
                                     </div>
 
-                                    <label class="mt-3">Sin infraestructura para discapacidad</label><br>
+                                    <label class="mt-3">¿No cuenta con infraestructura para discapacitados?</label><br>
                                     <div class="form-check form-check-inline">
                                         <input class="form-check-input" type="radio" name="sin_infraestructura_discapacidad" value="1">
                                         <label class="form-check-label">Sí</label>
@@ -140,7 +140,7 @@
                                         <label class="form-check-label">No</label>
                                     </div>
 
-                                    <label class="mt-3">Nivel de equipamiento</label>
+                                    <label class="mt-3">¿Que nivel de equipamiento tiene?</label>
                                     <select name="equipo_discapacidad_categoria" class="form-select">
                                         <option value="">-- Selecciona --</option>
                                         <option value="ninguno">Sin equipo</option>

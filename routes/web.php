@@ -274,3 +274,5 @@ Route::get('/filtrar-accesibilidad', [MapaController::class, 'filtrarPlantelesAc
 Route::get('/filtrar-sanitarios', [MapaController::class, 'filtrarPlantelesSanitarios']);
 
 Route::get('/filtrar-avanzado', [MapaController::class, 'filtrarAvanzado']);
+
+Route::get('/buscar-cct/{cct}', [MapaController::class, 'buscarPorCCT']);

@@ -205,7 +205,7 @@ trait FiltrablePorCategoria
             ],
 
             'estado_conservacion' => [
-                'estado_red_hidraulico',
+                'estado_red_hidraulica',
                 'estado_instalacion_sanitaria',
                 'estado_instalacion_electrica',
             ],

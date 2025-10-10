@@ -1,7 +1,29 @@
-document.getElementById('btnAplicarFiltros').addEventListener('click', function () {
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btnAplicarFiltros').addEventListener('click', function () {
     const form = document.getElementById('formMultifiltro');
     const formData = new FormData(form);
     const params = {};
+
+    // Extraer nombres visibles de regiones
+    const macroregionSelect = document.getElementById('macroregion');
+    const microregionSelect = document.getElementById('microregion');
+    const municipioSelect = document.getElementById('municipio');
+
+    const macroregionNombre = macroregionSelect?.value !== ''
+     ? macroregionSelect.options[macroregionSelect.selectedIndex].text
+     : '';
+    const microregionNombre = microregionSelect?.value !== ''
+      ? microregionSelect.options[microregionSelect.selectedIndex].text
+    : '';
+    const municipioNombre = municipioSelect?.value !== ''
+     ? municipioSelect.options[municipioSelect.selectedIndex].text
+     : '';
+
+    const nombresLegibles = {
+     macroregion: macroregionNombre,
+     microregion: microregionNombre,
+    municipio: municipioNombre
+        };
 
     for (const [key, value] of formData.entries()) {
         if (value !== '' && value !== null) {
@@ -29,7 +51,7 @@ document.getElementById('btnAplicarFiltros').addEventListener('click', function 
             const planteles = response.data.data;
             console.log('Resultados filtrados:', planteles);
             mostrarPlantelesEnMapa(planteles);
-            mostrarLeyendaFiltros(params);
+            mostrarLeyendaFiltros(params, nombresLegibles);
 
         })
         .catch(error => {
@@ -99,26 +121,39 @@ function mostrarPlantelesEnMapa(planteles) {
     });
 }
 
-function mostrarLeyendaFiltros(params) {
+function mostrarLeyendaFiltros(params, nombresLegibles={}) {
   const lista = document.getElementById('lista-filtros-activos');
   lista.innerHTML = ''; // Limpia leyenda anterior
 
+  const camposNumericos = [
+    'banos_hombres_min',
+    'banos_mujeres_min',
+    'lavamanos_min',
+    'tomas_bebederos_min'
+  ];
+    //Estas etiquetas sirven para mostrar los filtros aplicados
   const etiquetas = {
+    //Regiones y nivel 
     nivel: 'Nivel educativo',
     macroregion: 'Macroregión',
     microregion: 'Microregión',
     municipio: 'Municipio',
-    superficie: 'Superficie', 
-    suministro_energia: 'Tiene suministro eléctrico?',
-    energia_paneles_solares: 'Tiene paneles solares?',
-    energia_planta: 'Tiene planta eléctrica?',
-    proteccion_civil: 'Cuenta con dictamen de protección Civil?',
-    barda_completa: 'Tiene barda completa?',
-    estado_barda: 'Cual es el estado de la barda?',
-    estado_cerco: 'Cual es el estado del cerco?',
-    infraestructura_discapacidad: 'Cuenta con infraestructura para personas discapacitadas?', 
-    sin_infraestructura_discapacidad: 'El inmueble no cuenta con infraestructura para personas discapacitadas?', 
-    equipo_discapacidad_categoria: 'Cual es el nivel de equipamiento para discapacitados con el que se cuenta?', 
+    //Superficie
+    superficie: '¿Cual es su superficie en metros cuadrados?', 
+    //Suministro de energia
+    suministro_energia: '¿Tiene suministro eléctrico?',
+    energia_paneles_solares: '¿Tiene paneles solares?',
+    energia_planta: '¿Tiene planta eléctrica?',
+    //Seguridad
+    proteccion_civil: '¿Cuenta con dictamen de protección Civil?',
+    barda_completa: '¿Tiene barda completa?',
+    estado_barda: '¿Cual es el estado de la barda?',
+    estado_cerco: '¿Cual es el estado del cerco?',
+    //Accesibilidad
+    infraestructura_discapacidad: '¿Cuenta con infraestructura para personas discapacitadas?', 
+    sin_infraestructura_discapacidad: '¿El inmueble no cuenta con infraestructura para personas discapacitadas?', 
+    equipo_discapacidad_categoria: '¿Cual es el nivel de equipamiento para discapacitados con el que se cuenta?', 
+    //Obras realizadas
     rehabilitacion_realizada: '¿Se han realizado obras de rehabilitación en los últimos cinco años?',
     rehabilitacion_impermeabilizacion:'¿Obras de impermeabilización?', 
     rehabilitacion_albanileria:'¿Obras de albañilería?' ,
@@ -132,6 +167,7 @@ function mostrarLeyendaFiltros(params) {
     construccion_sanitaria:'¿Construcción en sanitarios?',
     construccion_complementos:'¿Construcción de complementos?',
     construccion_otro:'¿Otros tipos de construcción?',
+    //Agua
     agua_red_publica: '¿Cuenta con agua de red pública?', 
     agua_pozo:'¿Tiene acceso a agua de pozo?', 
     agua_cuerpo: '¿Utiliza agua de cuerpo natural?', 
@@ -141,12 +177,35 @@ function mostrarLeyendaFiltros(params) {
     tinacos: '¿Cuenta con tinacos?', 
     tanque: '¿Tiene tanque de almacenamiento?', 
     almacenamiento_otro: '¿Utiliza otro tipo de almacenamiento?', 
+    //Baños
+    estado_banos: '¿Cual es el estado del baño?', 
+    banos_hombres_min: '¿Cual es la cantidad minima de baños de hombres', 
+    banos_mujeres_min: '¿Cual es la cantidad minima de baños de mujeres', 
+    lavamanos_min: '¿Cual es la cantidad minima de lavamanos?', 
+    estado_lavamanos: '¿Cual es el estado de los lavamanos?', 
+    tomas_bebederos_min: '¿Cual es la cantidad minima de bebederos?', 
+    estado_bebederos: '¿Cual es el estado de los bebederos?', 
+    //Drenaje
+    drenaje_publico: '¿Cuenta con drenaje público?', 
+    fosa_septica: '¿Cuenta con fosa septica?', 
+    planta_tratamiento: '¿Cuenta con planta de tratamiento para aguas negras?', 
+    descarga_otro: '¿Cuenta con otro tipo de descarga?', 
+    separacion_aguas: '¿Cuenta con sepacion de aguas negras?', 
+    //Estados de conservacion
+    estado_red_hidraulica: '¿Cual es el estado de la red hidraulica', 
+    estado_instalacion_sanitaria: '¿Cual es el estado de la instalación sanitaria?', 
+    estado_instalacion_electrica: '¿Cual es el estado de la instalación electrica?', 
   };
 
   Object.entries(params).forEach(([key, value]) => {
     if (!etiquetas[key]) return;
 
-    const texto = (value === '1') ? 'Sí' : (value === '0') ? 'No' : value;
+    const texto = nombresLegibles[key] ||
+              (camposNumericos.includes(key) ? value :
+              value === '1' ? 'Sí' :
+              value === '0' ? 'No' :
+              value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
+
     const li = document.createElement('li');
     li.innerHTML = `<b>${etiquetas[key]}:</b> <span class="leyenda-badge">${texto}</span>`;
     lista.appendChild(li);
@@ -158,6 +217,6 @@ function mostrarLeyendaFiltros(params) {
     document.getElementById('leyenda-filtros-activos').style.display = 'none';
   });
 }
-
+});
 
 
