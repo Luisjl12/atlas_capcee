@@ -22,14 +22,11 @@ default => ['fas fa-file', 'text-dark'],
 
 
 
-<div class="container mt-4">
-    <div class="card-header bg-white border-bottom mb-4">
-        <a href="{{ route('planteles.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-            <h4 class="mb-0">
-                <i class="fas fa-arrow-left "></i>
-                <i class="fas fa-school me-2"></i> {{ $plantel->nombre_escuela }}
-                <small class="text-muted">(CCT: {{ $plantel->cct }})</small>
-            </h4>
+    <div class="card-header">
+        <a href="{{ route('planteles.index') }}" class="btn-icon-only">
+            <i class="fas fa-arrow-left "></i>
+            <h3><i class="fas fa-school me-2 mb-3"></i> {{ $plantel->nombre_escuela }}
+                <small class="text-muted">(CCT: {{ $plantel->cct }})</small></h3>
         </a>
 
     </div>
@@ -42,7 +39,7 @@ default => ['fas fa-file', 'text-dark'],
         <span class="nav-tab" data-step="4">Archivos</span>
         <span class="nav-tab" data-step="5">Galerias</span>
         <span class="nav-tab" data-step="6">Ubicacion en el mapa</span>
-        <span class="nav-tab" data-step="7">Detalles avanzados del plantel</span>
+        <span class="nav-tab" data-step="7">Detalles avanzados</span>
     </div>
 
     @if (session('success'))
@@ -71,9 +68,11 @@ default => ['fas fa-file', 'text-dark'],
                 <div class="data-pair"><label>Sostenimiento:</label><span>{{ $plantel->sostenimiento }}</span></div>
             </div>
 
-            <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-primary mt-3">
+            <div class= "d-flex flex-column flex-md-row">
+                <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn-custom btn-primary mt-3">
                 <i class=" fas fa-edit"></i> Editar Ficha Base
-            </a>
+                </a>
+            </div>
         </div>
 
 
@@ -103,7 +102,7 @@ default => ['fas fa-file', 'text-dark'],
                     </select>
                 </div>
                 <div class="col-md-2 d-flex align-items-end">
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn-custom btn-success">
                         <i class="fas fa-plus"></i> Agregar
                     </button>
                 </div>
@@ -151,7 +150,7 @@ default => ['fas fa-file', 'text-dark'],
                             <td>
                                 <form action="{{ route('espacios.destroy', $espacio->id) }}" method="POST" style="display:inline;">
                                     @csrf @method('DELETE')
-                                    <button type="button" class="btn btn-sm btn-danger"
+                                    <button type="button" class="btn-custom btn-sm btn-danger"
                                         onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este espacio?', '{{ route('espacios.destroy', $espacio->id) }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -173,7 +172,7 @@ default => ['fas fa-file', 'text-dark'],
                                     <div class="w-100 mt-2">
                                         <form action="{{ route('espacios.destroy', $espacio->id) }}" method="POST">
                                             @csrf @method('DELETE')
-                                            <button type="button" class="btn btn-danger btn-sm"
+                                            <button type="button" class="btn-custom btn-danger btn-sm"
                                                 onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este espacio?', '{{ route('espacios.destroy', $espacio->id) }}')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -196,14 +195,14 @@ default => ['fas fa-file', 'text-dark'],
             <h4>Infraestructura y Servicios</h4>
             <div class="row mt-3">
                 <div class="col-12 mb-3">
-                    <h5><i class="fas fa-faucet" style="color:var(--color-info);"></i> Hidrosanitaria</h5>
+                    <h5 style="font-weight:700;"><i class="fas fa-faucet" style="color:var(--color-info);"></i> Hidrosanitaria</h5>
                     <div class="data-grid">
                         <div class="data-pair"><label>Fuente de Agua:</label><span> {{ $hidrosanitario->fuente_agua ?? 'No disponible' }}</span></div>
                         <div class="data-pair"><label>Tipo de Drenaje:</label><span> {{ $hidrosanitario->tipo_drenaje ?? 'No disponible' }}</span></div>
                     </div>
                 </div>
                 <div class="col-12 mb-3">
-                    <h5><i class="fas fa-bolt" style="color:var(--color-amarillo-primario);"></i>Servicios Básicos</h5>
+                    <h5 style="font-weight:700;"><i class="fas fa-bolt" style="color:var(--color-amarillo-primario);"></i> Servicios Básicos</h5>
                     <div class="data-grid">
                         <div class="data-pair">
                             <label>Contrato Electricidad:</label>
@@ -229,9 +228,11 @@ default => ['fas fa-file', 'text-dark'],
                     </div>
                 </div>
             </div>
-            <a href="{{ route('infraestructura.editar_completa', $plantel->cct) }}" class="btn btn-primary mt-3">
-                <i class="fas fa-edit"></i> Editar Infraestructura y Servicios
-            </a>
+            <div class= "d-flex flex-column flex-md-row">
+                <a href="{{ route('infraestructura.editar_completa', $plantel->cct) }}" class="btn-custom btn-primary mt-3">
+                    <i class="fas fa-edit"></i> Editar Infraestructura y Servicios
+                </a>
+            </div>
         </div>
 
 
@@ -259,10 +260,11 @@ default => ['fas fa-file', 'text-dark'],
             @else
             <p>No hay información de Protección Civil disponible para este plantel.</p>
             @endif
-
-            <a href="{{ route('planteles.editar_proteccion_civil', $plantel->id) }}" class="btn btn-primary mt-3">
-                <i class="fas fa-edit"></i> Editar Protección Civil
-            </a>
+            <div class= "d-flex flex-column flex-md-row">
+                <a href="{{ route('planteles.editar_proteccion_civil', $plantel->id) }}" class="btn-custom btn-primary mt-3">
+                    <i class="fas fa-edit"></i> Editar Protección Civil
+                </a>
+            </div>
         </div>
 
         <!--Archivos-->
@@ -276,11 +278,11 @@ default => ['fas fa-file', 'text-dark'],
                 <input type="hidden" name="id_plantel" value="{{ $plantel->id }}">
 
                 <div class="row">
-                    <div class="mb-3">
+                    <div class="col-12 col-md-6 mb-3">
                         <label for="archivo" class="form-label">Seleccionar archivo</label>
                         <input type="file" class="form-control" name="archivo" required>
                     </div>
-                    <div class="mb-3">
+                    <div class="col-12 col-md-6 mb-3">
                         <label for="tipo_documento" class="form-label">Tipo de documento</label>
                         <select name="tipo_documento" id="tipo_documento" class="form-select" required>
                             <option value="">Seleccione una opción</option>
@@ -300,7 +302,7 @@ default => ['fas fa-file', 'text-dark'],
                     <textarea name="descripcion" class="form-control"></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="btn-custom btn-success">
                     <i class="fas fa-upload"></i> Subir
                 </button>
             </form>
@@ -333,7 +335,8 @@ default => ['fas fa-file', 'text-dark'],
                                     <div>
                                         @if($esImagen)
                                         <a href="javascript:void(0);" onclick="verDetallesFoto(
-                                     '{{ e(Storage::url($archivo->ruta_archivo)) }}',
+                                     '{{ asset('archivos_plantel/' . $archivo->ruta_archivo) }}
+                                            ,
                                      '{{ e($archivo->cct) }}',
                                      '{{ e($plantel->nombre_escuela) }}',
                                      '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
@@ -362,14 +365,17 @@ default => ['fas fa-file', 'text-dark'],
                         <tr class="d-none d-md-table-row">
                             <td>
                                 @if($esImagen)
-                                <a href="javascript:void(0);" onclick="verDetallesFoto(
-                            '{{ e(Storage::url($archivo->ruta_archivo)) }}',
-                            '{{ e($archivo->cct) }}',
-                            '{{ e($plantel->nombre_escuela) }}',
-                            '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
+                                <a href="javascript:void(0);" 
+                                onclick="verDetallesFoto(
+                            '{{ asset("archivos_plantel/" . $archivo->ruta_archivo) }}',
+                             '{{ e($archivo->cct) }}',
+                             '{{ e($plantel->nombre_escuela) }}',
+                             '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
                             '{{ e($archivo->descripcion) }}',
-                            '{{ e($archivo->fecha_subido) }}'
-                        )" style="text-decoration: none;">
+                             '{{ e($archivo->fecha_subido) }}'
+                            )"
+
+                        style="text-decoration: none;">
                                     <i class="{{ $icono }} {{ $color }}"></i>
                                     {{ $archivo->nombre_archivo_original }}
                                 </a>
@@ -386,7 +392,7 @@ default => ['fas fa-file', 'text-dark'],
                             <td>
                                 <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST">
                                     @csrf @method('DELETE')
-                                    <button type="button" class="btn btn-danger btn-sm"
+                                    <button type="button" class="btn-custom btn-danger btn-sm"
                                         onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este archivo?', '{{ route('archivos.destroy', $archivo->id) }}')">
                                         <i class="fas fa-trash"></i>
                                     </button>
@@ -403,18 +409,19 @@ default => ['fas fa-file', 'text-dark'],
                                         <strong>Archivo:</strong>
                                         @if($esImagen)
                                         <a href="javascript:void(0);" onclick="verDetallesFoto(
-                                      '{{ e(Storage::url($archivo->ruta_archivo)) }}',
-                                      '{{ e($archivo->cct) }}',
-                                      '{{ e($plantel->nombre_escuela) }}',
-                                      '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
-                                      '{{ e($archivo->descripcion) }}',
+                                         '{{ asset("archivos_plantel/" . $archivo->ruta_archivo) }}',
+                                       '{{ e($archivo->cct) }}',
+                                       '{{ e($plantel->nombre_escuela) }}',
+                                          '{{ e($archivo->usuario->nombre ?? 'Desconocido') }}',
+                                       '{{ e($archivo->descripcion) }}',
                                       '{{ e($archivo->fecha_subido) }}'
-                                        )" class="text-decoration-none">
-                                            <i class="{{ $icono }} {{ $color }}"></i>
-                                            {{ $archivo->nombre_archivo_original }}
-                                        </a>
+                                        )" class="text-decoration-none" style="color: inherit; font-weight: normal;">
+                                    <i class="{{ $icono }} {{ $color }}"></i>
+                                    {{ $archivo->nombre_archivo_original }}
+                                    </a>
+
                                         @else
-                                        <a href="{{ route('archivos-plantel.visualizar', $archivo->id) }}" target="_blank" class="text-decoration-none">
+                                        <a href="{{ route('archivos-plantel.visualizar', $archivo->id) }}" target="_blank" class="text-decoration-none"  style="color: inherit; font-weight: normal;">
                                             <i class="{{ $icono }} {{ $color }}"></i>
                                             {{ $archivo->nombre_archivo_original }}
                                         </a>
@@ -433,7 +440,7 @@ default => ['fas fa-file', 'text-dark'],
                                     <div class="w-100 mt-2">
                                         <form action="{{ route('archivos.destroy', $archivo->id) }}" method="POST">
                                             @csrf @method('DELETE')
-                                            <button type="button" class="btn btn-danger btn-sm"
+                                            <button type="button" class="btn-custom btn-danger btn-sm"
                                                 onclick="mostrarModalConfirmacion('¿Estás seguro de eliminar este archivo?', '{{ route('archivos.destroy', $archivo->id) }}')">
                                                 <i class="fas fa-trash"></i>
                                             </button>
@@ -824,22 +831,22 @@ default => ['fas fa-file', 'text-dark'],
     <!--Modal para confirmación-->
     <div id="modalConfirmacion" class="modal-overlay" style="display:none;">
         <div class="modal-content">
-            <h3><i class="fas fa-exclamation-triangle"></i> Confirmación</h3>
+            <h5><i class="fas fa-exclamation-triangle"></i> Confirmación</h5>
             <p id="mensajeConfirmacion">¿Estás seguro de continuar?</p>
             <div class="modal-actions">
-                <button id="btnCancelar" class="btn-cancelar">Cancelar</button>
-                <a id="btnEliminar" class="btn btn-danger">Eliminar</a>
+                <button id="btnCancelar" class="btn-custom btn-cancelar">Cancelar</button>
+                <a id="btnEliminar" class="btn-custom btn-danger">Eliminar</a>
             </div>
         </div>
     </div>
 
     <div class="modal fade" id="fotoModal" tabindex="-1" aria-labelledby="fotoModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-contenido">
 
                 {{-- Encabezado con botones --}}
                 {{-- Botón pantalla completa a la izquierda --}}
-                <button id="btnPantallaCompleta" class="btn btn-outline-light" onclick="togglePantallaCompleta()" title="Pantalla completa">
+                <button id="btnPantallaCompleta" class="btn-custom btn-outline-light" onclick="togglePantallaCompleta()" title="Pantalla completa">
                     <i id="iconPantallaCompleta" class="fas fa-expand"></i>
                 </button>
 
@@ -861,5 +868,3 @@ default => ['fas fa-file', 'text-dark'],
             </div>
         </div>
     </div>
-
-</div>

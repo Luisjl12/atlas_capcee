@@ -5,7 +5,7 @@
 
 <div class="container mt-4">
     <div class="dashboard-welcome card-header-custom">
-        <h2><i class="fas fa-tachometer-alt"></i><strong> Panel Principal</strong></h2>
+        <h2><i class="fas fa-tachometer-alt"></i> Panel Principal</h2>
     </div>
 
     <div class="card-body-custom pa-4">
@@ -27,6 +27,9 @@
                 <div class="columna-acciones">
                     <a href="{{route('busqueda.avanzada')}}" class="accion-card green">
                         <i class="fas fa-search"></i> Buscador Avanzado
+                    </a>
+                    <a href="{{route('mapa.vista')}}" class="accion-card red">
+                        <i class="fas fa-map"></i> Mapa de planteles
                     </a>
                 </div>
             </div>

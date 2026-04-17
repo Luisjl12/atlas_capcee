@@ -12,8 +12,13 @@ class UsuarioController extends Controller
 {
     public function index()
     {
-        $usuarios = Usuario::with('rol')->paginate(10);
-        return view('gestion_usuarios', compact('usuarios'));
+         $usuarios = Usuario::with('rol')
+        ->whereHas('rol', function ($q) {
+            $q->whereNotIn('nombre_rol', ['DIRECTOR REPORTE', 'ADMINISTRADOR PRINCIPAL']);
+        })
+        ->paginate(10);
+
+         return view('gestion_usuarios', compact('usuarios'));
     }
     //Controlador para buscar usuarios registrado mediante su nombre o su correo electronico
     public function buscar(Request $request)
@@ -37,7 +42,7 @@ class UsuarioController extends Controller
 
     public function create()
     {
-        $roles = Role::all(); // para el select
+            $roles = Role::whereNotIn('nombre_rol', ['DIRECTOR REPORTE', 'ADMINISTRADOR PRINCIPAL'])->get();
         return view('create', compact('roles'));
     }
     //Crear usuarios
@@ -67,7 +72,7 @@ class UsuarioController extends Controller
     public function edit($id)
     {
         $usuario = Usuario::findOrFail($id);
-        $roles = Role::all();
+        $roles = Role::whereNotIn('nombre_rol', ['DIRECTOR REPORTE', 'ADMINISTRADOR PRINCIPAL'])->get(); 
         return view('edit', compact('usuario', 'roles'));
     }
 

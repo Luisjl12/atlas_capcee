@@ -17,48 +17,53 @@
 @includeIf('usuarios.partials.modal_eliminar')
 
 
-
-<div class="container mt-4">
-
     {{-- Encabezado con botón de regreso y agregar --}}
-    <div class="card-header-custom d-flex justify-content-between align-items-center mb-3">
-        <a href="{{ route('dashboard.admin') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-            <h4 class="mb-4">
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-users-cog me-2"></i> Gestión de Usuarios
-            </h4>
+    <div class="card-header-custom">
+        @php
+        use App\Helpers\RoleHelper;
+        @endphp
+        <a href="{{RoleHelper::gestionUsuarios(session('role_id')) }}" class="btn-icon-only">
+            <i class="fas fa-arrow-left"></i>
+            <h2><i class="fas fa-users-cog me-2"></i> Gestión de Usuarios</h2>
         </a>
-        <a href="{{ route('usuarios.create') }}" class="btn btn-success">
+        <a href="{{ route('usuarios.create') }}" class="btn-custom btn-success">
             <i class="fas fa-plus"></i> Agregar Usuario
         </a>
     </div>
 
-
-
     {{-- Buscador --}}
-    <div class="position-relative mt-3">
-        <i class="fas fa-search position-absolute" style="top: 50%; left: 15px; transform: translateY(-50%); color: var(--color-vino-primario);"></i>
-        <input type="text" id="buscar" class="form-control ps-5" placeholder="Buscar usuario por nombre o correo...">
+    <div class="buscador-container">
+        <div class="position-relative">
+            <i class="fas fa-search position-absolute" style="top: 50%; left: 15px; transform: translateY(-50%); color: var(--color-vino-primario);"></i>
+            <input type="text" id="buscar" class="form-control ps-5" placeholder="Buscar usuario por nombre o correo...">
+        </div>
     </div>
 
     {{-- Contenedor dinámico --}}
     <div id="tabla-usuarios">
         @include('partials.tabla_usuarios', ['usuarios' => $usuarios])
     </div>
+    
+    {{-- Paginación --}}
+    @if(method_exists($usuarios, 'links'))
+    <nav class="pagination-container" aria-label="Navegación de páginas">
+        <ul class="pagination">
+            <li class="page-item ">
+                {{ $usuarios->links('vendor.pagination.mi_paginacion') }}
+            </li>
+        </ul>
+    </nav>
+    @endif
 
-
-
-
-</div>
 
 <!--Modal para confirmación-->
 <div id="modalConfirmacion" class="modal-overlay" style="display:none;">
     <div class="modal-content">
-        <h3><i class="fas fa-exclamation-triangle"></i> Confirmación</h3>
+        <h5><i class="fas fa-exclamation-triangle"></i> Confirmación</h5>
         <p id="mensajeConfirmacion">¿Estás seguro de continuar?</p>
         <div class="modal-actions">
-            <button id="btnCancelar" class="btn-cancelar">Cancelar</button>
-            <a id="btnEliminar" class="btn btn-danger">Eliminar</a>
+            <button id="btnCancelar" class="btn-custom btn-cancelar">Cancelar</button>
+            <a id="btnEliminar" class="btn-custom btn-danger">Eliminar</a>
         </div>
     </div>
 </div>

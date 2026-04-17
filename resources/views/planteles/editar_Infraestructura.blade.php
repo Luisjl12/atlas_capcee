@@ -3,15 +3,13 @@
 @section('title', 'Agregar Plantel')
 
 @section('content')
-<div class="container mt-4">
 
-    <div class="card-header bg-white border-bottom mb-4">
-        <a href="{{ route('planteles.show', $plantel->id) }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-            <h4 class="mb-0">
-                <i class="fas fa-arrow-left "></i>
-                <i class="fas fa-tint"></i> Editar Servicios: {{ $plantel->nombre_escuela }}
-                <small class="text-muted">(CCT: {{ $plantel->cct }})</small>
-            </h4>
+
+    <div class="card-header">
+        <a href="{{ route('planteles.show', $plantel->id) }}" class="btn-icon-only">
+            <i class="fas fa-arrow-left "></i>
+            <h3><i class="fas fa-tint"></i> Editar Servicios: {{ $plantel->nombre_escuela }}
+            <small class="text-muted">(CCT: {{ $plantel->cct }})</small></h3>
         </a>
     </div>
     @if(session('success'))
@@ -103,7 +101,7 @@
                     <textarea name="observaciones" class="form-control" rows="2">{{ old('observaciones', $hidrosanitario->observaciones ?? '') }}</textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Hidrosanitario</button>
+                <button type="submit" class="btn-custom btn-primary"><i class="fas fa-save"></i> Guardar Hidrosanitario</button>
 
             </div>
         </form>
@@ -137,6 +135,12 @@
                             {{ old('internet_acceso', $servicio->internet_acceso ?? 0) ? 'checked' : '' }}>
                         <label> Acceso a Internet</label>
                     </div>
+                    <div class="form-group col-md-6">
+                     <label>Tiene computadoras:</label>
+                     <p class="form-control-plaintext">
+                      {{ $servicio->tiene_computadoras ?? 'No registrado' }}
+                    </p>
+                    </div>
                 </div>
 
                 <div class="row mt-3">
@@ -159,14 +163,14 @@
                     <label>Observaciones de Servicios:</label>
                     <textarea name="observaciones" class="form-control" rows="2">{{ old('observaciones', $servicio->observaciones ?? '') }}</textarea>
                 </div>
+                
 
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Servicios</button>
+                <button type="submit" class="btn-custom btn-primary"><i class="fas fa-save"></i> Guardar Servicios</button>
 
             </div>
 
         </form>
     </div>
-</div>
 
 @push('scripts')
 <!--Script para navegacion de tabs-->

@@ -1,222 +1,253 @@
+
 document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('btnAplicarFiltros').addEventListener('click', function () {
-    const form = document.getElementById('formMultifiltro');
-    const formData = new FormData(form);
-    const params = {};
+  // Ayuda a atrapar errores no esperados
+  window.addEventListener('error', (e) => {
+    console.error('[GLOBAL ERROR]', e.message, 'en', e.filename + ':' + e.lineno);
+  });
 
-    // Extraer nombres visibles de regiones
-    const macroregionSelect = document.getElementById('macroregion');
-    const microregionSelect = document.getElementById('microregion');
-    const municipioSelect = document.getElementById('municipio');
+  console.log('[DEBUG] DOM completamente cargado');
 
-    const macroregionNombre = macroregionSelect?.value !== ''
-     ? macroregionSelect.options[macroregionSelect.selectedIndex].text
-     : '';
-    const microregionNombre = microregionSelect?.value !== ''
-      ? microregionSelect.options[microregionSelect.selectedIndex].text
-    : '';
-    const municipioNombre = municipioSelect?.value !== ''
-     ? municipioSelect.options[municipioSelect.selectedIndex].text
-     : '';
+  // Helpers
+  const qs = sel => document.querySelector(sel);
+  const g = id => document.getElementById(id);
 
-    const nombresLegibles = {
-     macroregion: macroregionNombre,
-     microregion: microregionNombre,
-    municipio: municipioNombre
-        };
+  // Comprobar existencia de elementos clave
+  const form = g('formMultifiltro');
+  const btnAplicar = g('btnAplicarFiltros');
+  const btnLimpiar = g('btnLimpiarFiltros');
 
-    for (const [key, value] of formData.entries()) {
-        if (value !== '' && value !== null) {
-            params[key] = value;
+  if (!form) console.warn('[DEBUG] #formMultifiltro no encontrado en el DOM');
+  if (!btnAplicar) console.warn('[DEBUG] #btnAplicarFiltros no encontrado en el DOM');
+  if (!btnLimpiar) console.warn('[DEBUG] #btnLimpiarFiltros no encontrado en el DOM');
+
+  // ---------- Funciones auxiliares ----------
+  function normalizarEstado(estado) {
+    estado = (estado || '').toLowerCase().trim();
+    return estado === 'en_revision' ? 'revision' : estado;
+  }
+
+  function crearIconoPorEstado(estado) {
+    return L.divIcon({
+      className: 'custom-marker',
+      iconSize: [30, 30],
+      iconAnchor: [15, 30],
+      popupAnchor: [0, -30],
+      html: `<i class="bi bi-geo-alt-fill marker-icon ${normalizarEstado(estado)}"></i>`
+    });
+  }
+
+  function limpiarMarcadoresMapa() {
+    if (typeof map !== 'undefined' && map && typeof map.eachLayer === 'function') {
+      map.eachLayer(layer => {
+        if (layer instanceof L.Marker) map.removeLayer(layer);
+      });
+      console.log('[DEBUG] Marcadores eliminados del mapa');
+    } else {
+      console.warn('[DEBUG] map no definido o no tiene eachLayer');
+    }
+  }
+
+  // ---------- Mostrar planteles en mapa ----------
+  function mostrarPlantelesEnMapa(planteles) {
+    try {
+      if (!Array.isArray(planteles)) {
+        console.warn('[DEBUG] planteles no es array:', planteles);
+        return;
+      }
+
+      const visibles = planteles.filter(p => p.latitud && p.longitud);
+      const contadorNumero = g('contador-planteles-numero');
+      const contador = g('contador-planteles');
+
+      if (contadorNumero) contadorNumero.textContent = visibles.length;
+      if (contador) contador.style.display = 'block';
+
+      if (visibles.length === 0) {
+        alert('No se encontraron planteles con los filtros seleccionados.');
+        limpiarMarcadoresMapa();
+        if (contador) contador.style.display = 'none';
+        return;
+      }
+
+      limpiarMarcadoresMapa();
+
+      visibles.forEach(p => {
+        const niveles = Array.isArray(p.niveles)
+          ? p.niveles.map(n => (n.nivel || '').replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
+          : 'Sin nivel registrado';
+
+        if (p.latitud && p.longitud && !isNaN(parseFloat(p.latitud)) && !isNaN(parseFloat(p.longitud))) {
+          L.marker([parseFloat(p.latitud), parseFloat(p.longitud)], {
+            icon: crearIconoPorEstado(p.estatus_plantel)
+          }).addTo(map).bindPopup(`
+            <b>${p.nombre_escuela || '—'}</b><br>
+            CCT: ${p.cct || '—'}<br>
+            <b>Nivel educativo:</b> ${niveles}<br>
+            Estado: ${normalizarEstado(p.estatus_plantel)}<br>
+            Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
+            Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
+            <a href="/planteles/${p.id}" target="_blank">Ver detalles</a>
+          `);
         }
+      });
+
+      // ocultar contador si se desea (aquí lo dejamos visible)
+    } catch (err) {
+      console.error('[ERROR mostrarPlantelesEnMapa]', err);
     }
-    
+  }
+  
 
-    //Validacion de nivel academico y region obligatoria 
-     const tieneRegion = params.macroregion || params.microregion || params.municipio;
-    const tieneNivel = params.nivel;
-
-    if (!tieneRegion) {
-        alert('Debes seleccionar al menos una región (macroregión, microregión o municipio).');
+  // ---------- Mostrar leyenda ----------
+  function mostrarLeyendaFiltros(params = {}, nombresLegibles = {}) {
+    try {
+      const lista = g('lista-filtros-activos');
+      if (!lista) {
+        console.warn('[DEBUG] #lista-filtros-activos no encontrado');
         return;
-    }
+      }
+      lista.innerHTML = '';
 
-    if (!tieneNivel) {
-        alert('Debes seleccionar un nivel educativo antes de aplicar los filtros.');
-        return;
-    }
+      const camposNumericos = ['banos_hombres_min','banos_mujeres_min','lavamanos_min','tomas_bebederos_min'];
+      const etiquetas = {
+        nivel: 'Nivel educativo',
+        macroregion: 'Macroregión',
+        microregion: 'Microregión',
+        municipio: 'Municipio',
+        suministro_energia: '¿Tiene suministro eléctrico?',
+        energia_paneles_solares: '¿Tiene paneles solares?',
+        energia_planta: '¿Tiene planta eléctrica?',
+        // ... (mantén el resto de etiquetas si las necesitas)
+      };
 
-    axios.get('/filtrar-avanzado', { params })
-        .then(response => {
-            const planteles = response.data.data;
+      Object.entries(params).forEach(([key, value]) => {
+        if (!etiquetas[key]) return;
+        const texto = nombresLegibles[key] ||
+          (camposNumericos.includes(key) ? value :
+          value === '1' ? 'Sí' :
+          value === '0' ? 'No' :
+          String(value).replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
+
+        const li = document.createElement('li');
+        li.innerHTML = `<b>${etiquetas[key]}:</b> <span class="leyenda-badge">${texto}</span>`;
+        lista.appendChild(li);
+      });
+
+      const leyenda = g('leyenda-filtros-activos');
+      if (leyenda) leyenda.style.display = 'block';
+
+      const cerrar = g('cerrar-leyenda-general');
+      if (cerrar) cerrar.addEventListener('click', () => {
+        if (leyenda) leyenda.style.display = 'none';
+      });
+    } catch (err) {
+      console.error('[ERROR mostrarLeyendaFiltros]', err);
+    }
+  }
+
+  // ---------- Lógica Aplicar filtros ----------
+  if (btnAplicar) {
+    btnAplicar.addEventListener('click', (ev) => {
+      try {
+        ev.preventDefault();
+        if (!form) {
+          console.warn('[DEBUG] formulario no disponible al aplicar filtros');
+          return;
+        }
+
+        const formData = new FormData(form);
+        const params = {};
+
+        const macroregionSelect = g('macroregion');
+        const microregionSelect = g('microregion');
+        const municipioSelect = g('municipio');
+
+        const macroregionNombre = macroregionSelect?.value ? macroregionSelect.options[macroregionSelect.selectedIndex]?.text || '' : '';
+        const microregionNombre = microregionSelect?.value ? microregionSelect.options[microregionSelect.selectedIndex]?.text || '' : '';
+        const municipioNombre = municipioSelect?.value ? municipioSelect.options[municipioSelect.selectedIndex]?.text || '' : '';
+
+        const nombresLegibles = { macroregion: macroregionNombre, microregion: microregionNombre, municipio: municipioNombre };
+
+        for (const [key, value] of formData.entries()) {
+          if (value !== '' && value !== null) params[key] = value;
+        }
+
+        const tieneRegion = params.macroregion || params.microregion || params.municipio;
+        const tieneNivel = params.nivel;
+
+       
+
+        if (typeof axios === 'undefined') {
+          console.error('[DEBUG] axios no está cargado');
+          return;
+        }
+
+        axios.get('/filtrar-avanzado', { params })
+          .then(response => {
+            const planteles = response?.data?.data || [];
             console.log('Resultados filtrados:', planteles);
             mostrarPlantelesEnMapa(planteles);
             mostrarLeyendaFiltros(params, nombresLegibles);
-
-        })
-        .catch(error => {
+          })
+          .catch(error => {
             console.error('Error al aplicar filtros:', error);
+          });
+
+        const modalEl = g('modalMultifiltro');
+        if (modalEl && typeof bootstrap !== 'undefined') {
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+        }
+      } catch (err) {
+        console.error('[ERROR aplicar filtros]', err);
+      }
+    });
+  }
+
+  // ---------- Lógica Limpiar filtros ----------
+  if (btnLimpiar) {
+    btnLimpiar.addEventListener('click', (ev) => {
+      try {
+        ev.preventDefault();
+        if (!form) {
+          console.warn('[DEBUG] formulario no disponible al limpiar');
+          return;
+        }
+
+        console.log('[DEBUG] Clic en botón Limpiar Filtros');
+        const inputs = form.querySelectorAll('input, select, textarea');
+        console.log(`[DEBUG] Total de inputs encontrados: ${inputs.length}`);
+
+        inputs.forEach(input => {
+          if (input.type === 'checkbox' || input.type === 'radio') {
+            input.checked = false;
+          } else {
+            input.value = '';
+          }
         });
 
-    const modal = bootstrap.Modal.getInstance(document.getElementById('modalMultifiltro'));
-    modal.hide();
-});
-
-function mostrarPlantelesEnMapa(planteles) {
-    const visibles = planteles.filter(p => p.latitud && p.longitud);
-    document.getElementById('contador-planteles-numero').textContent = visibles.length;
-    document.getElementById('contador-planteles').style.display = 'block';
-
-    if (visibles.length === 0) {
-        alert('No se encontraron planteles con los filtros seleccionados.');
-        return;
-    }
-
-    map.eachLayer(layer => {
-        if (layer instanceof L.Marker) {
-            map.removeLayer(layer);
+        // reset select2 si existe
+        if (typeof $ !== 'undefined' && $('.select2').length > 0) {
+          $('.select2').val(null).trigger('change');
+          console.log('[DEBUG] select2 reiniciado');
         }
+
+        const lista = g('lista-filtros-activos');
+        const leyenda = g('leyenda-filtros-activos');
+        if (lista) lista.innerHTML = '';
+        if (leyenda) leyenda.style.display = 'none';
+
+        limpiarMarcadoresMapa();
+
+        const contador = g('contador-planteles');
+        if (contador) contador.style.display = 'none';
+      } catch (err) {
+        console.error('[ERROR limpiar filtros]', err);
+      }
     });
+  }
 
-    function normalizarEstado(estado) {
-        estado = (estado || '').toLowerCase().trim();
-        return estado === 'en_revision' ? 'revision' : estado;
-    }
-
-    function crearIconoPorEstado(estado) {
-        return L.divIcon({
-            className: 'custom-marker',
-            iconSize: [30, 30],
-            iconAnchor: [15, 30],
-            popupAnchor: [0, -30],
-            html: `<i class="bi bi-geo-alt-fill marker-icon ${normalizarEstado(estado)}"></i>`
-        });
-    }
-
-    planteles.forEach(p => {
-        const niveles = Array.isArray(p.niveles)
-            ? p.niveles.map(n => n.nivel.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
-            : 'Sin nivel registrado';
-
-        const energia = [];
-        const e = p.energia || {};
-        if (e.suministro_energia === 1) energia.push('Suministro eléctrico');
-        if (e.energia_paneles_solares === 1) energia.push('Paneles solares');
-        if (e.energia_planta === 1) energia.push('Planta de energía');
-        const energiaTexto = energia.length > 0 ? energia.join(', ') : 'Sin datos energéticos';
-
-        if (p.latitud && p.longitud) {
-            L.marker([parseFloat(p.latitud), parseFloat(p.longitud)], {
-                icon: crearIconoPorEstado(p.estatus_plantel)
-            }).addTo(map).bindPopup(`
-                <b>${p.nombre_escuela}</b><br>
-                CCT: ${p.cct}<br>
-                <b>Nivel educativo:</b> ${niveles}<br>
-                Estado: ${normalizarEstado(p.estatus_plantel)}<br>
-                Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
-                Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
-                <a href="/planteles/${p.id}" target="_blank">Para ver todos sus detalles da click aquí</a>
-            `);
-        }
-    });
-}
-
-function mostrarLeyendaFiltros(params, nombresLegibles={}) {
-  const lista = document.getElementById('lista-filtros-activos');
-  lista.innerHTML = ''; // Limpia leyenda anterior
-
-  const camposNumericos = [
-    'banos_hombres_min',
-    'banos_mujeres_min',
-    'lavamanos_min',
-    'tomas_bebederos_min'
-  ];
-    //Estas etiquetas sirven para mostrar los filtros aplicados
-  const etiquetas = {
-    //Regiones y nivel 
-    nivel: 'Nivel educativo',
-    macroregion: 'Macroregión',
-    microregion: 'Microregión',
-    municipio: 'Municipio',
-    //Superficie
-    superficie: '¿Cual es su superficie en metros cuadrados?', 
-    //Suministro de energia
-    suministro_energia: '¿Tiene suministro eléctrico?',
-    energia_paneles_solares: '¿Tiene paneles solares?',
-    energia_planta: '¿Tiene planta eléctrica?',
-    //Seguridad
-    proteccion_civil: '¿Cuenta con dictamen de protección Civil?',
-    barda_completa: '¿Tiene barda completa?',
-    estado_barda: '¿Cual es el estado de la barda?',
-    estado_cerco: '¿Cual es el estado del cerco?',
-    //Accesibilidad
-    infraestructura_discapacidad: '¿Cuenta con infraestructura para personas discapacitadas?', 
-    sin_infraestructura_discapacidad: '¿El inmueble no cuenta con infraestructura para personas discapacitadas?', 
-    equipo_discapacidad_categoria: '¿Cual es el nivel de equipamiento para discapacitados con el que se cuenta?', 
-    //Obras realizadas
-    rehabilitacion_realizada: '¿Se han realizado obras de rehabilitación en los últimos cinco años?',
-    rehabilitacion_impermeabilizacion:'¿Obras de impermeabilización?', 
-    rehabilitacion_albanileria:'¿Obras de albañilería?' ,
-    rehabilitacion_pintura:'¿Rehabilitación con pintura general?',
-    rehabilitacion_red_hidraulica: '¿Obras en la red hidráulica?',
-    rehabilitacion_red_sanitaria:'¿Obras en la red sanitaria?',
-    rehabilitacion_esctructural:'¿Mejoras estructurales?',
-    obras_nuevas:'¿Obras nuevas en los últimos cinco años?',
-    construccion_educativa:'¿Construcción en espacios educativos?',
-    construccion_deportiva:'¿Construcción en espacios deportivos o recreativos?',
-    construccion_sanitaria:'¿Construcción en sanitarios?',
-    construccion_complementos:'¿Construcción de complementos?',
-    construccion_otro:'¿Otros tipos de construcción?',
-    //Agua
-    agua_red_publica: '¿Cuenta con agua de red pública?', 
-    agua_pozo:'¿Tiene acceso a agua de pozo?', 
-    agua_cuerpo: '¿Utiliza agua de cuerpo natural?', 
-    agua_pipas: '¿Recibe agua por pipas?', 
-    agua_otro: '¿Existe otro tipo de suministro?', 
-    cisterna: '¿Dispone de cisterna?', 
-    tinacos: '¿Cuenta con tinacos?', 
-    tanque: '¿Tiene tanque de almacenamiento?', 
-    almacenamiento_otro: '¿Utiliza otro tipo de almacenamiento?', 
-    //Baños
-    estado_banos: '¿Cual es el estado del baño?', 
-    banos_hombres_min: '¿Cual es la cantidad minima de baños de hombres', 
-    banos_mujeres_min: '¿Cual es la cantidad minima de baños de mujeres', 
-    lavamanos_min: '¿Cual es la cantidad minima de lavamanos?', 
-    estado_lavamanos: '¿Cual es el estado de los lavamanos?', 
-    tomas_bebederos_min: '¿Cual es la cantidad minima de bebederos?', 
-    estado_bebederos: '¿Cual es el estado de los bebederos?', 
-    //Drenaje
-    drenaje_publico: '¿Cuenta con drenaje público?', 
-    fosa_septica: '¿Cuenta con fosa septica?', 
-    planta_tratamiento: '¿Cuenta con planta de tratamiento para aguas negras?', 
-    descarga_otro: '¿Cuenta con otro tipo de descarga?', 
-    separacion_aguas: '¿Cuenta con sepacion de aguas negras?', 
-    //Estados de conservacion
-    estado_red_hidraulica: '¿Cual es el estado de la red hidraulica', 
-    estado_instalacion_sanitaria: '¿Cual es el estado de la instalación sanitaria?', 
-    estado_instalacion_electrica: '¿Cual es el estado de la instalación electrica?', 
-  };
-
-  Object.entries(params).forEach(([key, value]) => {
-    if (!etiquetas[key]) return;
-
-    const texto = nombresLegibles[key] ||
-              (camposNumericos.includes(key) ? value :
-              value === '1' ? 'Sí' :
-              value === '0' ? 'No' :
-              value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
-
-    const li = document.createElement('li');
-    li.innerHTML = `<b>${etiquetas[key]}:</b> <span class="leyenda-badge">${texto}</span>`;
-    lista.appendChild(li);
-  });
-
-  document.getElementById('leyenda-filtros-activos').style.display = 'block';
-
-  document.getElementById('cerrar-leyenda-general')?.addEventListener('click', () => {
-    document.getElementById('leyenda-filtros-activos').style.display = 'none';
-  });
-}
+  // Exponer en window para facilitar debugging en consola
+  window.__mostrarPlantelesEnMapa = mostrarPlantelesEnMapa;
+  window.__mostrarLeyendaFiltros = mostrarLeyendaFiltros;
 });
-
-

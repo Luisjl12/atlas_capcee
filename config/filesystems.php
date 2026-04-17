@@ -59,6 +59,20 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        
+         'public_directo' => [
+        'driver' => 'local',
+        'root' => '/home1/bcecacef/atlasinfraescolarpueblaa.online/public/galeria',
+        'url' => env('APP_URL') . '/galeria',
+        'visibility' => 'public',
+        ],
+        
+        'archivos_directo' => [
+        'driver' => 'local',
+        'root' => '/home1/bcecacef/atlasinfraescolarpueblaa.online/public/archivos_plantel',
+        'url' => env('APP_URL') . '/archivos_plantel',
+        'visibility' => 'public',
+        ],
 
     ],
 

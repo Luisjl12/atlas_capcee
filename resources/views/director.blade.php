@@ -17,6 +17,10 @@
                     <a href="{{route('planteles.index')}}" class="accion-card red">
                         <i class="fas fa-school"></i> Gestionar Planteles
                     </a>
+                    
+                    <a href="{{route('mapa.vista')}}" class="accion-card red">
+                        <i class="fas fa-map"></i> Mapa de planteles
+                    </a>
 
                 </div>
 

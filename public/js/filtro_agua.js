@@ -63,18 +63,18 @@ document.addEventListener('DOMContentLoaded', () => {
             'cisterna','tinacos','tanque','almacenamiento_otro'
         ];
 
-        const aguaSeleccionada = camposAgua
-            .filter(campo => {
-                const checkbox = document.getElementById(campo);
-                if (checkbox?.checked) {
-                    params.append(campo, 1);
-                    return true;
-                }
-                return false;
-            })
-            .map(campo => campo.replace(/_/g, ' '))
-            .map(texto => texto.charAt(0).toUpperCase() + texto.slice(1))
-            .join(', ');
+       // Buscar todos los checkboxes al submit
+    const checkboxes = Array.from(formAgua.querySelectorAll('.filtro-agua'));
+    const aguaSeleccionada = checkboxes
+        .filter(cb => cb.checked)
+        .map(cb => {
+            params.append(cb.name, 1);
+            return cb.name.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+        })
+        .join(', ');
+
+    console.log('Parámetros enviados (agua):', params.toString());
+
 
         // Construir nombre de región
         const regiones = [];

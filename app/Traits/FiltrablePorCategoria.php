@@ -137,6 +137,34 @@ trait FiltrablePorCategoria
             return $query;
         }
 
+        if ($categoria === 'energia') {
+            if ($request->filled('suministro_energia')) {
+                $query->whereHas(
+                    'energia',
+                    fn($q) =>
+                    $q->where('suministro_energia', $request->suministro_energia)
+                );
+            }
+
+            if ($request->filled('energia_paneles_solares')) {
+                $query->whereHas(
+                    'energia',
+                    fn($q) =>
+                    $q->where('energia_paneles_solares', $request->energia_paneles_solares)
+                );
+            }
+
+            if ($request->filled('energia_planta')) {
+                $query->whereHas(
+                    'energia',
+                    fn($q) =>
+                    $q->where('energia_planta', $request->energia_planta)
+                );
+            }
+
+            return $query;
+        }
+
 
         if (!empty($filtros)) {
             $query->whereHas($categoria, function ($q) use ($filtros) {

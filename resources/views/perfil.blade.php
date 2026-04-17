@@ -8,18 +8,13 @@ $usuario = \App\Models\Usuario::find(session('id'));
 @endphp
 
 
-<body>
-
-    <div class="">
         @php
         use App\Helpers\RoleHelper;
         @endphp
         <div class="card-header-custom">
-            <a href="{{ RoleHelper::dashboardRoute(session('role_id')) }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-                <h2>
-                    <i class="fas fa-arrow-left "></i>
-                    <i class="fas fa-user-edit"></i> Mi Perfil
-                </h2>
+            <a href="{{ RoleHelper::dashboardRoute(session('role_id')) }}" class="btn-icon-only">
+                <i class="fas fa-arrow-left"></i>
+                <h2><i class="fas fa-user-edit"></i> Mi Perfil</h2>
             </a>
         </div>
 
@@ -35,8 +30,8 @@ $usuario = \App\Models\Usuario::find(session('id'));
 
             <!-- Información Personal -->
             <div class="profile-card">
-                <div class="card-header">
-                    <h3>Información Personal</h3>
+                <div class="card-header border-bottom border-1">
+                    <h3 style="color:var(--color-vino-terciario);">Información Personal</h3>
                     <button type="button" class="btn-edit" onclick="toggleEdit('info')">
                         <i class="fas fa-pen"></i> Editar
                     </button>
@@ -68,7 +63,7 @@ $usuario = \App\Models\Usuario::find(session('id'));
                         </div>
                     </div>
 
-                    <button type="submit" id="guardar-info" class="btn btn-profile" style="display: none;">
+                    <button type="submit" id="guardar-info" class="btn-custom btn-profile" style="display: none;">
                         <i class="fas fa-save"></i> Guardar Cambios
                     </button>
                 </form>
@@ -76,8 +71,8 @@ $usuario = \App\Models\Usuario::find(session('id'));
 
             <!-- Cambiar Contraseña -->
             <div class="profile-card">
-                <div class="card-header">
-                    <h3>Cambiar Contraseña</h3>
+                <div class="card-header border-bottom border-1">
+                    <h3 style="color:var(--color-vino-terciario);">Cambiar Contraseña</h3>
                     <button type="button" class="btn-edit" onclick="toggleEdit('pass')">
                         <i class="fas fa-pen"></i> Editar
                     </button>
@@ -119,7 +114,7 @@ $usuario = \App\Models\Usuario::find(session('id'));
                         </div>
                     </div>
 
-                    <button type="submit" id="guardar-pass" class="btn btn-profile" style="display: none;">
+                    <button type="submit" id="guardar-pass" class="btn-custom btn-profile" style="display: none;">
                         <i class="fas fa-key"></i> Cambiar Contraseña
                     </button>
                 </form>
@@ -130,9 +125,6 @@ $usuario = \App\Models\Usuario::find(session('id'));
             No se pudo encontrar la información del usuario.
         </div>
         @endif
-    </div>
-
-</body>
 @endsection
 
 <!--Referencia del script-->

@@ -23,7 +23,7 @@ class GaleriaFotoController extends Controller
         $foto = $request->file('foto');
         $nombreOriginal = $foto->getClientOriginalName();
         $nombreSistema = uniqid() . '_' . $nombreOriginal;
-        $ruta = $foto->storeAs("galeria/$cct", $nombreSistema, 'public');
+       $ruta = $foto->storeAs($cct, $nombreSistema, 'public_directo');
 
         GaleriaFotos::create([
             'cct' => $cct,

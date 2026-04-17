@@ -68,14 +68,12 @@ class InfraestructuraController extends Controller
         $validated = $request->validate([
             'fuente_agua' => 'required|string|max:255',
             'tipo_drenaje' => 'required|string|max:255',
-            'hidrosanitaria' => 'required|string|max:255',
             'almacenamiento_agua' => 'required|string|max:255',
-            'tipo_drena' => 'required|string|max:255',
             'sanitarios_hombres_wc' =>  'required|integer|min:0',
             'sanitarios_hombres_lavabos' => 'required|integer|min:0',
             'sanitarios_mujeres_wc' =>  'required|integer|min:0',
             'sanitarios_mujeres_lavabos' =>  'required|integer|min:0',
-            'observaciones' => 'required|string|max:255',
+            'observaciones' => 'nullable|string|max:255',
 
         ]);
 

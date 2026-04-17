@@ -3,20 +3,17 @@
 @section('title', 'Reporte de Estatus de Planteles')
 
 @section('content')
-<main class="main-container">
-    <div class="container mt-4">
-        <div class="card-header-custom d-flex justify-content-between align-items-center">
-            <a href="{{ route('reportes.index') }}" class="d-inline-flex align-items-center text-dark text-decoration-none">
-                <i class="fas fa-arrow-left me-2" style="font-size:1.5rem;"></i>
-                <h2 class="mb-0"><i class="fas fa-check-circle"></i> Reporte de Estatus de Planteles</h2>
+
+        <div class="card-header-custom">
+            <a href="{{ route('reportes.index') }}" class="btn-icon-only">
+                <i class="fas fa-arrow-left"></i>
+                <h2><i class="fas fa-check-circle"></i> Reporte de Estatus de Planteles</h2>
             </a>
             <div class="report-actions">
-                <a href="{{ route('reportes.estatus.csv') }}" class="btn btn-success me-2">
+                <a href="{{ route('reportes.estatus.csv') }}" class="btn-custom btn-success me-2">
                     <i class="fas fa-file-excel"></i> Exportar CSV
                 </a>
-                <a href="{{ route('reportes.estatus.pdf') }}" class="btn btn-danger">
-                    <i class="fas fa-file-pdf"></i> Exportar PDF
-                </a>
+               
             </div>
         </div>
 
@@ -34,10 +31,10 @@
         @if($totalGeneral === 0)
         <p class="text-center mt-4">No hay datos disponibles para este reporte.</p>
         @else
-        <div class="report-grid mt-4">
-            <div class="reporte-flex d-flex flex-wrap justify-content-between">
+        <div class="report-grid">
+            <div class="reporte-flex">
                 {{-- Tarjetas de estatus --}}
-                <div class="estatus-cards d-flex flex-wrap gap-3">
+                <div class="estatus-cards">
                     <div class="card-estado activo">
                         <i class="fas fa-check"></i>
                         <h3>ACTIVO</h3>
@@ -57,20 +54,19 @@
                         <span>Planteles</span>
                     </div>
 
-                    <div class="total-text w-100 mt-3">
+                    <div class="total-text">
                         <strong>Total de planteles: {{ $totalGeneral }}</strong>
                     </div>
                 </div>
 
                 {{-- Gráfica --}}
-                <div class="chart-wrapper" style="flex:1; min-width:300px; max-width:450px;">
+                <div class="chart-wrapper">
                     <canvas id="graficaEstatus"></canvas>
                 </div>
             </div>
         </div>
         @endif
-    </div>
-</main>
+
 
 {{-- Script de Chart.js --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -81,11 +77,15 @@
             new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: @json($labels),
+                    labels: ['ACTIVO', 'INACTIVO', 'EN REVISIÓN'],
                     datasets: [{
                         label: 'Planteles',
-                        data: @json($data),
-                        backgroundColor: ['#d1fae5', '#fee2e2', '#ffe8b3', '#e5e7eb'], // colores para cada estatus
+                       data: [
+                        {{ $estatusAgrupado['ACTIVO'] ?? 0 }},
+                        {{ $estatusAgrupado['INACTIVO'] ?? 0 }},
+                        {{ $estatusAgrupado['EN_REVISION'] ?? 0 }}
+                    ],
+                        backgroundColor: ['#d1fae5', '#fee2e2', '#ffe8b3'],
                         borderWidth: 1
                     }]
                 },

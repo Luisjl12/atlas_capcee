@@ -3,16 +3,12 @@
 
 
 @section('content')
-<div class="card-header bg-white border-bottom">
-    <a href="{{ route('usuarios.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-        <h4 class="mb-4">
-            <i class="fas fa-arrow-left "></i>
-            <i class="fas fa-user-plus"></i> Agregar Nuevo Usuario
-        </h4>
+<div class="card-header-custom">
+    <a href="{{ route('usuarios.index') }}" class="btn-icon-only">
+        <i class="fas fa-arrow-left "></i>
+        <h2><i class="fas fa-user-plus"></i> Agregar Nuevo Usuario</h2>
     </a>
 </div>
-<div class="container mt-4">
-
 
     {{-- Validación de errores --}}
     @if ($errors->any())
@@ -33,15 +29,14 @@
     @endif
 
     {{-- Card de formulario --}}
-    <div class="form-ficha-base">
-        <div class="card-header bg-white border-bottom">
-            <h5 class=" mb-0" style="color: var(--color-vino-secundario);">Datos del Usuario</h5>
-        </div>
-        <div class=" card-body">
+   
             <form method="POST" action="{{ route('usuarios.store') }}" class="form-ficha-base">
                 @csrf
 
-                <div class="row mb-3">
+            <div class="card-body-custom p-4">
+                <h4>Datos del Usuario</h4>
+           
+                <div class="row">
                     <div class="col-md-6">
                         <label class="form-label">Nombre Completo *</label>
                         <input type="text" name="nombre_completo" class="form-control" required>
@@ -52,7 +47,7 @@
                     </div>
                 </div>
 
-                <div class="row mb-3">
+                <div class="row">
                     <div class="col-md-6">
                         <label class="form-label">Contraseña *</label>
                         <input type="password" name="password" class="form-control" required>
@@ -63,7 +58,7 @@
                     </div>
                 </div>
 
-                <div class="row mb-3">
+                <div class="row">
                     <div class="col-md-6">
                         <label class="form-label">Rol *</label>
                         <select name="role_id" class="form-select" required>
@@ -84,12 +79,11 @@
                 </div>
 
                 <div class="d-flex justify-content-start gap-2">
-                    <button type="submit" class="btn btn-primary btn-lg">
+                    <button type="submit" class="btn-custom btn-primary">
                         <i class="fas fa-save"></i> Crear
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
-</div>
+            </div>
+    
 @endsection

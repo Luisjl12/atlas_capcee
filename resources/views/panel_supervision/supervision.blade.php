@@ -3,21 +3,16 @@
 @section ('content')
 <!--Interfaz para panel principal o index de supervision-->
 
-<body>
-    <main class="main-container">
-        <div class="container mt-4">
             @php
             use App\Helpers\RoleHelper;
             @endphp
             <div class="card-header-custom">
-                <a href="{{ RoleHelper::gestionSupervision(session('role_id')) }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-                    <h4>
-                        <i class="fas fa-arrow-left "></i>
-                        <i class="fas fa-tasks"></i> Panel de Supervisión
-                    </h4>
+                <a href="{{ RoleHelper::gestionSupervision(session('role_id')) }}" class="btn-icon-only">
+                    <i class="fas fa-arrow-left"></i>
+                    <h2><i class="fas fa-tasks"></i> Panel de Supervisión</h2>
                 </a>
             </div>
-            <div class="card-body-custom p-4">
+          
                 <p>A continuación se muestra el resumen del avance de captura de información por cada CORDE.</p>
                 <div class="table-responsive mt-3 data-table-container">
                     <table class="table table-hover data-table">
@@ -53,7 +48,7 @@
                                 <td>{{ $dato->ultima_actualizacion ? \Carbon\Carbon::parse($dato->ultima_actualizacion)->format('d/m/Y') : 'Sin registro' }}</td>
                                 <td>
                                     <div class="acciones-btns d-flex align-items-center gap-1 flex-nowrap">
-                                        <a href="{{ route('supervision.show', ['id' => $dato->id]) }}" class="btn btn-sm btn-info">
+                                        <a href="{{ route('supervision.show', ['id' => $dato->id]) }}" class="btn-custom btn-sm btn-info">
                                             <i class="fas fa-eye"></i> Ver Detalle
                                         </a>
                                     </div>
@@ -85,10 +80,7 @@
                         </tbody>
                     </table>
                 </div>
-            </div>
-        </div>
-    </main>
-</body>
+            
 
 @endsection
 

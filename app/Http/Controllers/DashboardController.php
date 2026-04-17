@@ -30,4 +30,18 @@ class DashboardController extends Controller
     {
         return view('capturista');
     }
+
+    public function visualizador()
+    {
+        return view('visualizador');
+    }
+    
+    public function directorReportes()
+    {
+        return view('directorReportes');  
+    }
+    
+    public function administradorPrincipal(){
+        return view('administradorPrincipal'); 
+    }
 }

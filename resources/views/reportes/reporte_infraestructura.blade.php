@@ -3,20 +3,17 @@
 @section('title', 'Reporte de Infraestructura')
 
 @section('content')
-<main class="main-container">
-    <div class="container mt-4">
-        <div class="card-header-custom d-flex justify-content-between align-items-center">
-            <a href="{{ route('reportes.index') }}" class="d-inline-flex align-items-center text-dark text-decoration-none">
-                <i class="fas fa-arrow-left me-2" style="font-size:1.5rem;"></i>
-                <h2 class="mb-0"><i class="fas fa-tools"></i> Reporte: Estado de Conservacion de Espacios</h2>
+
+        <div class="card-header-custom">
+            <a href="{{ route('reportes.index') }}" class="btn-icon-only">
+                <i class="fas fa-arrow-left"></i>
+                <h2><i class="fas fa-tools"></i> Reporte: Estado de Conservacion de Espacios</h2>
             </a>
             <div class="report-actions">
-                <a href="{{ route('reportes.infraestructura.exportar') }}" class="btn btn-success me-2">
+                <a href="{{ route('reportes.infraestructura.exportar') }}" class="btn-custom btn-success me-2">
                     <i class="fas fa-file-excel"></i> Exportar CSV
                 </a>
-                <a href="{{ route('reportes.infraestructura.pdf') }}" class="btn btn-danger">
-                    <i class="fas fa-file-pdf"></i> Exportar PDF
-                </a>
+                
             </div>
         </div>
 
@@ -80,8 +77,6 @@
             </div>
         </div>
         @endif
-    </div>
-</main>
 
 {{-- Chart.js --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -96,7 +91,7 @@
                     datasets: [{
                         label: 'Nº de Espacios',
                         data: @json($data),
-                        backgroundColor: ['#d1fae5', '#ffe8b3', '#fee2e2'], // BUENO, REGULAR, MALO
+                        backgroundColor: ['#d1fae5', '#ffe8b3', '#fee2e2'],
                         borderWidth: 1
                     }]
                 },

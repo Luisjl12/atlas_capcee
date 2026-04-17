@@ -3,21 +3,14 @@
 @section('title', 'Importar Datos')
 
 @section('content')
-<main class="main-container">
-    <div class="container mt-4">
+
         @php
         use App\Helpers\RoleHelper;
         @endphp
         <div class="card-header-custom">
-            <a href="{{ RoleHelper::importarDatos(session('role_id')) }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-                <h4 class="mb-4">
-                    <i class="fas fa-arrow-left"></i>
-                    <i class="fas fa-file-upload"></i> Importar Datos
-                </h4>
-            </a>
-
-            <a href="{{ asset('plantillas/plantilla_datos.csv') }}" download class="btn btn-success">
-                <i class="fas fa-file-excel"></i> Descargar Plantilla CSV
+            <a href="{{ RoleHelper::importarDatos(session('role_id')) }}" class="btn-icon-only">
+                <i class="fas fa-arrow-left"></i>
+                <h2><i class="fas fa-file-upload"></i> Importar Datos de Planteles</h2>
             </a>
         </div>
 
@@ -61,30 +54,27 @@
         @endif
 
         <div class="card-body-custom p-4 mt-3">
-            <p>Esta herramienta permite importar datos de planteles desde un archivo CSV. Asegúrese de que el archivo tenga los encabezados correctos:</p>
+            <p>Sube un archivo CSV para cargar información de escuelas de forma masiva.</p>
+            <div class="mb-3">
+                <strong>Asegurese de que el archivo CSV incluya los encabezados con los mismos nombres que los
+                        campos requeridos:</strong><br>
+                <span class="chip"><i class="fas fa-check"></i><strong>**CV_CCT (CCT)</strong></span>
+                <span class="chip"><i class="fas fa-school"></i><strong>**NOMBRECT (Nombre del plantel)</strong></span>
+                <span class="chip"><i class="fas fa-map-marker-alt"></i>C_NOM_MUN (Nombre del municipio)</span>
+                <span class="chip"><i class="fas fa-building"></i>NOMBRE_CORDE (Nombre del corde)</span>
+            </div>
 
-            <ul>
-                <li><strong>CV_CCT</strong> (CCT-obligatorio)</li>
-                <li><strong>NOMBRECT</strong> (Nombre del plantel-obligatorio)</li>
-                <li><strong>C_NOM_MUN</strong> (Nombre del municipio-obligatorio)</li>
-                <li><strong>NOMBRE_CORDE</strong> (Nombre del corde-obligatorio)</li>
-
-            </ul>
-
-        </div>
-
-
-        <form action="{{ route('importarDatos.store') }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('importarDatos.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <div class="form-group">
-                <label for="archivo">Seleccionar archivo CSV, EXCEL o TXT:</label>
-                <input type="file" name="archivo" id="archivo" class="form-control-file" required>
-            </div>
-            <button type="submit" class="btn btn-primary mt-3">
-                <i class="fas fa-upload"></i> Importar Datos
-            </button>
-        </form>
-    </div>
-</main>
+                <label for="archivo" class="dropzone">
+                    <i class="fas fa-file-csv fa-2x"></i>
+                    <p>Haz clic aqui para subir tu archivo CSV</p>
+                    <input type="file" name="archivo" id="archivo" class="input-csv" required>
+                </label>
+                <button type="submit" class="btn-custom btn-primary mt-3">
+                    <i class="fas fa-upload"></i> Importar Datos
+                </button>
+            </form>
+        </div>
 @endsection

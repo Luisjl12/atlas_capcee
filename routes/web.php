@@ -23,6 +23,9 @@ use App\Http\Controllers\ImportarDatosController;
 use App\Http\Controllers\MapaController;
 use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\InmuebleNivelController;
+use App\Http\Controllers\HistorialController;
+use App\Http\Controllers\InfraescolarController;
+
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -53,6 +56,10 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::get('/director', [DashboardController::class, 'director'])->name('dashboard.director');
     Route::get('/supervisor', [DashboardController::class, 'supervisor'])->name('dashboard.supervisor');
     Route::get('/capturista', [DashboardController::class, 'capturista'])->name('dashboard.capturista');
+        Route::get('/visualizador', [DashboardController::class, 'visualizador'])->name('dashboard.visualizador');
+    Route::get('/director_reportes',[DashboardController::class, 'directorReportes'])->name('dashboard.directorReportes'); 
+    Route::get('/administrador_principal', [DashboardController::class, 'administradorPrincipal'])->name('dashboard.administradorPrincipal'); 
+
 });
 
 //Rutas para acceder al dashboard desde la barra superior 
@@ -82,6 +89,12 @@ Route::get('/dashboard', function () {
             return redirect()->route('dashboard.director');
         case 'CAPTURISTA':
             return redirect()->route('dashboard.capturista');
+        case 'Visualizador':
+            return redirect()->route('dashboard.visualizador');
+         case 'DIRECTOR REPORTE':
+            return redirect()->route('dashboard.directorReportes');
+        case 'ADMINISTRADOR PRINCIPAL':
+            return redirect()->route('dashboard.administradorPrincipal');
         default:
             abort(403, 'Rol no válido');
     }
@@ -276,3 +289,73 @@ Route::get('/filtrar-sanitarios', [MapaController::class, 'filtrarPlantelesSanit
 Route::get('/filtrar-avanzado', [MapaController::class, 'filtrarAvanzado']);
 
 Route::get('/buscar-cct/{cct}', [MapaController::class, 'buscarPorCCT']);
+
+//Rutas para historial de cambios
+Route::get('/historial-modificaciones', [HistorialController::class, 'index'])->name('historial.index');
+
+//Rutas para exportar CSV
+Route::get('/exportar-csv/{categoria}', [MapaController::class, 'exportarCSV']);
+
+//Rutas para los nuevos roles
+Route::get('/infraescolar/director', [InfraescolarController::class, 'indexDirector'])
+    ->name('infraescolar.director');
+    
+Route::get('/infraescolar/admin', [InfraescolarController::class, 'indexAdmin'])
+    ->name('infraescolar.admin');
+
+
+// Rutas exclusivas del Administrador
+Route::middleware(['auth.custom', 'rol:ADMINISTRADOR PRINCIPAL'])->group(function () {
+    Route::get('/admin/infraescolar', [InfraescolarController::class, 'indexAdmin'])->name('infraescolar.admin');
+    Route::post('/admin/infraescolar/guardar', [InfraescolarController::class, 'store'])->name('infraescolar.store');
+    
+    //  NUEVAS RUTAS PARA EDITAR Y ELIMINAR 
+    Route::get('/admin/infraescolar/editar/{id}', [InfraescolarController::class, 'edit'])->name('infraescolar.edit');
+    Route::post('/admin/infraescolar/actualizar/{id}', [InfraescolarController::class, 'update'])->name('infraescolar.update');
+    Route::delete('/admin/infraescolar/eliminar/{id}', [InfraescolarController::class, 'destroy'])->name('infraescolar.destroy');
+});
+
+//  ESTE ES EL BLOQUE QUE FALTABA PARA EL DIRECTOR 
+Route::middleware(['auth.custom', 'rol:DIRECTOR REPORTE'])->group(function () {
+    Route::get('/director/infraescolar', [InfraescolarController::class, 'indexDirector'])->name('infraescolar.director');
+});
+// Rutas exclusivas del Director
+Route::middleware(['auth.custom', 'rol:DIRECTOR REPORTE'])->group(function () {
+    Route::get('/director/infraescolar', [InfraescolarController::class, 'indexDirector'])->name('infraescolar.director');
+    
+    //  NUEVA RUTA PARA FORZAR LA DESCARGA DEL PDF 
+    Route::get('/director/infraescolar/pdf/{id}', [InfraescolarController::class, 'descargarPdf'])->name('infraescolar.descargar_pdf');
+});
+
+use Firebase\JWT\JWT;
+
+Route::get('/saltar-a-siie', function () {
+    $usuarioId = session('id');
+
+    if (!$usuarioId) {
+        return redirect()->route('login');
+    }
+
+    // Buscamos el registro fresco de la base de datos
+    $usuarioDB = DB::table('usuarios')->where('id', $usuarioId)->first();
+
+    $payload = [
+        // Usamos el nombre exacto de tu columna en ATLAS: 'correo_electronico'
+        'username' => $usuarioDB->correo_electronico, 
+        'rol' => session('rol') ?? 'ADMINISTRADOR',
+        'iat' => time(),
+        'exp' => time() + 60 
+    ];
+
+    // La llave larga de 32 caracteres que ya configuraste
+    $jwt = JWT::encode($payload, 'secreto_capcee_123_llave_super_segura', 'HS256');
+
+    return redirect()->away("http://127.0.0.1:5000/sso-login?token=" . $jwt);
+})->middleware('auth.custom');
+
+
+//Ruta para descargar los pdf
+ Route::get('/director/infraescolar/pdf/{id}', [InfraescolarController::class, 'descargarPdf'])->name('infraescolar.descargar_pdf');
+ 
+
+

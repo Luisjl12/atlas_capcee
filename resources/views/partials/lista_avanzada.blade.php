@@ -1,4 +1,4 @@
-<div class="table-responsive mt-3 data-table-container">
+
     <!--Tabla para los planteles-->
     <table class="table data-table">
         <thead class="thead-custom">
@@ -39,8 +39,9 @@
                 </td>
                 <td>
                     <div class="acciones-btns d-flex align-items-center gap-1 flex-nowrap">
-                        <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-sm btn-info" title="Ver Detalle Completo">
+                        <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-sm btn-info custom-tooltip">
                             <i class="fas fa-eye"></i>
+                            <span class="tooltiptext">Ver Detalle</span>
                         </a>
                     </div>
                 </td>
@@ -91,15 +92,3 @@
 
         </tbody>
     </table>
-
-    {{-- Paginación --}}
-    @if(method_exists($planteles, 'links'))
-    <nav class="pagination-container" aria-label="Navegación de páginas">
-        <ul class="pagination">
-            <li class="page-item ">
-                {{ $planteles->links('vendor.pagination.mi_paginacion') }}
-            </li>
-        </ul>
-    </nav>
-    @endif
-</div>

@@ -10,6 +10,7 @@ use App\Models\InmuebleAgua;
 use App\Traits\FiltrablePorCategoria;
 use Illuminate\Support\Facades\Log;
 use App\Traits\FiltrablePorTerritorioYNivel;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 
 class MapaController extends Controller
@@ -650,5 +651,68 @@ class MapaController extends Controller
             'localidad' => $plantel->localidad->nombre_localidad ?? 'Sin localidad',
             'ficha_url' => route('planteles.show', ['id' => $plantel->id]),
         ]);
+    }
+    
+    public function exportarCSV(Request $request)
+    {
+        $query = Plantel::query()->with([
+            'energia',
+            'drenaje',
+            'agua',
+            'obras',
+            'superficies',
+            'municipio',
+            'localidad',
+            'niveles',
+            'seguridad',
+            'sanitario'
+        ]);
+
+        $this->aplicarFiltrosTerritorialesYNivel($query, $request);
+
+        foreach (['energia', 'drenaje', 'agua', 'obras', 'superficie', 'accesibilidad', 'estado_conservacion', 'sanitario', 'seguridad'] as $categoria) {
+            $this->aplicarFiltrosPorCategoria($query, $request, $categoria);
+        }
+
+        $query->whereNotNull('latitud')->whereNotNull('longitud');
+        $planteles = $query->get();
+
+        //Generar el csv 
+        $response = new StreamedResponse(function () use ($planteles) {
+            $handle = fopen('php://output', 'w');
+            // Encabezados del CSV
+            fputcsv($handle, [
+                'ID',
+                'Nombre',
+                'CCT',
+                'Latitud',
+                'Longitud',
+                'Estatus',
+                'Municipio',
+                'Localidad',
+                'Niveles Educativos'
+            ]);
+
+            foreach ($planteles as $plantel) {
+                fputcsv($handle, [
+                    $plantel->id,
+                    $plantel->nombre_escuela,
+                    $plantel->cct,
+                    $plantel->latitud,
+                    $plantel->longitud,
+                    $plantel->estatus_plantel,
+                    $plantel->municipio->nombre_municipio ?? 'Sin municipio',
+                    $plantel->localidad->nombre_localidad ?? 'Sin localidad',
+                    $plantel->niveles->pluck('nivel')->join(', '),
+                ]);
+            }
+
+            fclose($handle);
+        });
+
+        $response->headers->set('Content-Type', 'text/csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="planteles.csv');
+
+        return $response;
     }
 }

@@ -9,6 +9,7 @@ use App\Models\Corde;
 use App\Models\Localidad;
 use App\Models\Macroregion;
 use App\Models\Microregion;
+use App\Models\RegionSocioeconomica;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ImportarDatosController extends Controller
@@ -245,7 +246,6 @@ class ImportarDatosController extends Controller
             }
 
             //Nivel educativo en string
-
             if (in_array('TIPO EDUCATIVO', $encabezados)) {
                 $tipoEducativo = $fila[array_search('TIPO EDUCATIVO', $encabezados)] ?? null;
 
@@ -254,8 +254,7 @@ class ImportarDatosController extends Controller
                 }
             }
 
-            //Syministro de agua en string  
-
+            //Suministro de agua en string  
             if (in_array('SUMINISTRO DE AGUA', $encabezados)) {
                 $suministroAgua = $fila[array_search('SUMINISTRO DE AGUA', $encabezados)] ?? null;
 
@@ -306,6 +305,48 @@ class ImportarDatosController extends Controller
                     );
                 }
             }
+            //Techados
+            if (in_array('ESTADO TECHADOS', $encabezados)) {
+                $estadoTechados = $fila[array_search('ESTADO TECHADOS', $encabezados)] ?? null;
+
+                if (!empty($estadoTechados)) {
+                    //Guardar en detalle proteccion civil
+                    \App\Models\DetalleProteccionCivil::updateorCreate(
+                        ['cct' => $cct],
+                        ['estado_techados' => $estadoTechados]
+                    );
+                }
+            }
+
+            //Computadoras
+            if (in_array('TIENE COMPUTADORAS', $encabezados)) {
+                $tieneComputadoras = $fila[array_search('TIENE COMPUTADORAS', $encabezados)] ?? null;
+
+                if (!empty($tieneComputadoras)) {
+                    //Guardar en la tabla detalle servicios
+                    \App\Models\DetalleServicio::updateOrCreate(
+                        ['cct' => $cct],
+                        ['tiene_computadoras' => $tieneComputadoras]
+                    );
+                }
+            }
+
+            $totalAlumnos = null;
+            if (in_array('NUMERO DE ALUMNOS', $encabezados)) {
+                $indiceAlumnos = array_search('NUMERO DE ALUMNOS', $encabezados);
+                $valorAlumnos = trim($fila[$indiceAlumnos] ?? '');
+
+                // Validar que sea numérico y positivo
+                if (is_numeric($valorAlumnos)) {
+                    $totalAlumnos = (int)$valorAlumnos;
+                } elseif (!empty($valorAlumnos)) {
+                    $errores[] = ['cct' => $cct, 'advertencia' => "Valor no numérico en NUMERO DE ALUMNOS: '$valorAlumnos'"];
+                }
+            }
+
+            if (!is_null($totalAlumnos)) {
+                $campos['total_alumnos'] = $totalAlumnos;
+            }
 
             //Crear o editar plantel
             $plantel = Plantel::updateOrCreate(
@@ -340,6 +381,24 @@ class ImportarDatosController extends Controller
                     $plantel->save();
                 }
             }
+
+            //Region Socioeconomica
+
+            if (in_array('REGION SOCIOECONOMICA', $encabezados)) {
+                $indiceRegion = array_search('REGION SOCIOECONOMICA', $encabezados);
+                $regionSocioeconomicaNombre = isset($fila[$indiceRegion]) ? strtoupper(trim($fila[$indiceRegion])) : null;
+
+                if (!empty($regionSocioeconomicaNombre)) {
+                    $regionSocioeconomica = RegionSocioeconomica::firstOrCreate([
+                        'nombre' => $regionSocioeconomicaNombre
+                    ]);
+
+                    $plantel->regionSocioeconomica()->associate($regionSocioeconomica);
+                    $plantel->save();
+                }
+            }
+
+
 
 
             //Leer nivel academico del archivo excel
@@ -634,3 +693,5 @@ class ImportarDatosController extends Controller
         return $nombre; // fallback: regresa el mismo
     }
 }
+
+

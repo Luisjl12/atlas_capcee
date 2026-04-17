@@ -66,7 +66,7 @@
                             </div>
                         </div>
 
-                        <!-- Energía -->
+                             <!-- Energía -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingEnergia">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEnergia">
@@ -75,17 +75,34 @@
                             </h2>
                             <div id="collapseEnergia" class="accordion-collapse collapse">
                                 <div class="accordion-body fondo-territorial">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="suministro_energia" value="1">
-                                        <label class="form-check-label">¿Cuenta con suministro de energia?</label>
+                                    <label class="form-label d-block">¿Cuenta con suministro de energía?</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="suministro_energia" value="1">
+                                        <label class="form-check-label">Sí</label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="energia_paneles_solares" value="1">
-                                        <label class="form-check-label">¿Cuenta con paneles solares?</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="suministro_energia" value="0">
+                                        <label class="form-check-label">No</label>
                                     </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="energia_planta" value="1">
-                                        <label class="form-check-label">¿Cuenta con planta generadora de energia?</label>
+
+                                    <label class="form-label d-block mt-3">¿Cuenta con paneles solares?</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="energia_paneles_solares" value="1">
+                                        <label class="form-check-label">Sí</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="energia_paneles_solares" value="0">
+                                        <label class="form-check-label">No</label>
+                                    </div>
+
+                                    <label class="form-label d-block mt-3">¿Cuenta con planta generadora de energía?</label>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="energia_planta" value="1">
+                                        <label class="form-check-label">Sí</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="energia_planta" value="0">
+                                        <label class="form-check-label">No</label>
                                     </div>
                                 </div>
                             </div>
@@ -130,15 +147,7 @@
                                         <label class="form-check-label">No</label>
                                     </div>
 
-                                    <label class="mt-3">¿No cuenta con infraestructura para discapacitados?</label><br>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="sin_infraestructura_discapacidad" value="1">
-                                        <label class="form-check-label">Sí</label>
-                                    </div>
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="sin_infraestructura_discapacidad" value="0">
-                                        <label class="form-check-label">No</label>
-                                    </div>
+                                    
 
                                     <label class="mt-3">¿Que nivel de equipamiento tiene?</label>
                                     <select name="equipo_discapacidad_categoria" class="form-select">
@@ -225,60 +234,44 @@
                         </div>
 
                         <!--Seccion de filtro hidraulico-->
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="headingHidraulica">
-                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHidraulica">
-                                    🚰 Hidráulica
-                                </button>
-                            </h2>
-                            <div id="collapseHidraulica" class="accordion-collapse collapse">
-                                <div class="accordion-body fondo-territorial">
+<div class="accordion-item">
+    <h2 class="accordion-header" id="headingHidraulica">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseHidraulica">
+            🚰 Hidráulica
+        </button>
+    </h2>
+    <div id="collapseHidraulica" class="accordion-collapse collapse">
+        <div class="accordion-body fondo-territorial">
 
-                                    <h6 class="mb-2">💧 Tipo de suministro de agua</h6>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="agua_red_publica" id="agua_red_publica" value="1">
-                                        <label class="form-check-label" for="agua_red_publica">¿Cuenta con agua de red pública?</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="agua_pozo" id="agua_pozo" value="1">
-                                        <label class="form-check-label" for="agua_pozo">¿Tiene acceso a agua de pozo?</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="agua_cuerpo" id="agua_cuerpo" value="1">
-                                        <label class="form-check-label" for="agua_cuerpo">¿Utiliza agua de cuerpo natural?</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="agua_pipas" id="agua_pipas" value="1">
-                                        <label class="form-check-label" for="agua_pipas">¿Recibe agua por pipas?</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="agua_otro" id="agua_otro" value="1">
-                                        <label class="form-check-label" for="agua_otro">¿Existe otro tipo de suministro?</label>
-                                    </div>
+            <h6 class="mb-2">💧 Tipo de suministro de agua</h6>
+            <small class="text-muted">Mantén presionada la tecla Ctrl + click (Windows/Linux) o Cmd (Mac) para seleccionar varias opciones.</small>
 
-                                    <hr class="my-3">
+            <select class="form-select" name="tipo_suministro[]" id="tipo_suministro" multiple>
+                <option value="">Seleccione una opción</option>
+                <option value="agua_red_publica">Agua de red pública</option>
+                <option value="agua_pozo">Agua de pozo</option>
+                <option value="agua_cuerpo">Agua de cuerpo natural</option>
+                <option value="agua_pipas">Agua por pipas</option>
+                <option value="agua_otro">Otro tipo de suministro</option>
+            </select>
 
-                                    <h6 class="mb-2">🛢️ Almacenamiento de agua</h6>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="cisterna" id="cisterna" value="1">
-                                        <label class="form-check-label" for="cisterna">¿Dispone de cisterna?</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="tinacos" id="tinacos" value="1">
-                                        <label class="form-check-label" for="tinacos">¿Cuenta con tinacos?</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="tanque" id="tanque" value="1">
-                                        <label class="form-check-label" for="tanque">¿Tiene tanque de almacenamiento?</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" name="almacenamiento_otro" id="almacenamiento_otro" value="1">
-                                        <label class="form-check-label" for="almacenamiento_otro">¿Utiliza otro tipo de almacenamiento?</label>
-                                    </div>
+            <hr class="my-3">
 
-                                </div>
-                            </div>
-                        </div>
+            <h6 class="mb-2">🛢️ Almacenamiento de agua</h6>
+            
+
+            <select class="form-select" name="tipo_almacenamiento[]" id="tipo_almacenamiento" multiple>
+                <option value="">Seleccione una opción</option>
+                <option value="cisterna">Cisterna</option>
+                <option value="tinacos">Tinacos</option>
+                <option value="tanque">Tanque de almacenamiento</option>
+                <option value="otro">Otro tipo de almacenamiento</option>
+            </select>
+
+        </div>
+    </div>
+</div>
+
 
                         <!--Drenaje-->
                         <div class="accordion-item">
@@ -333,6 +326,7 @@
                                             <option value="bueno">Bueno</option>
                                             <option value="regular">Regular</option>
                                             <option value="malo">Malo</option>
+                                            <option value="no_tiene">No Tiene</option>    
                                         </select>
                                     </div>
 
@@ -343,6 +337,7 @@
                                             <option value="bueno">Bueno</option>
                                             <option value="regular">Regular</option>
                                             <option value="malo">Malo</option>
+                                            <option value="no_tiene">No Tiene</option>
                                         </select>
                                     </div>
 
@@ -353,6 +348,7 @@
                                             <option value="bueno">Bueno</option>
                                             <option value="regular">Regular</option>
                                             <option value="malo">Malo</option>
+                                            <option value="no_tiene">No Tiene</option>
                                         </select>
                                     </div>
 
@@ -489,6 +485,9 @@
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnAplicarFiltros">Aplicar filtros</button>
             </div>
+             <button type="button"  class="btn btn-secondary" id="btnLimpiarFiltros">
+                Limpiar filtros
+            </button>
         </div>
     </div>
 </div>

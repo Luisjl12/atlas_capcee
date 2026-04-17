@@ -3,13 +3,11 @@
 @section('title', 'Agregar Plantel')
 
 @section('content')
-<div class="container mt-4">
-    <div class="card-header bg-white border-bottom mb-4">
-        <a href="{{ route('planteles.index') }}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-            <h4 class="mb-4">
-                <i class="fas fa-arrow-left "></i>
-                <i class="fas fa-clipboard-list"></i> Registrar Nuevo Plantel
-            </h4>
+
+    <div class="card-header">
+        <a href="{{ route('planteles.index') }}" class="btn-icon-only">
+            <i class="fas fa-arrow-left "></i>
+           <h3><i class="fas fa-clipboard-list"></i> Registrar Nuevo Plantel</h3>
         </a>
     </div>
 
@@ -39,7 +37,7 @@
         @csrf
         <div class="form-section step-section" data-step="0">
             <h4>I. Datos de Identificación</h4>
-            <div class="row mb-3">
+            <div class="row">
                 <div class="col-md-4">
                     <label for="cct" class="form-label">CCT:</label>
                     <input type="text" class="form-control" name="cct" value="{{ old('cct') }}" required>
@@ -49,7 +47,7 @@
                     <input type="text" class="form-control" name="nombre_escuela" value="{{ old('nombre_escuela') }}" required>
                 </div>
             </div>
-            <div class="row mb-3">
+            <div class="row">
                 <div class="col-md-4">
                     <label for="nivel_educativo" class="form-label">Nivel Educativo:</label>
                     <select name="nivel_educativo" id="nivel_educativo" class="form-select" value="{{ old('nivel_educativo') }}" required>
@@ -82,7 +80,7 @@
             </div>
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i>Guardar Identificación</button>
+                <button type="submit" class="btn-custom btn-primary"><i class="fas fa-save"></i> Guardar Identificación</button>
             </div>
 
         </div>
@@ -101,7 +99,7 @@
                 Debes completar y guardar la Sección I antes de poder llenar esta sección.
             </div>
             @endunless
-            <div class="row mb-3">
+            <div class="row">
                 <div class="col-md-4">
                     <label for="id_municipio" class="form-label">Municipio:</label>
                     <select name="id_municipio" id="id_municipio" class="form-control">
@@ -140,7 +138,7 @@
                     <input type="text" name="nuevo_corde" id="input_nuevo_corde" class="form-control mt-2 d-none" placeholder="Nuevo CORDE">
                 </div>
             </div>
-            <div class="row mb-3">
+            <div class="row">
                 <div class="col-md-6">
                     <label for="domicilio_calle_numero" class="form-label">Calle y Número:</label>
                     <input type="text" class="form-control" name="domicilio_calle_numero" value="{{ old('domicilio_calle_numero') }}" placeholder="Ej. Av. Reforma 123" required>
@@ -155,32 +153,29 @@
                 </div>
             </div>
 
-            <div class="row mb-4">
-                <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-3">
                     <label for="latitud" class="form-label">Latitud:</label>
                     <input type="text" class="form-control" name="latitud" value="{{ old('latitud') }}" placeholder="Ej. 19.432608" required>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-3">
                     <label for="longitud" class="form-label">Longitud:</label>
                     <input type="text" class="form-control" name="longitud" value="{{ old('longitud') }}" placeholder="Ej. -99.133209" required>
                 </div>
-            </div>
-
-            <div class="row mb-3">
-
-                <div class="col-md-4">
+                
+                <div class="col-md-3">
                     <label class="form-label">Macroregión:</label>
                     <input type="text" class="form-control" value="{{ $plantel->macroregion->nombre_macroregion ?? 'No asignada' }}" readonly>
                 </div>
 
-                <div class="col-md-4">
+                <div class="col-md-3">
                     <label class="form-label">Microregión:</label>
                     <input type="text" class="form-control" value="{{ $plantel->microregion->nombre_microregiones ?? 'No asignada' }}" readonly>
                 </div>
             </div>
 
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Ubicación</button>
+                <button type="submit" class="btn-custom btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i> Guardar Ubicación</button>
             </div>
 
         </div>
@@ -201,23 +196,23 @@
                 Debes completar y guardar la Sección I antes de poder llenar esta sección.
             </div>
             @endunless
-            <div class="row mb-3">
-                <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-6">
                     <label for="telefono_plantel" class="form-label">Telefono del Plantel:</label>
                     <input type="text" class="form-control" name="telefono_plantel" value="{{ old('telefono_plantel') }}" required>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label for="correo_institucional" class="form-label">Correo Institucional:</label>
                     <input type="text" class="form-control" name="correo_institucional" value="{{ old('correo_institucional') }}" required>
                 </div>
             </div>
 
-            <div class="row mb-3">
-                <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-6">
                     <label for="nombre_director_registrado" class="form-label">Nombre del Director:*</label>
                     <input type="text" class="form-control" name="nombre_director_registrado" value="{{old('nombre_director_registrado')}}" required>
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <label for="id_director_asignado" class="form-label">Director Asignado(Usuario):</label>
                     <select name="id_director_asignado" class="form-select" required>
                         <option value="">Seleccione...</option>
@@ -230,7 +225,7 @@
                 </div>
             </div>
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Contacto</button>
+                <button type="submit" class="btn-custom btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i> Guardar Contacto</button>
             </div>
         </div>
 
@@ -272,7 +267,7 @@
                     value="{{ old('accesibilidad_otros') }}" placeholder="Especificar...">
             </div>
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Accesibilidad</button>
+                <button type="submit" class="btn-custom btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i> Guardar Accesibilidad</button>
             </div>
         </div>
     </form>
@@ -291,22 +286,22 @@
                 Debes completar y guardar la Sección I antes de poder llenar esta sección.
             </div>
             @endunless
-            <div class="row mb-3">
-                <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-4">
                     <label for="total_alumnos" class="form-label">Total Alumnos:</label>
                     <input type="number" class="form-control" name="total_alumnos" value="{{ old('total_alumnos') }}" required>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="total_docentes" class="form-label">Total Docentes</label>
                     <input type="number" class="form-control" name="total_docentes" value="{{old('total_docentes')}}" required>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-4">
                     <label for="total_administrativos" class="form-label">Total Administrativos</label>
                     <input type="number" class="form-control" name="total_administrativos" value="{{old('total_administrativos')}}" required>
                 </div>
             </div>
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Total Usuarios</button>
+                <button type="submit" class="btn-custom btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i> Guardar Total Usuarios</button>
             </div>
         </div>
     </form>
@@ -324,7 +319,7 @@
                 Debes completar y guardar la Sección I antes de poder llenar esta sección.
             </div>
             @endunless
-            <div class="row mb-3">
+            <div class="row">
                 <div class="col-md-4">
                     <label for="estatus_plantel" class="form-label">Estatus:</label>
                     <select name="estatus_plantel" class="form-select" required>
@@ -337,12 +332,11 @@
                 </div>
             </div>
             <div class="mt-4">
-                <button type="submit" class="btn btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i>Guardar Estatus Plantel</button>
+                <button type="submit" class="btn-custom btn-primary" {{ !isset($plantel) ? 'disabled' : '' }}><i class="fas fa-save"></i> Guardar Estatus Plantel</button>
             </div>
         </div>
     </form>
 
-</div>
 
 @push('scripts')
 

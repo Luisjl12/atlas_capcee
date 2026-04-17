@@ -138,6 +138,11 @@ class Plantel extends Model implements Auditable
     {
         return $this->morphMany(\OwenIt\Auditing\Models\Audit::class, 'auditable');
     }
+    
+     public function regionSocioeconomica()
+    {
+        return $this->belongsTo(\App\Models\RegionSocioeconomica::class);
+    }
 
     public function transformAudit(array $data): array
     {
@@ -145,23 +150,23 @@ class Plantel extends Model implements Auditable
 
         // Detectar cambios específicos
         if (isset($data['old_values']['nombre_escuela']) && isset($data['new_values']['nombre_escuela'])) {
-            $tags[] = 'CambioNombre';
+            $tags[] = 'Cambio de Nombre';
         }
 
         if (isset($data['old_values']['cct']) && isset($data['new_values']['cct'])) {
-            $tags[] = 'CambioCCT';
+            $tags[] = 'Cambio de CCT';
         }
 
         if (isset($data['old_values']['turno']) && isset($data['new_values']['turno'])) {
-            $tags[] = 'CambioTurno';
+            $tags[] = 'Cambio de Turno';
         }
 
         if (isset($data['old_values']['nivel_educativo']) && isset($data['new_values']['nivel_educativo'])) {
-            $tags[] = 'CambioNivel';
+            $tags[] = 'Cambio de Nivel';
         }
 
         if (isset($data['old_values']['sostenimiento']) && isset($data['new_values']['sostenimiento'])) {
-            $tags[] = 'CambioSostenimiento';
+            $tags[] = 'Cambio de Sostenimiento';
         }
         //Tag municipios
         if (
@@ -172,7 +177,7 @@ class Plantel extends Model implements Auditable
             $nombreAnterior = \App\Models\Municipio::find($data['old_values']['id_municipio'])?->nombre_municipio;
             $nombreNuevo = \App\Models\Municipio::find($data['new_values']['id_municipio'])?->nombre_municipio;
 
-            $tags[] = 'CambioMunicipio';
+            $tags[] = 'Cambio de Municipio';
 
             // Opcional: agregar nombres al detalle
 
@@ -186,7 +191,7 @@ class Plantel extends Model implements Auditable
             $nombreAnterior = \App\Models\Localidad::find($data['old_values']['id_localidad'])?->nombre_localidad;
             $nombreNuevo = \App\Models\Localidad::find($data['new_values']['id_localidad'])?->nombre_localidad;
 
-            $tags[] = 'CambioLocalidad';
+            $tags[] = 'Cambio de Localidad';
         }
         //Tag Corde 
         if (
@@ -196,16 +201,115 @@ class Plantel extends Model implements Auditable
         ) {
             $nombreAnterior = \App\Models\Corde::find($data['old_values']['id_corde'])?->nombre_corde;
             $nombreNuevo = \App\Models\Corde::find($data['new_values']['id_corde'])?->nombre_corde;
-            $tags[] = 'cambioCorde';
+            $tags[] = 'cambio de Corde';
         }
         //Tag Calle y numero
         if (isset($data['old_values']['domicilio_calle_numero']) && isset($data['new_values']['domicilio_calle_numero'])) {
-            $tags[] = 'CambioDomicilio';
+            $tags[] = 'Cambio de Domicilio';
         }
 
         //Tag domiclio_colonia
         if (isset($data['old_values']['domicilio_colonia']) && isset($data['new_values']['domicilio_colonia'])) {
             $tags[] = 'cambio Domicilio Colonia';
+        }
+        //Tag CP. 
+        if (isset($data['old_values']['domicilio_cp']) && isset($data['new_values']['domicilio_cp'])) {
+            $tags[] = 'cambio de Codigo postal';
+        }
+
+        //Cambio en la latitud
+        if (isset($data['old_values']['latitud']) && isset($data['new_values']['latitud'])) {
+            $tags[] = 'cambio de latitud';
+        }
+
+        //Cambio de logitud 
+        if (isset($data['old_values']['longitud']) && isset($data['new_values']['longitud'])) {
+            $tags[] = 'cambio de longitud';
+        }
+
+        //Cambio de contacto de telefono
+        if (isset($data['old_values']['telefono_plantel']) && isset($data['new_values']['telefono_plantel'])) {
+            $tags[] = 'cambio de telefono de contacto';
+        }
+
+        //Cambio de correo de contacto
+        if (isset($data['old_values']['correo_institucional']) && isset($data['new_values']['correo_institucional'])) {
+            $tags[] = 'cambio de correo institucional';
+        }
+
+        //Cambio de director asignado
+        if (isset($data['old_values']['nombre_director_registrado']) && isset($data['new_values']['nombre_director_registrado'])) {
+            $tags[] = 'Se agrego o cambio director asignado al plantel';
+        }
+
+        //Accesibilidad rampas 
+        if (
+            isset($data['old_values']['accesibilidad_rampas']) &&
+            isset($data['new_values']['accesibilidad_rampas']) &&
+            $data['old_values']['accesibilidad_rampas'] != $data['new_values']['accesibilidad_rampas']
+        ) {
+            $antes = $data['old_values']['accesibilidad_rampas'] ? 'Sí' : 'No';
+            $despues = $data['new_values']['accesibilidad_rampas'] ? 'Sí' : 'No';
+
+            $tags[] = 'Cambio en la accesibilidad en rampas';
+        }
+
+        //Accesibilidad baños adaptadaos 
+        if (
+            isset($data['old_values']['accesibilidad_banos_adaptados']) &&
+            isset($data['new_values']['accesibilidad_banos_adaptados']) &&
+            $data['old_values']['accesibilidad_banos_adaptados'] != $data['new_values']['accesibilidad_banos_adaptados']
+        ) {
+            $antes = $data['old_values']['accesibilidad_banos_adaptados'] ? 'Sí' : 'No';
+            $despues = $data['new_values']['accesibilidad_banos_adaptados'] ? 'Sí' : 'No';
+
+            $tags[] = 'Cambio en la accesibilidad en baños adaptados';
+        }
+
+        // Accesibilidad señaletica braile
+        if (
+            isset($data['old_values']['accesibilidad_sanaletica_braille']) &&
+            isset($data['new_values']['accesibilidad_sanaletica_braille']) &&
+            $data['old_values']['accesibilidad_sanaletica_braille'] != $data['new_values']['accesibilidad_sanaletica_braille']
+        ) {
+            $antes = $data['old_values']['accesibilidad_sanaletica_braille'] ? 'Sí' : 'No';
+            $despues = $data['new_values']['accesibilidad_sanaletica_braille'] ? 'Sí' : 'No';
+
+            $tags[] = 'Cambio en la accesibilidad de señaletica braille';
+        }
+
+        //Total de administrativos, docentes y alumnos
+        if (
+            isset($data['old_values']['total_alumnos']) &&
+            isset($data['new_values']['total_alumnos']) &&
+            $data['old_values']['total_alumnos'] != $data['new_values']['total_alumnos']
+        ) {
+            $tags[] = 'Cambio en el Total de Alumnos';
+        }
+
+        if (
+            isset($data['old_values']['total_docentes']) &&
+            isset($data['new_values']['total_docentes']) &&
+            $data['old_values']['total_docentes'] != $data['new_values']['total_docentes']
+        ) {
+            $tags[] = 'Cambio en el Total de Docentes';
+        }
+
+        if (
+            isset($data['old_values']['total_administrativos']) &&
+            isset($data['new_values']['total_administrativos']) &&
+            $data['old_values']['total_administrativos'] != $data['new_values']['total_administrativos']
+        ) {
+            $tags[] = 'Cambio en el Total de Administrativos';
+        }
+
+        //Cambio en el estatus de plantel
+        if (
+            isset($data['old_values']['estatus_plantel']) &&
+            isset($data['new_values']['estatus_plantel']) &&
+            $data['old_values']['estatus_plantel'] != $data['new_values']['estatus_plantel']
+        ) {
+            $tags[] = 'Cambio en el Estatus del Plantel';
         }
 
         // Agregar el rol del usuario como tag adicional

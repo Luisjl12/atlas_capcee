@@ -2,7 +2,7 @@
 @props(['foto'])
 
 @php
-$url = Storage::url($foto->ruta_foto);
+$url = asset('galeria/' . $foto->ruta_foto);
 $cct = $foto->plantel->cct ?? 'N/A';
 $nombrePlantel = $foto->plantel->nombre_escuela ?? 'Plantel desconocido';
 $nombreUsuario = $foto->usuario->nombre_completo ?? 'Usuario desconocido';

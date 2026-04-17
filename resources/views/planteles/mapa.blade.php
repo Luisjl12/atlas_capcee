@@ -7,14 +7,18 @@
 @include('partials.multifiltro')
 
 
+
 <div class="card-header-custom">
-    <a href="{{ route('dashboard.admin') }}" class="btn-icon-only">
-        <i class="fas fa-arrow-left" style="font-size:1.5rem;"></i>
+    @php
+    use App\Helpers\RoleHelper;
+    @endphp
+    <a href="{{ RoleHelper::mapaVista(session('role_id')) }}" class="btn-icon-only">
+        <i class="fas fa-arrow-left"></i>
         <h2><i class="bi bi-geo-alt-fill"></i> Mapa de Planteles</h2>
     </a>
 </div>
 
-<div style="display: flex; gap: 20px;">
+<div class="contenedor-mapa-filtros">
     <div class="sidebar-filtros">
         <h4>Regiones</h4>
         <input type="text" id="buscadorRegion" placeholder="Buscar región...">
@@ -70,11 +74,11 @@
         </div>
     </div>
 
-    <div style="flex:1; position: relative;">
+    <div class="contenedor-mapa">
         <!-- Botón flotante con menú de filtros -->
         <div style="position: absolute; top: 20px; right: 20px; z-index: 1000;">
             <div class="dropdown">
-                <button class="btn btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <button class="btn-custom btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                     Aplicar filtros
                 </button>
                 <ul class="dropdown-menu">
@@ -86,7 +90,7 @@
                     </li>
                     <li class="px-3">
                         <div class="input-group input-group-sm">
-                            <input type="text" class="form-control" id="input-cct" placeholder="Ingresa CCT">
+                            <input type="text" class="form-control" id="input-cct" placeholder=" CCT">
                             <button class="btn btn-primary" type="button" id="btn-buscar-cct">Buscar</button>
                         </div>
                     </li>
@@ -94,36 +98,9 @@
                     <li>
                         <h6 class="dropdown-header">Filtro avanzado</h6>
                     </li>
-                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalMultifiltro">Multifiltro</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <h6 class="dropdown-header">Infraestructura</h6>
-                    </li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-superficie">Superficie</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-obras">Obras recientes</a></li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <h6 class="dropdown-header">Accesibilidad</h6>
-                    </li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-agua">Hidráulica</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-energia">Energética</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-drenaje">Drenaje</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-accesibilidad">Accesibilidad</a></li>
-
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <h6 class="dropdown-header">Condiciones</h6>
-                    </li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-estado">Estado de conservación</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-sanitarios">Sanitarios</a></li>
-                    <li><a class="dropdown-item" href="#" id="btn-filtros-seguridad">Seguridad</a></li>
+                    <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#modalMultifiltro">Filtros avanzados</a></li>
+                    
+                
                 </ul>
             </div>
         </div>
@@ -258,17 +235,30 @@
                 <button id="cerrar-leyenda-general" class="cerrar-leyenda">✖</button>
                 <strong>Filtros aplicados:</strong>
                 <ul id="lista-filtros-activos" style="margin: 0; padding-left: 18px;"></ul>
-            </div>
-
-            <!-- Contador de planteles -->
-            <div id="contador-planteles" class="contador-planteles" style="display: none;">
-                <strong>Planteles encontrados:</strong> <span class="leyenda-badge" id="contador-planteles-numero">0</span>
+                <!-- Contador de planteles -->
+                <!-- Botón de descarga CSV -->
+                <button id="btn-descargar-csv" class="btn btn-success" style="margin-top:10px; display:none;"> Descargar CSV </button>
+                <div id="contador-planteles" style="display: none;">
+                    <strong>Planteles encontrados:</strong> <span class="leyenda-badge" id="contador-planteles-numero">0</span>
+                </div>
             </div>
         </div>
 
         <div id="map" style="height: 600px; border-radius: 8px; background: #fafafa;"></div>
     </div>
 </div>
+
+<!-- Modal Informativo -->
+<div id="modalInformativo" class="modal-overlay" style="display:none;">
+    <div class="modal-content">
+        <h5><i class="fas fa-info-circle"></i> Información</h5>
+        <p id="mensajeInformativo">Mensaje informativo</p>
+        <div class="modal-actions-info">
+            <button id="btnCerrarInfo" class="btn-custom btn-aceptar">Aceptar</button>
+        </div>
+    </div>
+</div>
+
 
 
 {{-- Estilos de Leaflet --}}
@@ -283,8 +273,8 @@
 <!--Script para graficar los mapas-->
 <script src="{{ asset('js/mapa_macroregiones.js') }}"></script>
 
-
 <!--Script para los filtros-->
+<script src="{{ asset('js/modal-info.js') }}"></script>
 <script src="{{ asset('js/filtrosPlanteles.js') }}"></script>
 
 <!--Script para el filtro de agua-->
@@ -312,11 +302,316 @@
 <script src="{{ asset('js/filtro_sanitarios.js') }}"></script>
 
 <!--script para el multifiltro-->
-<script src="{{ asset('js/filtro_multiple.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btnAplicarFiltros').addEventListener('click', function () {
+    const form = document.getElementById('formMultifiltro');
+    const formData = new FormData(form);
+    const params = {};
+
+    // Extraer nombres visibles de regiones
+    const macroregionSelect = document.getElementById('macroregion');
+    const microregionSelect = document.getElementById('microregion');
+    const municipioSelect = document.getElementById('municipio');
+
+    const macroregionNombre = macroregionSelect?.value !== ''
+     ? macroregionSelect.options[macroregionSelect.selectedIndex].text
+     : '';
+    const microregionNombre = microregionSelect?.value !== ''
+      ? microregionSelect.options[microregionSelect.selectedIndex].text
+    : '';
+    const municipioNombre = municipioSelect?.value !== ''
+     ? municipioSelect.options[municipioSelect.selectedIndex].text
+     : '';
+
+    const nombresLegibles = {
+     macroregion: macroregionNombre,
+     microregion: microregionNombre,
+    municipio: municipioNombre
+        };
+
+    for (const [key, value] of formData.entries()) {
+        if (value !== '' && value !== null) {
+            params[key] = value;
+        }
+    }
+    
+
+   
+
+    axios.get('/filtrar-avanzado', { params })
+        .then(response => {
+            const planteles = response.data.data;
+            console.log('Resultados filtrados:', planteles);
+            mostrarPlantelesEnMapa(planteles);
+            mostrarLeyendaFiltros(params, nombresLegibles);
+
+        })
+        .catch(error => {
+            console.error('Error al aplicar filtros:', error);
+        });
+
+    const modal = bootstrap.Modal.getInstance(document.getElementById('modalMultifiltro'));
+    modal.hide();
+
+    
+});
+
+function mostrarPlantelesEnMapa(planteles) {
+    const visibles = planteles.filter(p => p.latitud && p.longitud);
+    document.getElementById('contador-planteles-numero').textContent = visibles.length;
+    document.getElementById('contador-planteles').style.display = 'block';
+
+    if (visibles.length === 0) {
+        alert('No se encontraron planteles con los filtros seleccionados.');
+        return;
+    }
+
+    map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+            map.removeLayer(layer);
+        }
+    });
+
+    function normalizarEstado(estado) {
+        estado = (estado || '').toLowerCase().trim();
+        return estado === 'en_revision' ? 'revision' : estado;
+    }
+
+    function crearIconoPorEstado(estado) {
+        return L.divIcon({
+            className: 'custom-marker',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30],
+            html: `<i class="bi bi-geo-alt-fill marker-icon ${normalizarEstado(estado)}"></i>`
+        });
+    }
+
+    planteles.forEach(p => {
+        const niveles = Array.isArray(p.niveles)
+            ? p.niveles.map(n => n.nivel.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase())).join(', ')
+            : 'Sin nivel registrado';
+
+        const energia = [];
+        const e = p.energia || {};
+        if (e.suministro_energia === 1) energia.push('Suministro eléctrico');
+        if (e.energia_paneles_solares === 1) energia.push('Paneles solares');
+        if (e.energia_planta === 1) energia.push('Planta de energía');
+        const energiaTexto = energia.length > 0 ? energia.join(', ') : 'Sin datos energéticos';
+
+        if (p.latitud && p.longitud) {
+            L.marker([parseFloat(p.latitud), parseFloat(p.longitud)], {
+                icon: crearIconoPorEstado(p.estatus_plantel)
+            }).addTo(map).bindPopup(`
+                <b>${p.nombre_escuela}</b><br>
+                CCT: ${p.cct}<br>
+                <b>Nivel educativo:</b> ${niveles}<br>
+                Estado: ${normalizarEstado(p.estatus_plantel)}<br>
+                Municipio: ${p.municipio?.nombre_municipio || 'Sin dato'}<br>
+                Localidad: ${p.localidad?.nombre_localidad || 'Sin dato'}<br>
+                <a href="/planteles/${p.id}" target="_blank">Para ver todos sus detalles da click aquí</a>
+            `);
+        }
+    });
+      console.log('[DEBUG] DOM completamente cargado');
+
+  const btnLimpiar = document.getElementById('btnLimpiarFiltros');
+  if (!btnLimpiar) {
+    console.warn('[DEBUG] Botón #btnLimpiarFiltros no encontrado en el DOM');
+    return;
+  }
+
+  btnLimpiar.addEventListener('click', function () {
+    console.log('[DEBUG] Clic en botón Limpiar Filtros');
+
+    const form = document.getElementById('formMultifiltro');
+    if (!form) {
+      console.warn('[DEBUG] Formulario #formMultifiltro no encontrado');
+      return;
+    }
+
+    const inputs = form.querySelectorAll('input, select, textarea');
+    console.log(`[DEBUG] Total de inputs encontrados: ${inputs.length}`);
+
+    inputs.forEach(input => {
+      const tipo = input.type;
+      const nombre = input.name || input.id || '[sin nombre]';
+      const valorAntes = input.value;
+
+      if (tipo === 'checkbox' || tipo === 'radio') {
+        input.checked = false;
+        console.log(`[DEBUG] ${nombre} (${tipo}) → checked = false`);
+      } else {
+        input.value = '';
+        console.log(`[DEBUG] ${nombre} (${tipo}) → valor: "${valorAntes}" → ""`);
+      }
+    });
+
+    if (typeof $ !== 'undefined' && $('.select2').length > 0) {
+      console.log('[DEBUG] Reiniciando select2');
+      $('.select2').val(null).trigger('change');
+    } else {
+      console.warn('[DEBUG] jQuery o select2 no disponible');
+    }
+
+    const leyenda = document.getElementById('leyenda-filtros-activos');
+    const lista = document.getElementById('lista-filtros-activos');
+    if (leyenda) {
+      leyenda.style.display = 'none';
+      console.log('[DEBUG] Ocultando leyenda de filtros activos');
+    }
+    if (lista) {
+      lista.innerHTML = '';
+      console.log('[DEBUG] Limpiando lista de filtros activos');
+    }
+
+    if (typeof map !== 'undefined' && map.eachLayer) {
+      console.log('[DEBUG] Eliminando marcadores del mapa');
+      map.eachLayer(layer => {
+        if (layer instanceof L.Marker) {
+          map.removeLayer(layer);
+        }
+      });
+    } else {
+      console.warn('[DEBUG] Objeto "map" no definido o sin método eachLayer');
+    }
+
+    const contador = document.getElementById('contador-planteles');
+    if (contador) {
+      contador.style.display = 'none';
+      console.log('[DEBUG] Ocultando contador de planteles');
+    }
+  });
+}
+
+
+function mostrarLeyendaFiltros(params, nombresLegibles={}) {
+  const lista = document.getElementById('lista-filtros-activos');
+  lista.innerHTML = ''; // Limpia leyenda anterior
+
+  const camposNumericos = [
+    'banos_hombres_min',
+    'banos_mujeres_min',
+    'lavamanos_min',
+    'tomas_bebederos_min'
+  ];
+    //Estas etiquetas sirven para mostrar los filtros aplicados
+  const etiquetas = {
+    //Regiones y nivel 
+    nivel: 'Nivel educativo',
+    macroregion: 'Macroregión',
+    microregion: 'Microregión',
+    municipio: 'Municipio',
+    //Superficie
+    superficie: '¿Cual es su superficie en metros cuadrados?', 
+    //Suministro de energia
+    suministro_energia: '¿Tiene suministro eléctrico?',
+    energia_paneles_solares: '¿Tiene paneles solares?',
+    energia_planta: '¿Tiene planta eléctrica?',
+    //Seguridad
+    proteccion_civil: '¿Cuenta con dictamen de protección Civil?',
+    barda_completa: '¿Tiene barda completa?',
+    estado_barda: '¿Cual es el estado de la barda?',
+    estado_cerco: '¿Cual es el estado del cerco?',
+    //Accesibilidad
+    infraestructura_discapacidad: '¿Cuenta con infraestructura para personas discapacitadas?', 
+    sin_infraestructura_discapacidad: '¿El inmueble no cuenta con infraestructura para personas discapacitadas?', 
+    equipo_discapacidad_categoria: '¿Cual es el nivel de equipamiento para discapacitados con el que se cuenta?', 
+    //Obras realizadas
+    rehabilitacion_realizada: '¿Se han realizado obras de rehabilitación en los últimos cinco años?',
+    rehabilitacion_impermeabilizacion:'¿Obras de impermeabilización?', 
+    rehabilitacion_albanileria:'¿Obras de albañilería?' ,
+    rehabilitacion_pintura:'¿Rehabilitación con pintura general?',
+    rehabilitacion_red_hidraulica: '¿Obras en la red hidráulica?',
+    rehabilitacion_red_sanitaria:'¿Obras en la red sanitaria?',
+    rehabilitacion_esctructural:'¿Mejoras estructurales?',
+    obras_nuevas:'¿Obras nuevas en los últimos cinco años?',
+    construccion_educativa:'¿Construcción en espacios educativos?',
+    construccion_deportiva:'¿Construcción en espacios deportivos o recreativos?',
+    construccion_sanitaria:'¿Construcción en sanitarios?',
+    construccion_complementos:'¿Construcción de complementos?',
+    construccion_otro:'¿Otros tipos de construcción?',
+    //Agua
+    agua_red_publica: '¿Cuenta con agua de red pública?', 
+    agua_pozo:'¿Tiene acceso a agua de pozo?', 
+    agua_cuerpo: '¿Utiliza agua de cuerpo natural?', 
+    agua_pipas: '¿Recibe agua por pipas?', 
+    agua_otro: '¿Existe otro tipo de suministro?', 
+    cisterna: '¿Dispone de cisterna?', 
+    tinacos: '¿Cuenta con tinacos?', 
+    tanque: '¿Tiene tanque de almacenamiento?', 
+    almacenamiento_otro: '¿Utiliza otro tipo de almacenamiento?', 
+    //Baños
+    estado_banos: '¿Cual es el estado del baño?', 
+    banos_hombres_min: '¿Cual es la cantidad minima de baños de hombres', 
+    banos_mujeres_min: '¿Cual es la cantidad minima de baños de mujeres', 
+    lavamanos_min: '¿Cual es la cantidad minima de lavamanos?', 
+    estado_lavamanos: '¿Cual es el estado de los lavamanos?', 
+    tomas_bebederos_min: '¿Cual es la cantidad minima de bebederos?', 
+    estado_bebederos: '¿Cual es el estado de los bebederos?', 
+    //Drenaje
+    drenaje_publico: '¿Cuenta con drenaje público?', 
+    fosa_septica: '¿Cuenta con fosa septica?', 
+    planta_tratamiento: '¿Cuenta con planta de tratamiento para aguas negras?', 
+    descarga_otro: '¿Cuenta con otro tipo de descarga?', 
+    separacion_aguas: '¿Cuenta con sepacion de aguas negras?', 
+    //Estados de conservacion
+    estado_red_hidraulica: '¿Cual es el estado de la red hidraulica', 
+    estado_instalacion_sanitaria: '¿Cual es el estado de la instalación sanitaria?', 
+    estado_instalacion_electrica: '¿Cual es el estado de la instalación electrica?', 
+  };
+  
+  document.getElementById('leyenda-filtros-activos').style.display = 'block'
+
+  const btnCSV = document.getElementById('btn-descargar-csv'); 
+  btnCSV.style.display = 'inline-block';
+
+  const queryString = new URLSearchParams(params).toString();
+  const categoriaSeleccionada = params.categoria || 'sanitario';
+  const url = `/exportar-csv/${categoriaSeleccionada}?${queryString}`;
+
+  btnCSV.onclick = () => {
+    window.location.href = url;
+  };  
+
+  document.getElementById('cerrar-leyenda-general')?.addEventListener('click', () => {
+    document.getElementById('leyenda-filtros-activos').style.display = 'none';
+    btnCSV.style.display = 'none';
+  });
+
+  Object.entries(params).forEach(([key, value]) => {
+    if (!etiquetas[key]) return;
+
+    const texto = nombresLegibles[key] ||
+              (camposNumericos.includes(key) ? value :
+              value === '1' ? 'Sí' :
+              value === '0' ? 'No' :
+              value.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()));
+
+    const li = document.createElement('li');
+    li.innerHTML = `<b>${etiquetas[key]}:</b> <span class="leyenda-badge">${texto}</span>`;
+    lista.appendChild(li);
+  });
+
+  document.getElementById('leyenda-filtros-activos').style.display = 'block';
+
+  document.getElementById('cerrar-leyenda-general')?.addEventListener('click', () => {
+    document.getElementById('leyenda-filtros-activos').style.display = 'none';
+  });
+}
+});
+
+</script>
 
 <!--script para buscador rapido--->
 <script src="{{ asset('js/buscador_rapido.js') }}"></script>
 
+<script>
+    window.alert = function(mensaje) {
+        mostrarModalInformativo(mensaje);
+    };
+</script>
 
 <x-modal-filtros
     id="modal-agua"
@@ -329,6 +624,7 @@
     'niveles' => $niveles
     ])
 </x-modal-filtros>
+
 
 <x-modal-filtros
     id="modal-energia"

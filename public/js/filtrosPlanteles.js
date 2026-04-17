@@ -73,12 +73,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const superficieLegible = formatearTextoClave(superficie);
 
         if (!(macroregion || microregion || municipio)) {
-            alert('Debes seleccionar al menos una región (macro, micro o municipio).');
+             mostrarModalInformativo('Debes seleccionar al menos una región (macroregión, microregión o municipio).');
             return;
         }
 
         if (!nivel) {
-            alert('Debes seleccionar un nivel antes de filtrar.');
+           mostrarModalInformativo('Debes seleccionar un nivel educativo antes de aplicar los filtros.');
             return;
         }
 

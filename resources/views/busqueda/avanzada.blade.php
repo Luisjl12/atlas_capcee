@@ -3,24 +3,20 @@
 @section('title', 'Buscador Avanzado')
 
 @section('content')
-<div class="container mt-4">
+
     @php
     use App\Helpers\RoleHelper;
     @endphp
 
     <div class="card-header-custom">
         <a href="{{ RoleHelper::dashboardRoute(session('role_id')) }}"
-            class="text-decoration-none d-inline-flex align-items-center text-dark">
-            <h4>
-                <i class="fas fa-arrow-left"></i>
-                <i class="fas fa-search"></i>
-                <strong> Buscador Avanzado de Planteles</strong>
-            </h4>
+            class="btn-icon-only">
+            <i class="fas fa-arrow-left"></i>
+            <h2><i class="fas fa-search me-3"></i>Buscador Avanzado de Planteles</h2>
         </a>
     </div>
 
-    <div class="card">
-        <div class="card-body">
+        <div class="data-table-container">
 
             <!-- Botón para abrir modal -->
             <p id="toggleFiltros" class="p-toggle-filtro">
@@ -29,7 +25,7 @@
 
             <!-- Modal de filtros -->
             <div id="modalFiltros" class="modal-filtros" style="display: none;">
-                <div class="modal-content">
+                <div class="modal-content-avanzado">
                     <div class="modal-header">
                         <button class="close-modal" id="closeModal">&times;</button>
                     </div>
@@ -69,12 +65,14 @@
                                         {{ request('nivel_educativo') == '' ? 'checked' : '' }}>
                                     <span>Todos</span>
                                 </label>
-                                @foreach($nivelesEducativos as $nivel)
+                                @foreach($nivelesEducativos as $nivel) 
+                                    @if(!empty($nivel))
                                 <label>
                                     <input type="radio" name="nivel_educativo" value="{{ $nivel }}"
-                                        {{ request('nivel_educativo') == $nivel ? 'checked' : '' }}>
+                                    {{ request('nivel_educativo') == $nivel ? 'checked' : '' }}>
                                     <span>{{ $nivel }}</span>
                                 </label>
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
@@ -139,7 +137,7 @@
 
                         {{-- Footer del modal --}}
                         <div class="modal-footer">
-                            <button type="submit" class="btn show">Mostrar Planteles</button>
+                            <button type="submit" class="btn-custom show">Mostrar Planteles</button>
                             <a href="{{ route('busqueda.avanzada') }}" class="btn-limpiador">
                                 <i class="fas fa-eraser"></i>
                             </a>
@@ -153,10 +151,18 @@
 
             {{-- Tabla de resultados --}}
             @include('partials.lista_avanzada', ['planteles' => $planteles])
-
         </div>
-    </div>
-</div>
+        
+    {{-- Paginación --}}
+    @if(method_exists($planteles, 'links'))
+    <nav class="pagination-container" aria-label="Navegación de páginas">
+        <ul class="pagination">
+            <li class="page-item ">
+                {{ $planteles->links('vendor.pagination.mi_paginacion') }}
+            </li>
+        </ul>
+    </nav>
+    @endif
 @endsection
 
 @push('scripts')
@@ -173,5 +179,5 @@
         }
     });
 </script>
-<script src="{{ asset('js/tabla-expandible-planteles.js') }}"></script>
+<script src="{{ asset('js/tabla-expandible-avanzado.js') }}"></script>
 @endpush

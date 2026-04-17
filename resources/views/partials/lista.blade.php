@@ -39,11 +39,13 @@
                 </td>
                 <td>
                     <div class="acciones-btns d-flex align-items-center gap-1 flex-nowrap">
-                        <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-sm btn-info" title="Ver Detalle Completo">
+                        <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-sm btn-info custom-tooltip">
                             <i class="fas fa-eye"></i>
+                            <span class="tooltiptext">Ver Detalle</span>
                         </a>
-                        <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-sm btn-primary" title="Editar Ficha Base">
+                        <a href="{{ route('planteles.edit', $plantel->id) }}" class="btn btn-sm btn-primary custom-tooltip">
                             <i class="fas fa-pen"></i>
+                            <span class="tooltiptext">Editar</span>
                         </a>
                         <button type="button" class="btn btn-sm btn-danger"
                             onclick="mostrarModalConfirmacion('¿Seguro que quieres eliminar a este plantel?', '{{ route('planteles.destroy', $plantel->id) }}')">
@@ -99,6 +101,7 @@
 
         </tbody>
     </table>
+</div>
 
     {{-- Paginación --}}
     @if(method_exists($planteles, 'links'))
@@ -110,4 +113,3 @@
         </ul>
     </nav>
     @endif
-</div>

@@ -1,13 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container mt-4">
     <div class="card-header-custom">
-        <a href="{{route('panel.supervision')}}" class="text-decoration-none d-inline-flex align-items-center text-dark">
-            <h4>
-                <i class="fas fa-arrow-left "></i>
-                <i class="fas fa-chart-line"></i> Detalle de Supervisión: CORDE {{ $corde->nombre_corde }}
-            </h4>
+        <a href="{{route('panel.supervision')}}" class="btn-icon-only">
+            <i class="fas fa-arrow-left "></i>
+            <h2><i class="fas fa-chart-line"></i> Detalle de Supervisión: CORDE {{ $corde->nombre_corde }}</h2>
         </a>
     </div>
     <div class="card-body-custom p-4 mt-3">
@@ -66,7 +63,6 @@
 
         </tbody>
     </table>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

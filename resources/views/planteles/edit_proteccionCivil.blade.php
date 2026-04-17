@@ -9,7 +9,14 @@ $detalle = $plantel->detalleProteccionCivil;
 @endphp
 
 <div class="container mt-4">
-    <h3><i class="fas fa-hard-hat"></i> Editar Protección Civil - {{ $plantel->nombre_escuela ?? 'Plantel desconocido' }}</h3>
+    
+    <div class="card-header">
+         <a href="{{ route('planteles.show', $plantel->id) }}" class="btn-icon-only">
+            <i class="fas fa-arrow-left "></i>
+            <h3><i class="fas fa-hard-hat"></i> Editar Protección Civil - {{ $plantel->nombre_escuela ?? 'Plantel desconocido' }}</h3>
+        </a>
+
+    </div>
 
     {{-- Mostrar errores de validación --}}
     @if ($errors->any())
@@ -104,7 +111,7 @@ $detalle = $plantel->detalleProteccionCivil;
                             value="{{ old('programa_interno_pc_fecha', $detalle?->programa_interno_pc_fecha) }}">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg">
+                <button type="submit" class="btn-custom btn-primary">
                     <i class="fas fa-save"></i> Guardar Datos
                 </button>
 
@@ -149,7 +156,14 @@ $detalle = $plantel->detalleProteccionCivil;
                             value="{{ old('simulacros_ultimo_anio', $detalle?->simulacros_ultimo_anio ?? 0) }}">
                     </div>
                 </div>
-                <button type="submit" class="btn btn-primary btn-lg">
+                <!-- Nuevo campo: Estado del techado -->
+                <div class="form-group col-md-6">
+                    <label>Estado del Techado:</label>
+                    <p class="form-control-plaintext">
+                        {{ $detalle?->estado_techados ?? 'No registrado' }}
+                    </p>
+                </div>
+                <button type="submit" class="btn-custom btn-primary">
                     <i class="fas fa-save"></i> Guardar Datos
                 </button>
             </div>
@@ -159,21 +173,16 @@ $detalle = $plantel->detalleProteccionCivil;
             @csrf
             <input type="hidden" name="seccion" value="observaciones">
             <div class="form-section step-section" data-step="2">
-                <div class="form-section">
+                
                     <h4>Observaciones Generales</h4>
                     <div class="form-group">
                         <label for="observaciones">Observaciones Adicionales de Protección Civil:</label>
                         <textarea name="observaciones" id="observaciones" class="form-control" rows="3">{{ old('observaciones', $detalle?->observaciones) }}</textarea>
                     </div>
-                </div>
-
-                <hr>
-                <button type="submit" class="btn btn-primary btn-lg">
+                
+                <button type="submit" class="btn-custom btn-primary">
                     <i class="fas fa-save"></i> Guardar Datos
                 </button>
-                <a href="{{ route('planteles.show', $plantel->id) }}" class="btn btn-secondary btn-lg">
-                    <i class="fas fa-times"></i> Cancelar
-                </a>
             </div>
         </form>
     </div>

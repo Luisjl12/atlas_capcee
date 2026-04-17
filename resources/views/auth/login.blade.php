@@ -49,7 +49,7 @@
             </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-sign-in-alt"></i>
+                <button type="submit" class="btn-custom btn-primary btn-block"><i class="fas fa-sign-in-alt"></i>
                     Ingresar</button>
             </div>
         </form>
@@ -58,6 +58,10 @@
     <footer class="login-footer">
         <div class="footer">© 2025 ATLAS DE PUEBLA</div>
     </footer>
+    
+    {{--Script para alertas--}}
+    <script src="{{asset('js/alerts.js')}}"></script>
+    
 </body>
 
 </html>

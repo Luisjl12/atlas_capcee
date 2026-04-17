@@ -1,0 +1,71 @@
+[12-Oct-2025 19:28:25 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: A facade root has not been set. in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:358
+Stack trace:
+#0 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/RegisterErrorViewPaths.php(17): Illuminate\Support\Facades\Facade::__callStatic('replaceNamespac...', Array)
+#1 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(918): Illuminate\Foundation\Exceptions\RegisterErrorViewPaths->__invoke()
+#2 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(893): Illuminate\Foundation\Exceptions\Handler->registerErrorViewPaths()
+#3 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(818): Illuminate\Foundation\Exceptions\Handler->renderHttpException(Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#4 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(709): Illuminate\Foundation\Exceptions\Handler->prepareResponse(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#5 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(597): Illuminate\Foundation\Exceptions\Handler->renderExceptionResponse(Object(Illuminate\Http\Request), Object(ParseError))
+#6 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(574): Illuminate\Foundation\Exceptions\Handler->render(Object(Illuminate\Http\Request), Object(ParseError))
+#7 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(148): Illuminate\Foundation\Http\Kernel->renderException(Object(Illuminate\Http\Request), Object(ParseError))
+#8 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1219): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#9 /home1/bcecacef/atlasinfraescolarpueblaa.online/public/index.php(20): Illuminate\Foundation\Application->handleRequest(Object(Illuminate\Http\Request))
+#10 {main}
+  thrown in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php on line 358
+[12-Oct-2025 19:29:47 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: A facade root has not been set. in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:358
+Stack trace:
+#0 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/RegisterErrorViewPaths.php(17): Illuminate\Support\Facades\Facade::__callStatic('replaceNamespac...', Array)
+#1 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(918): Illuminate\Foundation\Exceptions\RegisterErrorViewPaths->__invoke()
+#2 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(893): Illuminate\Foundation\Exceptions\Handler->registerErrorViewPaths()
+#3 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(818): Illuminate\Foundation\Exceptions\Handler->renderHttpException(Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#4 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(709): Illuminate\Foundation\Exceptions\Handler->prepareResponse(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#5 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(597): Illuminate\Foundation\Exceptions\Handler->renderExceptionResponse(Object(Illuminate\Http\Request), Object(ParseError))
+#6 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(574): Illuminate\Foundation\Exceptions\Handler->render(Object(Illuminate\Http\Request), Object(ParseError))
+#7 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(148): Illuminate\Foundation\Http\Kernel->renderException(Object(Illuminate\Http\Request), Object(ParseError))
+#8 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1219): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#9 /home1/bcecacef/atlasinfraescolarpueblaa.online/public/index.php(20): Illuminate\Foundation\Application->handleRequest(Object(Illuminate\Http\Request))
+#10 {main}
+  thrown in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php on line 358
+[12-Oct-2025 19:30:29 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: A facade root has not been set. in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:358
+Stack trace:
+#0 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/RegisterErrorViewPaths.php(17): Illuminate\Support\Facades\Facade::__callStatic('replaceNamespac...', Array)
+#1 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(918): Illuminate\Foundation\Exceptions\RegisterErrorViewPaths->__invoke()
+#2 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(893): Illuminate\Foundation\Exceptions\Handler->registerErrorViewPaths()
+#3 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(818): Illuminate\Foundation\Exceptions\Handler->renderHttpException(Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#4 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(709): Illuminate\Foundation\Exceptions\Handler->prepareResponse(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#5 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(597): Illuminate\Foundation\Exceptions\Handler->renderExceptionResponse(Object(Illuminate\Http\Request), Object(ParseError))
+#6 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(574): Illuminate\Foundation\Exceptions\Handler->render(Object(Illuminate\Http\Request), Object(ParseError))
+#7 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(148): Illuminate\Foundation\Http\Kernel->renderException(Object(Illuminate\Http\Request), Object(ParseError))
+#8 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1219): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#9 /home1/bcecacef/atlasinfraescolarpueblaa.online/public/index.php(20): Illuminate\Foundation\Application->handleRequest(Object(Illuminate\Http\Request))
+#10 {main}
+  thrown in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php on line 358
+[12-Oct-2025 19:30:33 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: A facade root has not been set. in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:358
+Stack trace:
+#0 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/RegisterErrorViewPaths.php(17): Illuminate\Support\Facades\Facade::__callStatic('replaceNamespac...', Array)
+#1 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(918): Illuminate\Foundation\Exceptions\RegisterErrorViewPaths->__invoke()
+#2 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(893): Illuminate\Foundation\Exceptions\Handler->registerErrorViewPaths()
+#3 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(818): Illuminate\Foundation\Exceptions\Handler->renderHttpException(Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#4 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(709): Illuminate\Foundation\Exceptions\Handler->prepareResponse(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#5 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(597): Illuminate\Foundation\Exceptions\Handler->renderExceptionResponse(Object(Illuminate\Http\Request), Object(ParseError))
+#6 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(574): Illuminate\Foundation\Exceptions\Handler->render(Object(Illuminate\Http\Request), Object(ParseError))
+#7 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(148): Illuminate\Foundation\Http\Kernel->renderException(Object(Illuminate\Http\Request), Object(ParseError))
+#8 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1219): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#9 /home1/bcecacef/atlasinfraescolarpueblaa.online/public/index.php(20): Illuminate\Foundation\Application->handleRequest(Object(Illuminate\Http\Request))
+#10 {main}
+  thrown in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php on line 358
+[12-Oct-2025 19:30:34 America/Mexico_City] PHP Fatal error:  Uncaught RuntimeException: A facade root has not been set. in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php:358
+Stack trace:
+#0 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/RegisterErrorViewPaths.php(17): Illuminate\Support\Facades\Facade::__callStatic('replaceNamespac...', Array)
+#1 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(918): Illuminate\Foundation\Exceptions\RegisterErrorViewPaths->__invoke()
+#2 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(893): Illuminate\Foundation\Exceptions\Handler->registerErrorViewPaths()
+#3 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(818): Illuminate\Foundation\Exceptions\Handler->renderHttpException(Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#4 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(709): Illuminate\Foundation\Exceptions\Handler->prepareResponse(Object(Illuminate\Http\Request), Object(Symfony\Component\HttpKernel\Exception\HttpException))
+#5 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Exceptions/Handler.php(597): Illuminate\Foundation\Exceptions\Handler->renderExceptionResponse(Object(Illuminate\Http\Request), Object(ParseError))
+#6 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(574): Illuminate\Foundation\Exceptions\Handler->render(Object(Illuminate\Http\Request), Object(ParseError))
+#7 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(148): Illuminate\Foundation\Http\Kernel->renderException(Object(Illuminate\Http\Request), Object(ParseError))
+#8 /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Foundation/Application.php(1219): Illuminate\Foundation\Http\Kernel->handle(Object(Illuminate\Http\Request))
+#9 /home1/bcecacef/atlasinfraescolarpueblaa.online/public/index.php(20): Illuminate\Foundation\Application->handleRequest(Object(Illuminate\Http\Request))
+#10 {main}
+  thrown in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/laravel/framework/src/Illuminate/Support/Facades/Facade.php on line 358
+[13-Oct-2025 05:13:55 UTC] PHP Fatal error:  Allowed memory size of 536870912 bytes exhausted (tried to allocate 20480 bytes) in /home1/bcecacef/atlasinfraescolarpueblaa.online/vendor/dompdf/dompdf/src/Css/Style.php on line 2285

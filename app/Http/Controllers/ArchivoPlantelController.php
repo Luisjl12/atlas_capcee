@@ -30,13 +30,14 @@ class ArchivoPlantelController extends Controller
         $tamano = $archivo->getSize();
         $nombreSistema = uniqid() . '_' . $nombreOriginal;
 
-        $ruta = $archivo->storeAs('archivos_plantel', $nombreSistema, 'public');
+        $ruta = $archivo->storeAs($request->cct, $nombreSistema, 'archivos_directo');
+
 
         ArchivosPlantel::create([
             'cct' => $request->cct,
             'nombre_archivo_original' => $nombreOriginal,
             'nombre_archivo_sistema' => $nombreSistema,
-            'ruta_archivo' => $ruta,
+            'ruta_archivo' => $request->cct . '/' . $nombreSistema,
             'tipo_documento' => $tipoDocumento,
             'descripcion' => $request->descripcion,
             'fecha_subido' => now(),
@@ -72,7 +73,7 @@ class ArchivoPlantelController extends Controller
     {
 
         $archivo = ArchivosPlantel::findOrFail($id);
-        $ruta = Storage::disk('public')->path($archivo->ruta_archivo);
+        $ruta = Storage::disk('archivos_directo')->path($archivo->ruta_archivo);
         $visualizables = ['application/pdf', 'image/jpeg', 'image/png', 'image/gif'];
         $mime = mime_content_type($ruta);
         $disposicion = in_array($mime, $visualizables) ? 'inline' : 'attachment';

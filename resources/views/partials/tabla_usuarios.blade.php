@@ -37,8 +37,9 @@
                 </td>
                 <td>
                     <div class="acciones-btns">
-                        <a href="{{ route('usuarios.edit', $usuario->id) }}" class="btn btn-sm btn-vino">
+                        <a href="{{ route('usuarios.edit', $usuario->id) }}" class="btn btn-sm btn-vino custom-tooltip">
                             <i class="fas fa-pen"></i>
+                            <span class="tooltiptext">Editar</span>
                         </a>
                         @if(auth()->id() !== $usuario->id)
                         <button type="button" class="btn btn-sm btn-danger"
@@ -88,14 +89,4 @@
 
         </tbody>
     </table>
-    {{-- Paginación --}}
-    @if(method_exists($usuarios, 'links'))
-    <nav class="pagination-container" aria-label="Navegación de páginas">
-        <ul class="pagination">
-            <li class="page-item ">
-                {{ $usuarios->links('vendor.pagination.mi_paginacion') }}
-            </li>
-        </ul>
-    </nav>
-    @endif
 </div>
