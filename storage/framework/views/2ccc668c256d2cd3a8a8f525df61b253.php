@@ -49,14 +49,28 @@
                             <div class="tab-content pt-4" id="contenidoTabs_<?php echo e($reporte->id); ?>">
                                 
                                 <div class="tab-pane fade show active" id="barras_<?php echo e($reporte->id); ?>" role="tabpanel">
-                                    <div class="bg-white border rounded p-3 shadow-sm" style="max-height: 680px; overflow-y: auto; overflow-x: hidden; touch-action: pan-y; -webkit-overflow-scrolling: touch;">
-                                        <canvas id="grafica_barras_<?php echo e($reporte->id); ?>"></canvas>
+                                    <div class="d-flex justify-content-end mb-2">
+                                        <div class="btn-group btn-group-sm" role="group" aria-label="Zoom gráfico de barras">
+                                            <button type="button" id="zoomOut_<?php echo e($reporte->id); ?>" class="btn btn-outline-primary" title="Reducir zoom">
+                                                <i class="fas fa-search-minus"></i>
+                                            </button>
+                                            <button type="button" id="zoomIn_<?php echo e($reporte->id); ?>" class="btn btn-outline-primary" title="Aumentar zoom">
+                                                <i class="fas fa-search-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="bg-white border rounded p-3 shadow-sm" style="max-height: 680px; overflow-x: auto; overflow-y: auto; -webkit-overflow-scrolling: touch;">
+                                        <div style="min-width: 920px; width: fit-content; padding-bottom: 12px; display: inline-block;">
+                                            <canvas id="grafica_barras_<?php echo e($reporte->id); ?>" style="display: block;"></canvas>
+                                        </div>
                                     </div>
                                 </div>
 
                                 <div class="tab-pane fade" id="pastel_<?php echo e($reporte->id); ?>" role="tabpanel">
-                                    <div style="height: 350px; display: flex; justify-content: center; background-color: #ffffff !important; border-radius: 8px; padding: 10px; border: 1px solid #dee2e6;">
-                                        <canvas id="grafica_pastel_<?php echo e($reporte->id); ?>" style="background-color: transparent !important;"></canvas>
+                                    <div style="overflow-x: auto; overflow-y: hidden; width: 100%; display: block; background-color: #ffffff !important; border-radius: 8px; padding: 10px; border: 1px solid #dee2e6; -webkit-overflow-scrolling: touch;">
+                                        <div style="min-width: 420px; width: 420px; height: 420px; display: inline-block;">
+                                            <canvas id="grafica_pastel_<?php echo e($reporte->id); ?>" style="width: 100%; height: 100%; display: block; background-color: transparent !important;"></canvas>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -65,13 +79,13 @@
                                    class="form-control mb-3" 
                                    placeholder="Buscar en la tabla...">
                                    
-                                    <div class="table-responsive">
+                                    <div class="table-responsive d-none d-md-block">
                                     <table class="table table-bordered table-striped table-hover text-center align-middle table-sm" 
-                                           id="tablaDetalle_<?php echo e($reporte->id); ?>">
+                                           id="tablaDetalle_<?php echo e($reporte->id); ?>" style="table-layout: auto; width: 100%;">
 
                                             <thead style="background-color: #691C32; color: white;">
                                                 <tr>
-                                                    <th>Objeto del Gasto</th>
+                                                    <th style="min-width: 300px; max-width: 300px; white-space: normal; word-wrap: break-word;">Objeto del Gasto</th>
                                                     <th>Aprobado</th>
                                                     <th>Presupuesto Vigente</th>
                                                     <th>Pagado</th>
@@ -82,11 +96,11 @@
                                                 <?php if(isset($grafica->labels)): ?>
                                                     <?php $__currentLoopData = $grafica->labels; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                     <tr>
-                                                        <td class="text-start fw-bold"><?php echo e($label); ?></td>
-                                                        <td>$<?php echo e(number_format((float)($grafica->aprobado[$index] ?? 0), 2)); ?></td>
-                                                        <td>$<?php echo e(number_format((float)($grafica->vigente[$index] ?? 0), 2)); ?></td>
-                                                        <td class="text-success fw-bold">$<?php echo e(number_format((float)($grafica->pagado[$index] ?? 0), 2)); ?></td>
-                                                        <td class="text-primary fw-bold">$<?php echo e(number_format((float)($grafica->diferencia[$index] ?? 0), 2)); ?></td>
+                                                        <td class="text-start fw-bold" style="white-space: normal; word-break: break-word; max-width: 300px;"><?php echo e($label); ?></td>
+                                                        <td style="white-space: normal; word-break: break-word;">$<?php echo e(number_format((float)($grafica->aprobado[$index] ?? 0), 2)); ?></td>
+                                                        <td style="white-space: normal; word-break: break-word;">$<?php echo e(number_format((float)($grafica->vigente[$index] ?? 0), 2)); ?></td>
+                                                        <td class="text-success fw-bold" style="white-space: normal; word-break: break-word;">$<?php echo e(number_format((float)($grafica->pagado[$index] ?? 0), 2)); ?></td>
+                                                        <td class="text-primary fw-bold" style="white-space: normal; word-break: break-word;">$<?php echo e(number_format((float)($grafica->diferencia[$index] ?? 0), 2)); ?></td>
                                                     </tr>
                                                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 <?php endif; ?>
@@ -101,6 +115,67 @@
                                                 </tr>
                                             </tfoot>
                                         </table>
+                                    </div>
+
+                                    <!-- Diseño de tarjetas para móviles -->
+                                    <div class="d-md-none">
+                                        <?php if(isset($grafica->labels)): ?>
+                                            <?php $__currentLoopData = $grafica->labels; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                <div class="card mb-3 shadow-sm">
+                                                    <div class="card-header bg-light">
+                                                        <h6 class="mb-0 fw-bold"><?php echo e($label); ?></h6>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        <div class="row text-center">
+                                                            <div class="col-6">
+                                                                <small class="text-muted">Aprobado</small><br>
+                                                                <span class="fw-bold">$<?php echo e(number_format((float)($grafica->aprobado[$index] ?? 0), 2)); ?></span>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <small class="text-muted">Vigente</small><br>
+                                                                <span class="fw-bold">$<?php echo e(number_format((float)($grafica->vigente[$index] ?? 0), 2)); ?></span>
+                                                            </div>
+                                                        </div>
+                                                        <hr>
+                                                        <div class="row text-center">
+                                                            <div class="col-6">
+                                                                <small class="text-muted">Pagado</small><br>
+                                                                <span class="fw-bold text-success">$<?php echo e(number_format((float)($grafica->pagado[$index] ?? 0), 2)); ?></span>
+                                                            </div>
+                                                            <div class="col-6">
+                                                                <small class="text-muted">Saldo</small><br>
+                                                                <span class="fw-bold text-primary">$<?php echo e(number_format((float)($grafica->diferencia[$index] ?? 0), 2)); ?></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                            <div class="card border-primary">
+                                                <div class="card-body text-center">
+                                                    <h6 class="text-primary mb-0">TOTAL</h6>
+                                                    <div class="row mt-2">
+                                                        <div class="col-6">
+                                                            <small class="text-muted">Aprobado</small><br>
+                                                            <span class="fw-bold">$<?php echo e(number_format(array_sum((array)($grafica->aprobado ?? [])), 2)); ?></span>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <small class="text-muted">Vigente</small><br>
+                                                            <span class="fw-bold">$<?php echo e(number_format(array_sum((array)($grafica->vigente ?? [])), 2)); ?></span>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mt-2">
+                                                        <div class="col-6">
+                                                            <small class="text-muted">Pagado</small><br>
+                                                            <span class="fw-bold text-success">$<?php echo e(number_format(array_sum((array)($grafica->pagado ?? [])), 2)); ?></span>
+                                                        </div>
+                                                        <div class="col-6">
+                                                            <small class="text-muted">Saldo</small><br>
+                                                            <span class="fw-bold text-primary">$<?php echo e(number_format(array_sum((array)($grafica->diferencia ?? [])), 2)); ?></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
 
@@ -177,8 +252,25 @@ document.addEventListener('DOMContentLoaded', function() {
         if (ctxBarras) {
             const labelsBarras = <?php echo json_encode($grafica->labels ?? []); ?>;
             const canvasHeight = Math.max(480, labelsBarras.length * 42 + 120);
+            const canvasWidth = Math.max(920, labelsBarras.length * 80);
+            let currentBarWidth = canvasWidth;
+            const minBarWidth = Math.max(760, canvasWidth * 0.75);
+            const maxBarWidth = Math.max(canvasWidth * 2, 1600);
+            const zoomStep = 1.15;
+            ctxBarras.width = currentBarWidth;
             ctxBarras.height = canvasHeight;
+            ctxBarras.style.width = currentBarWidth + 'px';
             ctxBarras.style.height = canvasHeight + 'px';
+
+            function setBarChartWidth(newWidth) {
+                currentBarWidth = Math.max(minBarWidth, Math.min(maxBarWidth, Math.round(newWidth)));
+                ctxBarras.width = currentBarWidth;
+                ctxBarras.style.width = currentBarWidth + 'px';
+                if (window["chartBarras<?php echo e($reporte->id); ?>"]) {
+                    window["chartBarras<?php echo e($reporte->id); ?>"].resize();
+                    window["chartBarras<?php echo e($reporte->id); ?>"].update();
+                }
+            }
 
             window["chartBarras<?php echo e($reporte->id); ?>"] = new Chart(ctxBarras.getContext('2d'), {
                 type: 'bar',
@@ -217,7 +309,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 options: {
                     indexAxis: 'y', // Barras horizontales
-                    responsive: true,
+                    responsive: false,
                     maintainAspectRatio: false,
                     scales: {
                         x: { // Eje de valores
@@ -225,6 +317,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             grid: { color: 'rgba(0,0,0,0.05)' },
                             ticks: {
                                 color: '#555',
+                                font: { size: 8 },
                                 callback: function(value) {
                                     if (value >= 1000000) return '$' + (value / 1000000).toFixed(1) + 'M';
                                     if (value >= 1000) return '$' + (value / 1000).toFixed(1) + 'k';
@@ -233,7 +326,10 @@ document.addEventListener('DOMContentLoaded', function() {
                             }
                         },
                         y: { // Eje de categorías
-                            ticks: { color: '#555' },
+                            ticks: {
+                                color: '#555',
+                                font: { size: 8 }
+                            },
                             grid: { display: false }
                         }
                     },
@@ -241,13 +337,13 @@ document.addEventListener('DOMContentLoaded', function() {
                         title: {
                             display: true,
                             text: 'Comparativo Financiero',
-                            font: { size: 16, weight: 'bold' },
+                            font: { size: 14, weight: 'bold' },
                             color: '#0d6efd',
                             padding: { top: 10, bottom: 20 }
                         },
                         legend: {
                             position: 'top',
-                            labels: { font: { size: 12, weight: '600' }, color: '#333' }
+                            labels: { font: { size: 10 }, color: '#333' }
                         },
                         tooltip: {
                             callbacks: {
@@ -268,11 +364,29 @@ document.addEventListener('DOMContentLoaded', function() {
             });
             // Agregar atributo para mejorar rendimiento
             window["chartBarras<?php echo e($reporte->id); ?>"].canvas.willReadFrequently = true;
+
+            const zoomInButton = document.getElementById("zoomIn_<?php echo e($reporte->id); ?>");
+            const zoomOutButton = document.getElementById("zoomOut_<?php echo e($reporte->id); ?>");
+            if (zoomInButton) {
+                zoomInButton.addEventListener("click", function() {
+                    setBarChartWidth(currentBarWidth * zoomStep);
+                });
+            }
+            if (zoomOutButton) {
+                zoomOutButton.addEventListener("click", function() {
+                    setBarChartWidth(currentBarWidth / zoomStep);
+                });
+            }
         }
 
         // ── 2. GRÁFICA DE PASTEL ──────────────────────────────────────────
         const ctxPastel = document.getElementById('grafica_pastel_<?php echo e($reporte->id); ?>');
         if (ctxPastel) {
+            const pastelSize = 420;
+            ctxPastel.width = pastelSize;
+            ctxPastel.height = pastelSize;
+            ctxPastel.style.width = pastelSize + 'px';
+            ctxPastel.style.height = pastelSize + 'px';
             window["chartPastel<?php echo e($reporte->id); ?>"] = new Chart(ctxPastel.getContext('2d'), {
                 type: 'doughnut',
                 data: {
@@ -285,7 +399,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     }]
                 },
                 options: {
-                    responsive: true,
+                    responsive: false,
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
@@ -295,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                 boxWidth: 10,
                                 usePointStyle: true,
                                 padding: 6,
-                                font: { size: 9 },
+                                font: { size: 7 },
                                 textAlign: 'center'
                             }
                         },
@@ -328,85 +442,184 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!btnExportar) return;
 
         btnExportar.addEventListener("click", async function() {
-            const { jsPDF } = window.jspdf;
-            const pdf = new jsPDF("p", "mm", "a4");
-            const pageWidth = 190;
-            let hayContenido = false;
+            // Cambiar botón a estado de carga
+            btnExportar.disabled = true;
+            btnExportar.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Generando PDF...';
 
-            // Gráfica de Barras (ya activa por defecto)
-            const chartBarras = window["chartBarras<?php echo e($reporte->id); ?>"];
-            if (chartBarras) {
-                try {
-                    chartBarras.update();
-                    await new Promise(r => setTimeout(r, 500));
-                    const imgBarras = chartBarras.toBase64Image();
-                    pdf.setFontSize(14);
-                    pdf.setTextColor(13, 110, 253);
-                    pdf.text("Gráfica de Barras", 10, 15);
-                    await addImageToPdfWithPageBreaks(pdf, imgBarras, 10, 22, pageWidth, 10);
-                    hayContenido = true;
-                    pdf.addPage();
-                } catch(e) {
-                    console.error("Error capturando gráfica de barras:", e);
+            try {
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF("p", "mm", "a4");
+                const pageWidth = 190;
+                let hayContenido = false;
+
+                // Gráfica de Barras (ya activa por defecto)
+                const chartBarras = window["chartBarras<?php echo e($reporte->id); ?>"];
+                if (chartBarras) {
+                    try {
+                        chartBarras.update();
+                        const imgBarras = chartBarras.toBase64Image();
+                        pdf.setFont(undefined, 'bold');
+                        pdf.setFontSize(16);
+                        pdf.setTextColor(105, 28, 50);
+                        pdf.text("Gráfica de Barras", 10, 15);
+                        pdf.setDrawColor(105, 28, 50);
+                        pdf.line(10, 16.5, 85, 16.5);
+                        await addImageToPdfWithPageBreaks(pdf, imgBarras, 10, 22, pageWidth, 10);
+                        hayContenido = true;
+                        pdf.addPage();
+                    } catch(e) {
+                        console.error("Error capturando gráfica de barras:", e);
+                    }
                 }
-            }
 
-            // Gráfica de Pastel
-            const chartPastel = window["chartPastel<?php echo e($reporte->id); ?>"];
-            if (chartPastel) {
-                try {
-                    // Activar tab de pastel para asegurar renderizado
-                    const tabPastel = document.querySelector('#tabs_<?php echo e($reporte->id); ?> .nav-link[data-bs-target="#pastel_<?php echo e($reporte->id); ?>"]');
-                    if (tabPastel) tabPastel.click();
-                    await new Promise(r => setTimeout(r, 200));
-                    chartPastel.update();
-                    await new Promise(r => setTimeout(r, 500));
-                    const imgPastel = chartPastel.toBase64Image();
-                    pdf.setFontSize(14);
-                    pdf.setTextColor(13, 110, 253);
-                    pdf.text("Gráfica de Pastel", 10, 15);
-                    pdf.addImage(imgPastel, "PNG", 25, 22, 150, 150);
-                    hayContenido = true;
-                    pdf.addPage();
-                } catch(e) {
-                    console.error("Error capturando gráfica de pastel:", e);
+                // Gráfica de Pastel
+                const chartPastel = window["chartPastel<?php echo e($reporte->id); ?>"];
+                if (chartPastel) {
+                    try {
+                        // Activar tab de pastel para asegurar renderizado
+                        const tabPastel = document.querySelector('#tabs_<?php echo e($reporte->id); ?> .nav-link[data-bs-target="#pastel_<?php echo e($reporte->id); ?>"]');
+                        if (tabPastel) tabPastel.click();
+                        await new Promise(r => setTimeout(r, 150));
+                        chartPastel.update();
+                        await new Promise(r => setTimeout(r, 100));
+                        const imgPastel = chartPastel.toBase64Image();
+                        pdf.setFont(undefined, 'bold');
+                        pdf.setFontSize(16);
+                        pdf.setTextColor(105, 28, 50);
+                        pdf.text("Gráfica de Pastel", 10, 15);
+                        pdf.setDrawColor(105, 28, 50);
+                        pdf.line(10, 16.5, 85, 16.5);
+                        pdf.addImage(imgPastel, "PNG", 25, 22, 150, 150);
+                        hayContenido = true;
+                        pdf.addPage();
+                    } catch(e) {
+                        console.error("Error capturando gráfica de pastel:", e);
+                    }
                 }
-            }
 
-            // Tabla Detallada
-            const contenedorTabla = document.querySelector("#tabla_<?php echo e($reporte->id); ?> table");
-            if (contenedorTabla) {
-                try {
-                    // Activar tab de tabla para asegurar visibilidad
-                    const tabTabla = document.querySelector('#tabs_<?php echo e($reporte->id); ?> .nav-link[data-bs-target="#tabla_<?php echo e($reporte->id); ?>"]');
-                    if (tabTabla) tabTabla.click();
-                    await new Promise(r => setTimeout(r, 200));
-                    const tablaCanvas = await html2canvas(contenedorTabla, {
-                        scale: 1,
-                        useCORS: true,
-                        logging: false,
-                        backgroundColor: "#ffffff",
-                        willReadFrequently: true
-                    });
-                    const imgTabla = tablaCanvas.toDataURL("image/png", 1.0);
-                    pdf.setFontSize(14);
-                    pdf.setTextColor(13, 110, 253);
-                    pdf.text("Tabla Detallada", 10, 15);
-                    await addImageToPdfWithPageBreaks(pdf, imgTabla, 10, 22, pageWidth, 10);
-                    hayContenido = true;
-                } catch(e) {
-                    console.error("Error capturando tabla:", e);
+                // Tabla Detallada - Generar tabla en texto dentro del PDF
+                const tablaElement = document.querySelector("#tablaDetalle_<?php echo e($reporte->id); ?>");
+                if (tablaElement) {
+                    try {
+                        // Activar tab de tabla para asegurar visibilidad
+                        const tabTabla = document.querySelector('#tabs_<?php echo e($reporte->id); ?> .nav-link[data-bs-target="#tabla_<?php echo e($reporte->id); ?>"]');
+                        if (tabTabla) tabTabla.click();
+                        await new Promise(r => setTimeout(r, 100));
+
+                        const rows = tablaElement.querySelectorAll('tbody tr');
+                        const tfoot = tablaElement.querySelector('tfoot tr');
+
+                        if (rows.length > 0) {
+                            pdf.setFont(undefined, 'bold');
+                            pdf.setFontSize(16);
+                            pdf.setTextColor(105, 28, 50);
+                            pdf.text("Tabla Detallada", 10, 15);
+                            pdf.setDrawColor(105, 28, 50);
+                            pdf.line(10, 16.5, 85, 16.5);
+                            pdf.setFont(undefined, 'normal');
+                            pdf.setFontSize(9);
+                            pdf.setTextColor(0, 0, 0);
+
+                            let yPosition = 25;
+                            const pageHeight = pdf.internal.pageSize.height;
+                            const col1Width = 65;
+                            const col2Width = 31;
+
+                            // Encabezado
+                            pdf.setFillColor(105, 28, 50);
+                            pdf.setTextColor(255, 255, 255);
+                            pdf.rect(10, yPosition, col1Width, 8, 'F');
+                            pdf.rect(10 + col1Width, yPosition, col2Width, 8, 'F');
+                            pdf.rect(10 + col1Width + col2Width, yPosition, col2Width, 8, 'F');
+                            pdf.rect(10 + col1Width + col2Width * 2, yPosition, col2Width, 8, 'F');
+                            pdf.rect(10 + col1Width + col2Width * 3, yPosition, col2Width, 8, 'F');
+
+                            pdf.text("Objeto del Gasto", 12, yPosition + 5);
+                            pdf.text("Aprobado", 10 + col1Width + 2, yPosition + 5);
+                            pdf.text("Vigente", 10 + col1Width + col2Width + 2, yPosition + 5);
+                            pdf.text("Pagado", 10 + col1Width + col2Width * 2 + 2, yPosition + 5);
+                            pdf.text("Saldo", 10 + col1Width + col2Width * 3 + 2, yPosition + 5);
+
+                            yPosition += 8;
+                            pdf.setTextColor(0, 0, 0);
+
+                            // Filas
+                            rows.forEach((row, index) => {
+                                const cells = row.querySelectorAll('td');
+                                const label = cells[0]?.textContent.trim() || '';
+                                const aprobado = cells[1]?.textContent.trim() || '';
+                                const vigente = cells[2]?.textContent.trim() || '';
+                                const pagado = cells[3]?.textContent.trim() || '';
+                                const saldo = cells[4]?.textContent.trim() || '';
+
+                                // Dividir el texto largo en líneas que caben en col1Width
+                                const labelLines = pdf.splitTextToSize(label, col1Width - 4);
+                                const dynamicRowHeight = Math.max(8, labelLines.length * 5 + 4);
+
+                                if (yPosition + dynamicRowHeight > pageHeight - 10) {
+                                    pdf.addPage();
+                                    yPosition = 10;
+                                }
+
+                                if (index % 2 === 0) {
+                                    pdf.setFillColor(240, 240, 240);
+                                    pdf.rect(10, yPosition, col1Width + col2Width * 4, dynamicRowHeight, 'F');
+                                }
+
+                                // Dibujar el texto de la primera columna línea por línea
+                                labelLines.forEach((line, li) => {
+                                    pdf.text(line, 12, yPosition + 4 + (li * 5));
+                                });
+
+                                // Las otras columnas se centran verticalmente en la fila
+                                const midRow = yPosition + dynamicRowHeight / 2;
+                                pdf.text(aprobado, 10 + col1Width + 2, midRow);
+                                pdf.text(vigente, 10 + col1Width + col2Width + 2, midRow);
+                                pdf.text(pagado, 10 + col1Width + col2Width * 2 + 2, midRow);
+                                pdf.text(saldo, 10 + col1Width + col2Width * 3 + 2, midRow);
+
+                                yPosition += dynamicRowHeight;
+                            });
+
+                            // Total
+                            yPosition += 2;
+                            pdf.setFillColor(105, 28, 50);
+                            pdf.setTextColor(255, 255, 255);
+                            pdf.rect(10, yPosition, col1Width + col2Width * 4, 8, 'F');
+
+                            const totalCells = tfoot.querySelectorAll('td');
+                            const totalLabel = totalCells[0]?.textContent.trim() || 'TOTAL:';
+                            const totalAprobado = totalCells[1]?.textContent.trim() || '';
+                            const totalVigente = totalCells[2]?.textContent.trim() || '';
+                            const totalPagado = totalCells[3]?.textContent.trim() || '';
+                            const totalSaldo = totalCells[4]?.textContent.trim() || '';
+
+                            pdf.text(totalLabel, 12, yPosition + 5);
+                            pdf.text(totalAprobado, 10 + col1Width + 2, yPosition + 5);
+                            pdf.text(totalVigente, 10 + col1Width + col2Width + 2, yPosition + 5);
+                            pdf.text(totalPagado, 10 + col1Width + col2Width * 2 + 2, yPosition + 5);
+                            pdf.text(totalSaldo, 10 + col1Width + col2Width * 3 + 2, yPosition + 5);
+
+                            hayContenido = true;
+                        }
+                    } catch(e) {
+                        console.error("Error capturando tabla:", e);
+                    }
                 }
-            }
 
-            // Regresar al tab de barras
-            const tabBarras = document.querySelector('#tabs_<?php echo e($reporte->id); ?> .nav-link[data-bs-target="#barras_<?php echo e($reporte->id); ?>"]');
-            if (tabBarras) tabBarras.click();
+                // Regresar al tab de barras
+                const tabBarras = document.querySelector('#tabs_<?php echo e($reporte->id); ?> .nav-link[data-bs-target="#barras_<?php echo e($reporte->id); ?>"]');
+                if (tabBarras) tabBarras.click();
 
-            if (hayContenido) {
-                pdf.save("reporte_<?php echo e($reporte->id); ?>.pdf");
-            } else {
-                alert("No se pudo generar el PDF: no se encontraron gráficas ni tabla.");
+                if (hayContenido) {
+                    pdf.save("reporte_<?php echo e($reporte->id); ?>.pdf");
+                } else {
+                    alert("No se pudo generar el PDF: no se encontraron gráficas ni tabla.");
+                }
+            } finally {
+                // Restaurar botón
+                btnExportar.disabled = false;
+                btnExportar.innerHTML = '<i class="fas fa-file-pdf"></i> Exportar PDF';
             }
         });
 
@@ -437,4 +650,5 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 <?php $__env->stopSection(); ?>
+
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\atlas_local\resources\views/director/ver_reportes.blade.php ENDPATH**/ ?>
