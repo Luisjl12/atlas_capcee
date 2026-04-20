@@ -8,6 +8,6 @@ class VerifyCsrfToken extends Middleware
 {
     protected $except =
     [
-        //Aqui se puede enlistar rutas externas de CSRF
+        //'infraestructura/comparar',
     ];
 }

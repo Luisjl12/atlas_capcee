@@ -20,4 +20,9 @@ class InmuebleNivel extends Model
     {
         return $this->belongsTo(Plantel::class, 'cct', 'cct');
     }
+
+    public function infraestructuraComparada()
+    {
+        return $this->hasMany(InfraestructuraComparada::class, 'cct', 'cct');
+    }
 }

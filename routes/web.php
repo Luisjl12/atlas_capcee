@@ -25,7 +25,7 @@ use App\Http\Controllers\ForgotPasswordController;
 use App\Http\Controllers\InmuebleNivelController;
 use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\InfraescolarController;
-
+use App\Http\Controllers\ComparacionController; 
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -358,4 +358,9 @@ Route::get('/saltar-a-siie', function () {
  Route::get('/director/infraescolar/pdf/{id}', [InfraescolarController::class, 'descargarPdf'])->name('infraescolar.descargar_pdf');
  
 
+//Ruta para comparar datos de infraestructura
+Route::get('/comparacion/form', [ComparacionController::class, 'mostrarFormulario'])->name('infraestructura.form');
+Route::post('/comparacion/comparar',[ComparacionController::class, 'comparar'])->name('infraestructura.comparar');
+//Descargar reporte de comparacion 
+Route::get('/comparacion/exportar', [ComparacionController::class, 'exportarComparacion'])->name('infraestructura.exportar');
 

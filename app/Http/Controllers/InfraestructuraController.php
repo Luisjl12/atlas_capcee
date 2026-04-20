@@ -11,12 +11,16 @@ class InfraestructuraController extends Controller
 {
     public function mostrarInfraestructura($cct)
     {
-        $plantel = Plantel::with(['detalleHidrosanitario', 'detalleServicio'])->where('cct', $cct)->first();
+        $plantel = Plantel::with(['detalleHidrosanitario', 'detalleServicio'])
+            ->where('cct', $cct)
+            ->firstOrFail();
+
         $hidrosanitario = $plantel->detalleHidrosanitario;
         $servicio = $plantel->detalleServicio;
 
         return view('planteles.show', compact('plantel', 'hidrosanitario', 'servicio'));
     }
+
 
     public function editServicio($cct)
     {
