@@ -144,6 +144,11 @@ class Plantel extends Model implements Auditable
         return $this->belongsTo(\App\Models\RegionSocioeconomica::class);
     }
 
+    public function comparacionEdificios()
+    {
+        return $this->hasMany(comparacionEdificios::class, 'cct', 'cct'); 
+    }
+
     public function transformAudit(array $data): array
     {
         $tags = [];

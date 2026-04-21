@@ -363,4 +363,25 @@ Route::get('/comparacion/form', [ComparacionController::class, 'mostrarFormulari
 Route::post('/comparacion/comparar',[ComparacionController::class, 'comparar'])->name('infraestructura.comparar');
 //Descargar reporte de comparacion 
 Route::get('/comparacion/exportar', [ComparacionController::class, 'exportarComparacion'])->name('infraestructura.exportar');
+//Nueva vista para reportes de comparacion 
+Route::get('/comparacion/reportes', [ComparacionController::class, 'reportesComparar'])
+    ->name('reportes.comparacion');
+
+Route::post('/comparacion/niveles', [ComparacionController::class, 'comparar'])
+    ->name('comparacion.niveles.store');
+
+Route::post('/comparacion/edificios', [ComparacionController::class, 'insertarEdificios'])
+    ->name('comparacion.edificios.store');
+
+Route::get('/comparacion/niveles/exportar', [ComparacionController::class, 'exportarNiveles'])
+    ->name('reportes.niveles.exportar');
+
+Route::get('/comparacion/edificios/exportar', [ComparacionController::class, 'exportarEdificios'])
+    ->name('reportes.edificios.exportar');
+
+Route::get('/comparacion/edificios', [ComparacionController::class, 'reportesComparar'])
+    ->name('reportes.edificios');
+
+
+
 

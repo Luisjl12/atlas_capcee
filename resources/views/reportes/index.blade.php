@@ -56,6 +56,16 @@
                         </div>
                     </div>
 
+                    <div class="report-item ">
+                        <div class = "report-icon">
+                            <i class = "fas fa-balance-scale"></i>
+                        </div>
+                        <div class="report-info">
+                            <h4>Ver reporte de comparacion de planteles</h4>
+                            <p>Muestra una comparativa entre la informacion guardada por el CAPCEE con los datos ingresados por los directores/maestros</p>
+                            <a href="{{route('reportes.comparacion')}}" class = "btn-custom btn-primary">Ver reporte</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
