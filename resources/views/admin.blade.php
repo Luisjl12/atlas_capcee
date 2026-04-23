@@ -37,6 +37,9 @@
                     <a href="{{route('importarDatos.show')}}" class="accion-card yellow">
                         <i class="fas fa-upload"></i> Importar Datos
                     </a>
+                    <a href="{{route('infraestructura.form')}}" class="accion-card yellow">
+                        <i class="fas fa-chart-bar"></i> Comparar Infraestructura
+                    </a>
                 </div>
                 <div class="columna-acciones">
                     <a href="{{route('busqueda.avanzada')}}" class="accion-card green">

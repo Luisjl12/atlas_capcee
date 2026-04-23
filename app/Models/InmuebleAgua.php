@@ -26,4 +26,8 @@ class InmuebleAgua extends Model
     {
         return $this->belongsTo(Plantel::class, 'cct', 'cct');
     }
+
+    public function comparacionAgua(){
+        return $this->hasMany(ComparacionAgua::class, 'cct', 'cct'); 
+    }
 }

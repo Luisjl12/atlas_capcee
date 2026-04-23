@@ -37,6 +37,9 @@
                     <a href="<?php echo e(route('importarDatos.show')); ?>" class="accion-card yellow">
                         <i class="fas fa-upload"></i> Importar Datos
                     </a>
+                    <a href="<?php echo e(route('infraestructura.form')); ?>" class="accion-card yellow">
+                        <i class="fas fa-chart-bar"></i> Comparar Infraestructura
+                    </a>
                 </div>
                 <div class="columna-acciones">
                     <a href="<?php echo e(route('busqueda.avanzada')); ?>" class="accion-card green">

@@ -36,7 +36,7 @@
 
       <div class="user-nav d-flex align-items-center gap-2">
     
-        <a href="https://www.siiepuebla.com.mx/login" target="_blank" 
+        <a href="/saltar-a-siie" target="_blank" 
             class="btn btn-outline-custom px-3 fw-bold shadow-sm">
             <i class="fas fa-external-link-alt me-1"></i> Ir al SIIE Puebla
         </a>

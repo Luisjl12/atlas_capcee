@@ -106,6 +106,97 @@
             </table>
         </div>
     </div>
+
+    <!-- Sección 3 -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingFour">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" 
+                    data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+            Detalles Hidráulicos
+            </button>
+        </h2>
+        <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" 
+            data-bs-parent="#accordionComparaciones">
+            <div class="accordion-body">
+                <div class="d-flex justify-content-end mb-2">
+                    <a href="{{ route('reportes.agua.exportar') }}" 
+                    class="btn btn-sm btn-info">
+                    <i class="fas fa-file-excel"></i> Generar Reporte CSV
+                    </a>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover table-sm align-middle">
+                        <thead class="table-dark text-center">
+                        <tr>
+                            <th>CCT</th>
+                            <th>Red pública (ingresado)</th>
+                            <th>Red pública (registrado)</th>
+                            <th>Pozo (ingresado)</th>
+                            <th>Pozo (registrado)</th>
+                            <th>Cuerpo (ingresado)</th>
+                            <th>Cuerpo (registrado)</th>
+                            <th>Pipas (ingresado)</th>
+                            <th>Pipas (registrado)</th>
+                            <th>Otro (ingresado)</th>
+                            <th>Otro (registrado)</th>
+                            <th>Cisterna (ingresado)</th>
+                            <th>Cisterna (registrado)</th>
+                            <th>Tinacos (ingresado)</th>
+                            <th>Tinacos (registrado)</th>
+                            <th>Tanque (ingresado)</th>
+                            <th>Tanque (registrado)</th>
+                            <th>Almacenamiento otro (ingresado)</th>
+                            <th>Almacenamiento otro (registrado)</th>
+                            <th>Estado red pública (ingresado)</th>
+                            <th>Estado red pública (registrado)</th>
+                            <th>Estado</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @forelse($registrosAgua as $row)
+                            @php
+                            $estado = ($row->agua_red_publica == $row->agua_red_publica_reg &&
+                                        $row->agua_pozo == $row->agua_pozo_reg) ? 'Coinciden' : 'Diferentes';
+                            $badgeClass = $estado === 'Coinciden' ? 'bg-success' : 'bg-danger';
+                            @endphp
+                            <tr>
+                            <td>{{ $row->cct }}</td>
+                            <td>{{ $row->agua_red_publica ? 'Sí' : 'No' }}</td>
+                            <td>{{ $row->agua_red_publica_reg ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->agua_pozo ? 'Sí' : 'No' }}</td>
+                            <td>{{ $row->agua_pozo_reg ? 'Sí' : 'No' }}</td>
+                            <td>{{ $row->agua_cuerpo ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->agua_cuerpo_reg ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->agua_pipas ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->agua_pipas_reg ? 'Sí' : 'No' }}</td>
+                            <td>{{ $row->agua_otro ? 'Sí' : 'No' }}</td>
+                            <td>{{ $row->agua_otro_reg ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->cisterna ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->cisterna_reg ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->tinacos ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->tinacos_reg ? 'Sí' : 'No' }}</td>
+                            <td>{{ $row->tanque ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->tanque_reg ? 'Sí' : 'No' }}</td>
+                            <td>{{ $row->almacenamiento_otro ? 'Sí' : 'No' }}</td>
+                            <td>{{ $row->almacenamiento_otro_reg ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->estado_red_hidraulica ? 'Sí' : 'No'}}</td>
+                            <td>{{ $row->estado_red_hidraulica_reg ? 'Sí' : 'No'}}</td>
+                            <td><span class="badge {{ $badgeClass }}">{{ $estado }}</span></td>
+                            </tr>
+                        @empty
+                            <tr>
+                            <td colspan="22" class="text-center">No hay registros de comparación de agua.</td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
     </div>
 
 

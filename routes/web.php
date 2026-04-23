@@ -26,6 +26,10 @@ use App\Http\Controllers\InmuebleNivelController;
 use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\InfraescolarController;
 use App\Http\Controllers\ComparacionController; 
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -327,33 +331,6 @@ Route::middleware(['auth.custom', 'rol:DIRECTOR REPORTE'])->group(function () {
     Route::get('/director/infraescolar/pdf/{id}', [InfraescolarController::class, 'descargarPdf'])->name('infraescolar.descargar_pdf');
 });
 
-use Firebase\JWT\JWT;
-
-Route::get('/saltar-a-siie', function () {
-    $usuarioId = session('id');
-
-    if (!$usuarioId) {
-        return redirect()->route('login');
-    }
-
-    // Buscamos el registro fresco de la base de datos
-    $usuarioDB = DB::table('usuarios')->where('id', $usuarioId)->first();
-
-    $payload = [
-        // Usamos el nombre exacto de tu columna en ATLAS: 'correo_electronico'
-        'username' => $usuarioDB->correo_electronico, 
-        'rol' => session('rol') ?? 'ADMINISTRADOR',
-        'iat' => time(),
-        'exp' => time() + 60 
-    ];
-
-    // La llave larga de 32 caracteres que ya configuraste
-    $jwt = JWT::encode($payload, 'secreto_capcee_123_llave_super_segura', 'HS256');
-
-    return redirect()->away("http://127.0.0.1:5000/sso-login?token=" . $jwt);
-})->middleware('auth.custom');
-
-
 //Ruta para descargar los pdf
  Route::get('/director/infraescolar/pdf/{id}', [InfraescolarController::class, 'descargarPdf'])->name('infraescolar.descargar_pdf');
  
@@ -382,6 +359,60 @@ Route::get('/comparacion/edificios/exportar', [ComparacionController::class, 'ex
 Route::get('/comparacion/edificios', [ComparacionController::class, 'reportesComparar'])
     ->name('reportes.edificios');
 
+Route::get('/saltar-a-siie', function () {
+    $usuarioId = session('id');
 
+    if (!$usuarioId) {
+        return redirect()->route('login');
+    }
 
+    $usuarioDB = DB::table('usuarios')->where('id', $usuarioId)->first();
 
+    $payload = [
+        'username' => $usuarioDB->correo_electronico, 
+        'rol' => session('rol') ?? 'ADMINISTRADOR',
+        'iat' => time(),
+        'exp' => time() + 60 
+    ];
+
+    $jwt = JWT::encode($payload, 'secreto_capcee_123_llave_super_segura', 'HS256');
+
+    return redirect()->away("http://127.0.0.1:5000/sso-login?token=" . $jwt);
+})->middleware('auth.custom');
+
+Route::get('/sso-login', function (Request $request) {
+    $token = $request->query('token');
+
+    if (!$token) {
+        return redirect()->route('login')->with('error', 'No se proporcionó un token de acceso.');
+    }
+
+    try {
+        $llave_secreta = 'secreto_capcee_123_llave_super_segura';
+        $decoded = JWT::decode($token, new Key($llave_secreta, 'HS256'));
+
+        $usuario = DB::table('usuarios')
+            ->where('correo_electronico', $decoded->username) 
+            ->first();
+
+        if ($usuario) {
+            session([
+                'id' => $usuario->id,
+                'rol' => $decoded->rol ?? 'ADMINISTRADOR',
+                
+                'nombre' => $usuario->nombre ?? ($usuario->correo_electronico ?? 'Usuario Atlas')
+            ]);
+
+            return redirect('/admin'); 
+        } else {
+            return "El usuario " . $decoded->username . " es válido pero no existe en Atlas.";
+        }
+
+    } catch (\Exception $e) {
+        return "Error al validar el acceso desde SIIE: " . $e->getMessage();
+    }
+});
+
+Route::post('/comparacion/agua', [ComparacionController::class, 'insertarAgua'])->name('comparacion.agua.store'); 
+
+Route::get('/comparacion/agua/exportar', [ComparacionController::class, 'exportarAgua'])->name('reportes.agua.exportar'); 

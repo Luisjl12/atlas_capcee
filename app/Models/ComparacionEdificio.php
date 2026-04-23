@@ -12,6 +12,7 @@ class ComparacionEdificio extends Model
         'cct', 
         'numero_edificios', 
         'fuente', 
+        'descripcion_edificios',
     ];
 
     public $timestamps=false;
