@@ -266,4 +266,46 @@ class ReporteController extends Controller
             ->setPaper('a4', 'landscape');
         return $pdf->download('reportes_infraestructura.pdf');
     }
+    
+    public function escuelas100(Request $request)
+    {
+        
+        
+        $query = DB::table('escuelas_al_100'); 
+
+        // Lógica del buscador por municipio
+        if ($request->has('municipio') && $request->municipio != '') {
+            $query->where('municipio', 'LIKE', '%' . $request->municipio . '%');
+        }
+
+        $datos = $query->get();
+
+        return view('reportes.escuelas100', compact('datos'));
+    }
+
+    public function mapaIndividual($id)
+    {
+        // 1. Buscamos la escuela por su ID en la tabla nueva
+        $escuela = DB::table('escuelas_al_100')->where('id', $id)->first();
+
+        // 2. Validamos que exista y tenga coordenadas
+        if (!$escuela || !$escuela->latitud || !$escuela->longitud) {
+            // Si no tiene coordenadas, regresamos con un mensaje de error
+            return redirect()->back()->with('error', 'Este plantel aún no tiene coordenadas registradas.');
+        }
+
+        // 3. Mandamos los datos a la vista del mapa
+        return view('reportes.mapa_plantel', compact('escuela'));
+    }
+
+    public function mapaEscuelas100General()
+    {
+        // Traemos las 29 escuelas que tengan coordenadas
+        $planteles = DB::table('escuelas_al_100')
+            ->whereNotNull('latitud')
+            ->whereNotNull('longitud')
+            ->get();
+
+        return view('reportes.mapa_escuelas100_general', compact('planteles'));
+    }
 }

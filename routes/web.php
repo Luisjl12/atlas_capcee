@@ -30,6 +30,7 @@ use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\MapaCienController;
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -416,3 +417,14 @@ Route::get('/sso-login', function (Request $request) {
 Route::post('/comparacion/agua', [ComparacionController::class, 'insertarAgua'])->name('comparacion.agua.store'); 
 
 Route::get('/comparacion/agua/exportar', [ComparacionController::class, 'exportarAgua'])->name('reportes.agua.exportar'); 
+
+
+Route::get('/reportes/escuelas-al-100', [App\Http\Controllers\ReporteController::class, 'escuelas100'])->name('reportes.escuelas100');
+
+Route::put('/planteles/{id}/metas', [PlantelController::class, 'updateMetas'])->name('planteles.update.metas');
+
+Route::get('/mapa-escuelas-cien',[MapaCienController::class, 'index'])->name('mapa.escuelasCien'); 
+
+Route::get('/mapa/escuela/{id}', [App\Http\Controllers\ReporteController::class, 'mapaIndividual'])->name('mapa.individual');
+
+Route::get('/admin/mapa-escuelas-100', [App\Http\Controllers\ReporteController::class, 'mapaEscuelas100General'])->name('mapa.escuelas100.general');

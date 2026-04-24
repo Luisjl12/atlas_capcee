@@ -66,6 +66,16 @@
                             <a href="{{route('reportes.comparacion')}}" class = "btn-custom btn-primary">Ver reporte</a>
                         </div>
                     </div>
+                    <div class="report-item">
+                        <div class="report-icon">
+                            <i class="fas fa-school"></i>
+                        </div>
+                        <div class="report-info">
+                            <h4>Escuelas al 100</h4>
+                            <p>Consulta y exporta el listado detallado de planteles beneficiados por el programa federal Escuelas al 100.</p>
+                            <a href="{{ route('reportes.escuelas100') }}" class="btn-custom btn-primary">Ver Reporte</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

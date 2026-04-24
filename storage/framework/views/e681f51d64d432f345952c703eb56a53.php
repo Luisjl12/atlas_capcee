@@ -1,40 +1,40 @@
-@extends('layouts.app')
 
-@section('title', 'Agregar Plantel')
 
-@section('content')
+<?php $__env->startSection('title', 'Agregar Plantel'); ?>
+
+<?php $__env->startSection('content'); ?>
 
     
     <div class="card-header">
-        <a href="{{ route('planteles.index') }}" class="btn-icon-only">
+        <a href="<?php echo e(route('planteles.index')); ?>" class="btn-icon-only">
             <i class="fas fa-arrow-left"></i>
         
             <div class="d-flex flex-column flex-sm-row align-items-sm-center">
                 <h3 class="me-sm-2">
-                    <i class="fas fa-clipboard-list"></i> Editar informaciión: {{ $plantel->nombre_escuela }}</h3>
-                <small class="text-muted">(CCT: {{ $plantel->cct }})</small>
+                    <i class="fas fa-clipboard-list"></i> Editar informaciión: <?php echo e($plantel->nombre_escuela); ?></h3>
+                <small class="text-muted">(CCT: <?php echo e($plantel->cct); ?>)</small>
             </div>
         </a>
     </div>
 
     
-    @if(session('success'))
-    <div class="alert alert-success mt-2">{{ session('success') }}</div>
-    @endif
+    <?php if(session('success')): ?>
+    <div class="alert alert-success mt-2"><?php echo e(session('success')); ?></div>
+    <?php endif; ?>
 
 
-    {{-- Mostrar errores de validación --}}
-    @if ($errors->any())
+    
+    <?php if($errors->any()): ?>
     <div class="alert alert-danger">
         <ul class="mb-0">
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
+            <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+            <li><?php echo e($error); ?></li>
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
         </ul>
     </div>
-    @endif
+    <?php endif; ?>
 
-    {{-- Formulario --}}
+    
     <div class="form-navigation nav-tabs-text mb-3">
         <span class="nav-tab" data-step="0">I. Identificación</span>
         <span class="nav-tab" data-step="1">II. Ubicación</span>
@@ -46,29 +46,29 @@
     </div>
 
     <!--Tab panes--->
-    <form action="{{ route('planteles.update', $plantel->id) }}" method="POST" class="needs-validation form-ficha-base">
+    <form action="<?php echo e(route('planteles.update', $plantel->id)); ?>" method="POST" class="needs-validation form-ficha-base">
 
-        @csrf
-        @method('PUT')
+        <?php echo csrf_field(); ?>
+        <?php echo method_field('PUT'); ?>
         <div class="form-section step-section" data-step="0">
             <h4>I. Datos de Identificación</h4>
             <div class="row">
                 <div class="col-md-4">
                     <label class="form-label">CCT:</label>
 
-                    @if(strtoupper(session('rol')) === 'DIRECTOR')
+                    <?php if(strtoupper(session('rol')) === 'DIRECTOR'): ?>
                     <input type="text" name="cct" class="form-control"
-                        value="{{ old('cct', $plantel->cct ?? '') }}">
-                    @else
+                        value="<?php echo e(old('cct', $plantel->cct ?? '')); ?>">
+                    <?php else: ?>
                     <input type="text" class="form-control"
-                        value="{{ $plantel->cct }}" readonly>
-                    <input type="hidden" name="cct" value="{{ $plantel->cct }}">
-                    @endif
+                        value="<?php echo e($plantel->cct); ?>" readonly>
+                    <input type="hidden" name="cct" value="<?php echo e($plantel->cct); ?>">
+                    <?php endif; ?>
                 </div>
 
                 <div class="col-md-8">
                     <label for="nombre_escuela" class="form-label">Nombre de la Escuela:</label>
-                    <input type="text" class="form-control" name="nombre_escuela" value="{{ old('nombre_escuela', $plantel->nombre_escuela ?? '') }}" required>
+                    <input type="text" class="form-control" name="nombre_escuela" value="<?php echo e(old('nombre_escuela', $plantel->nombre_escuela ?? '')); ?>" required>
                 </div>
             </div>
             <div class="row">
@@ -76,19 +76,19 @@
                     <label for="nivel_educativo" class="form-label">Nivel Educativo:</label>
                     <select name="nivel_educativo" id="nivel_educativo" class="form-select" required>
                         <option value="">Seleccione una opción</option>
-                        <option value="preescolar" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'preescolar' ? 'selected' : '' }}>Preescolar</option>
-                        <option value="primaria" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'primaria' ? 'selected' : '' }}>Primaria</option>
-                        <option value="secundaria" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'secundaria' ? 'selected' : '' }}>Secundaria</option>
-                        <option value="media superior" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'media superior' ? 'selected' : '' }}>Media Superior</option>
-                        <option value="superior" {{ old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'superior' ? 'selected' : '' }}>Superior</option>
-                        {{-- Si el valor en BD no coincide con las opciones, mostrarlo --}}
-                        @php
+                        <option value="preescolar" <?php echo e(old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'preescolar' ? 'selected' : ''); ?>>Preescolar</option>
+                        <option value="primaria" <?php echo e(old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'primaria' ? 'selected' : ''); ?>>Primaria</option>
+                        <option value="secundaria" <?php echo e(old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'secundaria' ? 'selected' : ''); ?>>Secundaria</option>
+                        <option value="media superior" <?php echo e(old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'media superior' ? 'selected' : ''); ?>>Media Superior</option>
+                        <option value="superior" <?php echo e(old('nivel_educativo', $plantel->nivel_educativo ?? '') == 'superior' ? 'selected' : ''); ?>>Superior</option>
+                        
+                        <?php
                         $valor = old('nivel_educativo', $plantel->nivel_educativo ?? '');
                         $opciones = ['preescolar','primaria','secundaria','media superior','superior'];
-                        @endphp
-                        @if($valor && !in_array($valor, $opciones))
-                        <option value="{{ $valor }}" selected>{{ ucfirst($valor) }}</option>
-                        @endif
+                        ?>
+                        <?php if($valor && !in_array($valor, $opciones)): ?>
+                        <option value="<?php echo e($valor); ?>" selected><?php echo e(ucfirst($valor)); ?></option>
+                        <?php endif; ?>
                     </select>
                 </div>
 
@@ -96,18 +96,18 @@
                     <label for="turno" class="form-label">Turno:</label>
                     <select name="turno" id="turno" class="form-select" required>
                         <option value="">Seleccione una opción</option>
-                        <option value="matutino" {{ old('turno', $plantel->turno ?? '') == 'matutino' ? 'selected' : '' }}>Matutino</option>
-                        <option value="vespertino" {{ old('turno', $plantel->turno ?? '') == 'vespertino' ? 'selected' : '' }}>Vespertino</option>
+                        <option value="matutino" <?php echo e(old('turno', $plantel->turno ?? '') == 'matutino' ? 'selected' : ''); ?>>Matutino</option>
+                        <option value="vespertino" <?php echo e(old('turno', $plantel->turno ?? '') == 'vespertino' ? 'selected' : ''); ?>>Vespertino</option>
                     </select>
                 </div>
                 <div class="col-md-4">
                     <label for="sostenimiento" class="form-label">Sostenimiento:</label>
-                    <select name="sostenimiento" id="sostenimiento" class="form-select" value="{{ old('sostenimiento', $plantel->sostenimiento) }}" required>
+                    <select name="sostenimiento" id="sostenimiento" class="form-select" value="<?php echo e(old('sostenimiento', $plantel->sostenimiento)); ?>" required>
                         <option value="">Seleccione una opción</option>
-                        <option value="federal" {{ old('sostenimiento', $plantel->sostenimiento ?? '') == 'federal' ? 'selected' : '' }}>Federal</option>
-                        <option value="estatal" {{ old('sostenimiento', $plantel->sostenimiento ?? '') == 'estatal' ? 'selected' : '' }}>Estatal</option>
-                        <option value="particular" {{ old('sostenimiento', $plantel->sostenimiento ?? '') == 'particular' ? 'selected' : '' }}>Particular</option>
-                        <option value="municipal" {{ old('sostenimiento', $plantel->sostenimiento ?? '') == 'municipal' ? 'selected' : '' }}>Municipal</option>
+                        <option value="federal" <?php echo e(old('sostenimiento', $plantel->sostenimiento ?? '') == 'federal' ? 'selected' : ''); ?>>Federal</option>
+                        <option value="estatal" <?php echo e(old('sostenimiento', $plantel->sostenimiento ?? '') == 'estatal' ? 'selected' : ''); ?>>Estatal</option>
+                        <option value="particular" <?php echo e(old('sostenimiento', $plantel->sostenimiento ?? '') == 'particular' ? 'selected' : ''); ?>>Particular</option>
+                        <option value="municipal" <?php echo e(old('sostenimiento', $plantel->sostenimiento ?? '') == 'municipal' ? 'selected' : ''); ?>>Municipal</option>
                     </select>
                 </div>
             </div>
@@ -118,7 +118,7 @@
                     <i class="fas fa-save"></i> Guardar Identificación
                 </button>
 
-                <a href="{{ route('planteles.show', $plantel->id) }}" class="btn-custom btn-secondary">
+                <a href="<?php echo e(route('planteles.show', $plantel->id)); ?>" class="btn-custom btn-secondary">
                     <i class="fas fa-eye"></i> Ver mas detalles del plantel
                 </a>
             </div>
@@ -128,28 +128,29 @@
 
     </form>
     <!--Ubicacion--->
-    <form action="{{ isset($plantel) ? route('planteles.update.ubicacion', $plantel->id) : '#' }}" method="POST" class="needs-validation form-ficha-base">
-        @csrf
-        @if(isset($plantel))
-        @method('PUT')
-        @endif
+    <form action="<?php echo e(isset($plantel) ? route('planteles.update.ubicacion', $plantel->id) : '#'); ?>" method="POST" class="needs-validation form-ficha-base">
+        <?php echo csrf_field(); ?>
+        <?php if(isset($plantel)): ?>
+        <?php echo method_field('PUT'); ?>
+        <?php endif; ?>
         <div class="form-section step-section d-none" data-step="1">
             <h4>II. Ubicación</h4>
-            @unless(isset($plantel))
+            <?php if (! (isset($plantel))): ?>
             <div class="alert alert-warning">
                 Debes completar y guardar la Sección I antes de poder llenar esta sección.
             </div>
-            @endunless
+            <?php endif; ?>
             <div class="row">
                 <div class="col-md-4">
                     <label for="id_municipio" class="form-label">Municipio:</label>
                     <select name="id_municipio" id="id_municipio" class="form-control">
                         <option value="">Seleccione un municipio</option>
-                        @foreach($municipios as $municipio)
-                        <option value="{{ $municipio->id }}" {{ old('id_municipio', $plantel->id_municipio ?? '') == $municipio->id ? 'selected' : '' }}>
-                            {{ $municipio->nombre_municipio }}
+                        <?php $__currentLoopData = $municipios; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $municipio): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($municipio->id); ?>" <?php echo e(old('id_municipio', $plantel->id_municipio ?? '') == $municipio->id ? 'selected' : ''); ?>>
+                            <?php echo e($municipio->nombre_municipio); ?>
+
                         </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                         <option value="nuevo">Otro...</option>
                     </select>
 
@@ -159,12 +160,13 @@
                     <label for="id_localidad" class="form-label">Localidad:</label>
                     <select name="id_localidad" id="select_localidad" class="form-control" disabled>
                         <option value="">Seleccione...</option>
-                        @foreach($localidades as $localidad)
-                        <option value="{{ $localidad->id }}" {{ old('id_localidad', $plantel->id_localidad ?? '') == $localidad->id ? 'selected' : '' }}>
-                            {{ $localidad->nombre_localidad }}
+                        <?php $__currentLoopData = $localidades; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $localidad): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($localidad->id); ?>" <?php echo e(old('id_localidad', $plantel->id_localidad ?? '') == $localidad->id ? 'selected' : ''); ?>>
+                            <?php echo e($localidad->nombre_localidad); ?>
+
                         </option>
-                        @endforeach
-                        <option value="nuevo">Otro...</option> {{-- <-- esta línea también --}}
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <option value="nuevo">Otro...</option> 
                     </select>
 
                     <input type="text" id="input_nuevo_localidad" name="nuevo_localidad" class="form-control mt-2 d-none" placeholder="Ingrese nueva localidad">
@@ -173,11 +175,12 @@
                     <label for="id_corde" class="form-label">CORDE:</label>
                     <select name="id_corde" id="select_corde" class="form-select">
                         <option value="">Seleccione...</option>
-                        @foreach($cordes as $corde)
-                        <option value="{{ $corde->id }}" {{ old('id_corde', $plantel->id_corde ?? '') == $corde->id ? 'selected' : '' }}>
-                            {{ $corde->nombre_corde }}
+                        <?php $__currentLoopData = $cordes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $corde): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($corde->id); ?>" <?php echo e(old('id_corde', $plantel->id_corde ?? '') == $corde->id ? 'selected' : ''); ?>>
+                            <?php echo e($corde->nombre_corde); ?>
+
                         </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
 
                     </select>
                     <input type="text" name="nuevo_corde" id="input_nuevo_corde" class="form-control mt-2 d-none" placeholder="Nuevo CORDE">
@@ -186,36 +189,36 @@
             <div class="row">
                 <div class="col-md-6">
                     <label for="domicilio_calle_numero" class="form-label">Calle y Número:</label>
-                    <input type="text" class="form-control" name="domicilio_calle_numero" value="{{ old('domicilio_calle_numero', $plantel->domicilio_calle_numero) }}" placeholder="Ej. Av. Reforma 123" required>
+                    <input type="text" class="form-control" name="domicilio_calle_numero" value="<?php echo e(old('domicilio_calle_numero', $plantel->domicilio_calle_numero)); ?>" placeholder="Ej. Av. Reforma 123" required>
                 </div>
                 <div class="col-md-4">
                     <label for="domicilio_colonia" class="form-label">Colonia:</label>
-                    <input type="text" class="form-control" name="domicilio_colonia" value="{{ old('domicilio_colonia', $plantel->domicilio_colonia) }}" placeholder="Ej. Centro, Roma Norte" required>
+                    <input type="text" class="form-control" name="domicilio_colonia" value="<?php echo e(old('domicilio_colonia', $plantel->domicilio_colonia)); ?>" placeholder="Ej. Centro, Roma Norte" required>
                 </div>
                 <div class="col-md-2">
                     <label for="domicilio_cp" class="form-label">C.P.:</label>
-                    <input type="text" class="form-control" name="domicilio_cp" value="{{ old('domicilio_cp', $plantel->domicilio_cp) }}" placeholder="06000" required>
+                    <input type="text" class="form-control" name="domicilio_cp" value="<?php echo e(old('domicilio_cp', $plantel->domicilio_cp)); ?>" placeholder="06000" required>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-3">
                     <label for="latitud" class="form-label">Latitud:</label>
-                    <input type="text" class="form-control" name="latitud" value="{{ old('latitud', $plantel->latitud) }}" placeholder="Ej. 19.432608" required>
+                    <input type="text" class="form-control" name="latitud" value="<?php echo e(old('latitud', $plantel->latitud)); ?>" placeholder="Ej. 19.432608" required>
                 </div>
                 <div class="col-md-3">
                     <label for="longitud" class="form-label">Longitud:</label>
-                    <input type="text" class="form-control" name="longitud" value="{{ old('longitud', $plantel->longitud) }}" placeholder="Ej. -99.133209" required>
+                    <input type="text" class="form-control" name="longitud" value="<?php echo e(old('longitud', $plantel->longitud)); ?>" placeholder="Ej. -99.133209" required>
                 </div>
                 
                 <div class="col-md-3">
                     <label class="form-label">Macroregión:</label>
-                    <input type="text" class="form-control" value="{{ $plantel->macroregion->nombre_macroregion ?? 'No asignada' }}" readonly>
+                    <input type="text" class="form-control" value="<?php echo e($plantel->macroregion->nombre_macroregion ?? 'No asignada'); ?>" readonly>
                 </div>
 
                 <div class="col-md-3">
                     <label class="form-label">Microregión:</label>
-                    <input type="text" class="form-control" value="{{ $plantel->microregion->nombre_microregiones ?? 'No asignada' }}" readonly>
+                    <input type="text" class="form-control" value="<?php echo e($plantel->microregion->nombre_microregiones ?? 'No asignada'); ?>" readonly>
                 </div>
             </div>
 
@@ -227,44 +230,45 @@
 
 
     <!--Contacto--->
-    <form action="{{ isset($plantel) ? route('planteles.update.contacto', $plantel->id) : '#' }}" method="POST" class="needs-validation form-ficha-base">
-        @csrf
-        @if(isset($plantel))
-        @method('PUT')
-        @endif
+    <form action="<?php echo e(isset($plantel) ? route('planteles.update.contacto', $plantel->id) : '#'); ?>" method="POST" class="needs-validation form-ficha-base">
+        <?php echo csrf_field(); ?>
+        <?php if(isset($plantel)): ?>
+        <?php echo method_field('PUT'); ?>
+        <?php endif; ?>
 
         <div class="form-section step-section d-none" data-step="2">
             <h4>III. Contacto y Director</h4>
-            @unless(isset($plantel))
+            <?php if (! (isset($plantel))): ?>
             <div class="alert alert-warning">
                 Debes completar y guardar la Sección I antes de poder llenar esta sección.
             </div>
-            @endunless
+            <?php endif; ?>
             <div class="row">
                 <div class="col-md-6">
                     <label for="telefono_plantel" class="form-label">Telefono del Plantel:</label>
-                    <input type="text" class="form-control" name="telefono_plantel" value="{{ old('telefono_plantel', $plantel->telefono_plantel) }}" required>
+                    <input type="text" class="form-control" name="telefono_plantel" value="<?php echo e(old('telefono_plantel', $plantel->telefono_plantel)); ?>" required>
                 </div>
                 <div class="col-md-6">
                     <label for="correo_institucional" class="form-label">Correo Institucional:</label>
-                    <input type="text" class="form-control" name="correo_institucional" value="{{ old('correo_institucional', $plantel->correo_institucional) }}" required>
+                    <input type="text" class="form-control" name="correo_institucional" value="<?php echo e(old('correo_institucional', $plantel->correo_institucional)); ?>" required>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col-md-6">
                     <label for="nombre_director_registrado" class="form-label">Nombre del Director:*</label>
-                    <input type="text" class="form-control" name="nombre_director_registrado" value="{{old('nombre_director_registrado', $plantel->nombre_director_registrado)}}" required>
+                    <input type="text" class="form-control" name="nombre_director_registrado" value="<?php echo e(old('nombre_director_registrado', $plantel->nombre_director_registrado)); ?>" required>
                 </div>
                 <div class="col-md-6">
                     <label for="id_director_asignado" class="form-label">Director Asignado(Usuario):</label>
                     <select name="id_director_asignado" class="form-select" required>
                         <option value="">Seleccione...</option>
-                        @foreach($directores as $director)
-                        <option value="{{ $director->id }}" {{ old('id_director_asignado', $plantel->id_director_asignado ?? '') == $director->id ? 'selected' : '' }}>
-                            {{ $director->nombre_completo}}
+                        <?php $__currentLoopData = $directores; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $director): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <option value="<?php echo e($director->id); ?>" <?php echo e(old('id_director_asignado', $plantel->id_director_asignado ?? '') == $director->id ? 'selected' : ''); ?>>
+                            <?php echo e($director->nombre_completo); ?>
+
                         </option>
-                        @endforeach
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </select>
                 </div>
             </div>
@@ -275,40 +279,41 @@
 
     </form>
 
-    {{-- Sección IV: Accesibilidad --}}
-    <form action="{{ isset($plantel) ? route('planteles.update.accesibilidad', $plantel->id) : '#' }}" method="POST" class="needs-validation form-ficha-base">
-        @csrf
-        @if(isset($plantel))
-        @method('PUT')
-        @endif
+    
+    <form action="<?php echo e(isset($plantel) ? route('planteles.update.accesibilidad', $plantel->id) : '#'); ?>" method="POST" class="needs-validation form-ficha-base">
+        <?php echo csrf_field(); ?>
+        <?php if(isset($plantel)): ?>
+        <?php echo method_field('PUT'); ?>
+        <?php endif; ?>
         <div class="form-section step-section d-none" data-step="3">
             <h4>IV. Accesibilidad</h4>
-            @unless(isset($plantel))
+            <?php if (! (isset($plantel))): ?>
             <div class="alert alert-warning">
                 Debes completar y guardar la Sección I antes de poder llenar esta sección.
             </div>
-            @endunless
+            <?php endif; ?>
             <div class="mb-3">
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="accesibilidad_rampas" id="accesibilidad_rampas" value="1"
-                        {{ old('accesibilidad_rampas', $plantel->accesibilidad_rampas ?? false) ? 'checked' : '' }}
+                        <?php echo e(old('accesibilidad_rampas', $plantel->accesibilidad_rampas ?? false) ? 'checked' : ''); ?>
+
                         <label class="form-check-label" for="accesibilidad_rampas">Rampas</label>
                 </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="accesibilidad_banos_adaptados" id="accesibilidad_banos_adaptados" value="1"
-                        {{ old('accesibilidad_banos_adaptados', $plantel->accesibilidad_banos_adaptados ?? false) ? 'checked' : '' }}>
+                        <?php echo e(old('accesibilidad_banos_adaptados', $plantel->accesibilidad_banos_adaptados ?? false) ? 'checked' : ''); ?>>
                     <label class="form-check-label" for="accesibilidad_banos_adaptados">Baños Adaptados</label>
                 </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" name="accesibilidad_sanaletica_braille" id="accesibilidad_sanaletica_braille" value="1"
-                        {{ old('accesibilidad_sanaletica_braille', $plantel->accesibilidad_sanaletica_braille ?? false) ? 'checked' : '' }}>
+                        <?php echo e(old('accesibilidad_sanaletica_braille', $plantel->accesibilidad_sanaletica_braille ?? false) ? 'checked' : ''); ?>>
                     <label class="form-check-label" for="accesibilidad_sanaletica_braille">Señalética Braille</label>
                 </div>
             </div>
             <div class="mb-3">
                 <label for="accesibilidad_otros" class="form-label">Otros (Accesibilidad):</label>
                 <input type="text" class="form-control" name="accesibilidad_otros" id="accesibilidad_otros"
-                    value="{{ old('accesibilidad_otros', $plantel->accesibilidad_otros) }}" placeholder="Especificar...">
+                    value="<?php echo e(old('accesibilidad_otros', $plantel->accesibilidad_otros)); ?>" placeholder="Especificar...">
             </div>
             <div class="mt-4 d-flex flex-column flex-md-row">
                 <button type="submit" class="btn-custom btn-primary"><i class="fas fa-save"></i> Guardar Accesibilidad</button>
@@ -316,32 +321,32 @@
         </div>
     </form>
 
-    {{-- Sección V: Total Usuarios Planteles --}}
+    
 
-    <form action="{{ isset($plantel) ? route('planteles.update.totalUsuariosPlanteles', $plantel->id) : '#' }}" method="POST" class="needs-validation form-ficha-base">
-        @csrf
-        @if(isset($plantel))
-        @method('PUT')
-        @endif
+    <form action="<?php echo e(isset($plantel) ? route('planteles.update.totalUsuariosPlanteles', $plantel->id) : '#'); ?>" method="POST" class="needs-validation form-ficha-base">
+        <?php echo csrf_field(); ?>
+        <?php if(isset($plantel)): ?>
+        <?php echo method_field('PUT'); ?>
+        <?php endif; ?>
         <div class="form-section step-section d-none" data-step="4">
             <h4>V. Total Usuarios Planteles</h4>
-            @unless(isset($plantel))
+            <?php if (! (isset($plantel))): ?>
             <div class="alert alert-warning">
                 Debes completar y guardar la Sección I antes de poder llenar esta sección.
             </div>
-            @endunless
+            <?php endif; ?>
             <div class="row">
                 <div class="col-md-4">
                     <label for="total_alumnos" class="form-label">Total Alumnos:</label>
-                    <input type="number" class="form-control" name="total_alumnos" value="{{ old('total_alumnos', $plantel->total_alumnos) }}" required>
+                    <input type="number" class="form-control" name="total_alumnos" value="<?php echo e(old('total_alumnos', $plantel->total_alumnos)); ?>" required>
                 </div>
                 <div class="col-md-4">
                     <label for="total_docentes" class="form-label">Total Docentes</label>
-                    <input type="number" class="form-control" name="total_docentes" value="{{old('total_docentes', $plantel->total_docentes)}}" required>
+                    <input type="number" class="form-control" name="total_docentes" value="<?php echo e(old('total_docentes', $plantel->total_docentes)); ?>" required>
                 </div>
                 <div class="col-md-4">
                     <label for="total_administrativos" class="form-label">Total Administrativos</label>
-                    <input type="number" class="form-control" name="total_administrativos" value="{{old('total_administrativos', $plantel->total_administrativos)}}" required>
+                    <input type="number" class="form-control" name="total_administrativos" value="<?php echo e(old('total_administrativos', $plantel->total_administrativos)); ?>" required>
                 </div>
             </div>
             <div class="mt-4 d-flex flex-column flex-md-row">
@@ -350,27 +355,27 @@
         </div>
     </form>
 
-    {{-- Sección VI: estauts plantel(admin) --}}
-    <form action="{{ isset($plantel) ? route('planteles.update.estatus', $plantel->id) : '#' }}" method="POST" class="needs-validation form-ficha-base">
-        @csrf
-        @if(isset($plantel))
-        @method('PUT')
-        @endif
+    
+    <form action="<?php echo e(isset($plantel) ? route('planteles.update.estatus', $plantel->id) : '#'); ?>" method="POST" class="needs-validation form-ficha-base">
+        <?php echo csrf_field(); ?>
+        <?php if(isset($plantel)): ?>
+        <?php echo method_field('PUT'); ?>
+        <?php endif; ?>
         <div class="form-section step-section d-none" data-step="5">
             <h4>VI. Estatus(Admin)</h4>
-            @unless(isset($plantel))
+            <?php if (! (isset($plantel))): ?>
             <div class="alert alert-warning">
                 Debes completar y guardar la Sección I antes de poder llenar esta sección.
             </div>
-            @endunless
+            <?php endif; ?>
             <div class="row">
                 <div class="col-md-4">
                     <label for="estatus_plantel" class="form-label">Estatus:</label>
                     <select name="estatus_plantel" class="form-select" required>
                         <option value="">Seleccione una opcion</option>
-                        <option value="ACTIVO" {{ old('estatus_plantel', $plantel->estatus_plantel ?? '') == 'ACTIVO' ? 'selected' : '' }}>ACTIVO</option>
-                        <option value="INACTIVO" {{ old('estatus_plantel', $plantel->estatus_plantel ?? '') == 'INACTIVO' ? 'selected' : '' }}>INACTIVO</option>
-                        <option value="EN_REVISION" {{ old('estatus_plantel', $plantel->estatus_plantel ?? '') == 'EN_REVISION' ? 'selected' : '' }}>EN REVISION</option>
+                        <option value="ACTIVO" <?php echo e(old('estatus_plantel', $plantel->estatus_plantel ?? '') == 'ACTIVO' ? 'selected' : ''); ?>>ACTIVO</option>
+                        <option value="INACTIVO" <?php echo e(old('estatus_plantel', $plantel->estatus_plantel ?? '') == 'INACTIVO' ? 'selected' : ''); ?>>INACTIVO</option>
+                        <option value="EN_REVISION" <?php echo e(old('estatus_plantel', $plantel->estatus_plantel ?? '') == 'EN_REVISION' ? 'selected' : ''); ?>>EN REVISION</option>
                     </select>
                 </div>
             </div>
@@ -381,42 +386,42 @@
     </form>
 
 
-    {{-- Sección VII: Intervencion del CAPCEE --}}
+    
     <div class="form-section step-section d-none" data-step="6">
         <h4>VII. Intervención del CAPCEE</h4>
         
-        @unless(isset($plantel))
+        <?php if (! (isset($plantel))): ?>
         <div class="alert alert-warning">
             Debes completar y guardar la Sección I de Identificación antes de poder llenar esta sección.
         </div>
-        @endunless
+        <?php endif; ?>
 
         <div class="row">
-            {{-- Campo Meta --}}
+            
             <div class="col-md-4 mb-3">
                 <label for="meta" class="form-label">Meta de la intervención:</label>
                 <input type="text" name="meta" id="meta" class="form-control" 
-                    value="{{ old('meta', $plantel->meta ?? '') }}" 
+                    value="<?php echo e(old('meta', $plantel->meta ?? '')); ?>" 
                     maxlength="255" placeholder="Ej. Construcción de aulas, impermeabilización..." required>
             </div>
 
-            {{-- Campo Monto --}}
+            
             <div class="col-md-4 mb-3">
                 <label for="monto" class="form-label">Monto de Inversión:</label>
                 <div class="input-group">
                     <span class="input-group-text"><i class="fas fa-dollar-sign"></i></span>
                     <input type="number" name="monto" id="monto" class="form-control" 
-                        value="{{ old('monto', $plantel->monto ?? '') }}" 
+                        value="<?php echo e(old('monto', $plantel->monto ?? '')); ?>" 
                         step="0.01" min="0" placeholder="0.00" required>
                 </div>
             </div>
 
-            {{-- Campo Avance Final --}}
+            
             <div class="col-md-4 mb-3">
                 <label for="avance_final" class="form-label">Avance Físico Final:</label>
                 <div class="input-group">
                     <input type="number" name="avance_final" id="avance_final" class="form-control" 
-                        value="{{ old('avance_final', $plantel->avance_final ?? '') }}" 
+                        value="<?php echo e(old('avance_final', $plantel->avance_final ?? '')); ?>" 
                         min="0" max="100" placeholder="0" required>
                     <span class="input-group-text">%</span>
                 </div>
@@ -430,7 +435,7 @@
         </div>
     </div>
 
-@push('scripts')
+<?php $__env->startPush('scripts'); ?>
 <!--Script para navegacion de tabs-->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -465,13 +470,14 @@
 </script>
 
 <!--Script para nuevos municipios y localidades--->
-<script src="{{ asset('js/ubicacion.js') }}"></script>
+<script src="<?php echo e(asset('js/ubicacion.js')); ?>"></script>
 
 
 <!--Script para municipios--->
-<script src="{{ asset('js/editar_ubicacion.js') }}"></script>
+<script src="<?php echo e(asset('js/editar_ubicacion.js')); ?>"></script>
 
-@endpush
+<?php $__env->stopPush(); ?>
 
 
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\atlas_local\resources\views/planteles/edit.blade.php ENDPATH**/ ?>

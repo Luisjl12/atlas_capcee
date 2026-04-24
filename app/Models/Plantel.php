@@ -40,8 +40,10 @@ class Plantel extends Model implements Auditable
         'total_administrativos',
         'estatus_plantel',
         'numero_edificios',
-
-
+        'estatus_plantel',
+        'meta',              
+        'monto',             
+        'avance_final',      
     ];
 
     public function municipio()

@@ -451,4 +451,28 @@ class PlantelController extends Controller
         $plantel = Plantel::with('auditorias.user')->findOrFail($id);
         return view('planteles.auditorias', compact('plantel'));
     }
+
+    public function updateMetas(Request $request, $id)
+    {
+        // 1. Validamos que los datos vengan correctamente desde el formulario
+        $request->validate([
+            'meta'         => 'required|string|max:255',
+            'monto'        => 'required|numeric|min:0',
+            'avance_final' => 'required|integer|min:0|max:100',
+        ]);
+
+        // 2. Buscamos el plantel en la base de datos
+        $plantel = Plantel::findOrFail($id);
+
+        // 3. Actualizamos los campos
+        $plantel->meta = $request->meta;
+        $plantel->monto = $request->monto;
+        $plantel->avance_final = $request->avance_final;
+
+        // 4. Guardamos los cambios
+        $plantel->save();
+
+        // 5. Redirigimos de vuelta a la vista anterior con un mensaje de éxito
+        return redirect()->back()->with('success', 'Metas y avances guardados correctamente para CAPCEE.');
+    }
 }
