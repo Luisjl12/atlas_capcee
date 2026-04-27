@@ -53,6 +53,7 @@ class MapaController extends Controller
         $municipios = \App\Models\Municipio::orderBy('nombre_municipio')->get();
         $niveles = \App\Models\InmuebleNivel::select('nivel')->distinct()->orderBy('nivel')->get();
         $rangosSuperficie = \App\Models\InmuebleSuperficie::select('rango')->distinct()->orderBy('rango')->get();
+        $totalGlobalEdificios = Plantel::sum('numero_edificios');
 
         //Vista para los filtros de agua
         $tiposAgua = [
@@ -75,7 +76,8 @@ class MapaController extends Controller
             'municipios',
             'niveles',
             'rangosSuperficie',
-            'tiposAgua' // ya disponible en la vista
+            'tiposAgua',
+            'totalGlobalEdificios'
         ));
 
         //Filtro para energia
@@ -89,52 +91,52 @@ class MapaController extends Controller
     }
 
     //Filtro para superficies
-
     public function filtrar(Request $request)
     {
         try {
-            // Para ver qué llega del front
             Log::info('Filtros recibidos:', $request->all());
 
             $query = Plantel::query();
 
+            // --- APLICACIÓN DE FILTROS ---
             if ($request->filled('macroregion')) {
-                Log::info('Macroregion filtro:', [$request->macroregion]);
                 $query->where('macroregion_id', $request->macroregion);
             }
 
             if ($request->filled('microregion')) {
-                Log::info('Microregión filtro:', [$request->microregion]);
                 $query->where('microregion_id', $request->microregion);
             }
 
             if ($request->filled('municipio')) {
-                Log::info('Municipio filtro:', [$request->municipio]);
                 $query->where('id_municipio', $request->municipio);
             }
 
             if ($request->filled('nivel')) {
-                Log::info('Nivel filtro:', [$request->nivel]);
                 $query->whereHas('niveles', function ($q) use ($request) {
                     $q->where('nivel', $request->nivel);
                 });
             }
 
             if ($request->filled('superficie')) {
-                Log::info('Entró a filtro superficie', [$request->superficie]);
-
                 $query->whereHas('superficies', function ($q) use ($request) {
-                    Log::info('Comparando contra rango', [$request->superficie]);
-                    $q->where('rango', $request->superficie)
-                        ->where('aplica', 1); // Asegura que ese rango sí aplica
+                    $q->where('rango', $request->superficie)->where('aplica', 1);
                 });
             }
 
             $query->whereNotNull('latitud')->whereNotNull('longitud');
 
+            // --- CALCULO DEL TOTAL (Después de los filtros) ---
+            // Clonamos el query para que la suma no interfiera con la obtención de datos
+            $totalEdificios = (clone $query)->sum('numero_edificios');
+
+            // --- OBTENCIÓN DE DATOS PARA EL MAPA ---
             $planteles = $query->with(['niveles', 'superficies', 'municipio', 'localidad'])->get();
 
-            return response()->json(['data' => $planteles]);
+            return response()->json([
+                'data' => $planteles, 
+                'total_edificios' => $totalEdificios
+            ]);
+
         } catch (\Exception $e) {
             Log::error('Error en filtro de planteles: ' . $e->getMessage());
             return response()->json([
@@ -623,13 +625,18 @@ class MapaController extends Controller
 
         $this->aplicarFiltrosTerritorialesYNivel($query, $request);
 
-        foreach (['energia', 'drenaje', 'agua', 'obras', 'superficie', 'accesibilidad', 'estado_conservacion', 'sanitario', 'seguridad'] as $categoria) {
+        foreach (['energia', 'drenaje', 'agua', 'obras', 'superficie', 'accesibilidad', 'estado_conservacion', 'sanitario', 'seguridad', 'edificios'] as $categoria) {
             $this->aplicarFiltrosPorCategoria($query, $request, $categoria);
         }
 
         $query->whereNotNull('latitud')->whereNotNull('longitud');
+        $totalEdificios = (clone $query)->sum('numero_edificios') ?? 0;
 
-        return response()->json(['data' => $query->get()]);
+        return response()->json([
+            'data' => $query->get(),
+            'total_edificios' => $totalEdificios // Enviamos el nuevo total calculado
+        ]);
+
     }
 
     public function buscarPorCCT($cct)
@@ -656,31 +663,30 @@ class MapaController extends Controller
     public function exportarCSV(Request $request)
     {
         $query = Plantel::query()->with([
-            'energia',
-            'drenaje',
-            'agua',
-            'obras',
-            'superficies',
-            'municipio',
-            'localidad',
-            'niveles',
-            'seguridad',
-            'sanitario'
+            'energia', 'drenaje', 'agua', 'obras', 'superficies',
+            'municipio', 'localidad', 'niveles', 'seguridad', 'sanitario'
         ]);
 
         $this->aplicarFiltrosTerritorialesYNivel($query, $request);
 
-        foreach (['energia', 'drenaje', 'agua', 'obras', 'superficie', 'accesibilidad', 'estado_conservacion', 'sanitario', 'seguridad'] as $categoria) {
+        // 1. IMPORTANTE: Agregamos 'edificios' al array para que el CSV se descargue filtrado
+        $categorias = [
+            'energia', 'drenaje', 'agua', 'obras', 'superficie', 
+            'accesibilidad', 'estado_conservacion', 'sanitario', 'seguridad', 'edificios'
+        ];
+
+        foreach ($categorias as $categoria) {
             $this->aplicarFiltrosPorCategoria($query, $request, $categoria);
         }
 
         $query->whereNotNull('latitud')->whereNotNull('longitud');
         $planteles = $query->get();
 
-        //Generar el csv 
+        // Generar el csv 
         $response = new StreamedResponse(function () use ($planteles) {
             $handle = fopen('php://output', 'w');
-            // Encabezados del CSV
+            
+            // 2. Agregamos el encabezado 'Edificios'
             fputcsv($handle, [
                 'ID',
                 'Nombre',
@@ -690,10 +696,12 @@ class MapaController extends Controller
                 'Estatus',
                 'Municipio',
                 'Localidad',
-                'Niveles Educativos'
+                'Niveles Educativos',
+                'Numero de Edificios' // <-- Nuevo encabezado
             ]);
 
             foreach ($planteles as $plantel) {
+                // 3. Agregamos el dato del modelo al cuerpo del CSV
                 fputcsv($handle, [
                     $plantel->id,
                     $plantel->nombre_escuela,
@@ -704,6 +712,7 @@ class MapaController extends Controller
                     $plantel->municipio->nombre_municipio ?? 'Sin municipio',
                     $plantel->localidad->nombre_localidad ?? 'Sin localidad',
                     $plantel->niveles->pluck('nivel')->join(', '),
+                    $plantel->numero_edificios ?? 0, // <-- Nuevo dato
                 ]);
             }
 
@@ -711,7 +720,7 @@ class MapaController extends Controller
         });
 
         $response->headers->set('Content-Type', 'text/csv');
-        $response->headers->set('Content-Disposition', 'attachment; filename="planteles.csv');
+        $response->headers->set('Content-Disposition', 'attachment; filename="planteles_filtrados.csv"');
 
         return $response;
     }

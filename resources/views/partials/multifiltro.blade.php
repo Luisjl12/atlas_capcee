@@ -9,7 +9,7 @@
             <div class="modal-body">
                 <form id="formMultifiltro">
                     <div class="accordion" id="accordionFiltros">
-
+                        
                         <!-- Territorial -->
                         <div class="accordion-item">
                             <h2 class="accordion-header" id="headingTerritorial">
@@ -124,6 +124,37 @@
                                         <option value="{{ $rango->rango }}">{{ ucwords(str_replace('_', ' ', $rango->rango)) }} m²</option>
                                         @endforeach
                                     </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="headingEdificios">
+                                <button class="accordion-button collapsed d-flex justify-content-between align-items-center" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEdificios">
+                                    <span>🏢 Infraestructura por Edificios</span>
+                                    <span class="badge bg-primary rounded-pill me-3" style="font-size: 0.8rem;">
+                                        Total: <span id="totalEdificiosBadge">{{ $totalGlobalEdificios ?? 0 }}</span>
+                                    </span>
+                                </button>
+                            </h2>
+                            <div id="collapseEdificios" class="accordion-collapse collapse" aria-labelledby="headingEdificios">
+                                <div class="accordion-body fondo-territorial">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Mínimo</label>
+                                            <input type="number" name="numero_edificios_min" class="form-control form-control-sm" placeholder="1" min="0">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-bold">Máximo</label>
+                                            <input type="number" name="numero_edificios_max" class="form-control form-control-sm" placeholder="20" min="0">
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <hr class="my-2 text-muted">
+                                            <label class="form-label fw-bold">Número exacto</label>
+                                            <input type="number" name="numero_edificios_exacto" class="form-control form-control-sm" placeholder="Ej. 5" min="0">
+                                            <div class="form-text">Si usas un número exacto, se ignoran los rangos.</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -481,6 +512,7 @@
                     </div>
                 </form>
             </div>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                 <button type="button" class="btn btn-primary" id="btnAplicarFiltros">Aplicar filtros</button>

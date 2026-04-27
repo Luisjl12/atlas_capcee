@@ -165,6 +165,22 @@ trait FiltrablePorCategoria
             return $query;
         }
 
+        if ($categoria === 'edificios') {
+            if ($request->filled('numero_edificios_min')) {
+                $query->where('numero_edificios', '>=', $request->numero_edificios_min);
+            }
+
+            if ($request->filled('numero_edificios_max')) {
+                $query->where('numero_edificios', '<=', $request->numero_edificios_max);
+            }
+            
+            if ($request->filled('numero_edificios_exacto')) {
+                $query->where('numero_edificios', '=', $request->numero_edificios_exacto);
+            }
+
+            return $query;
+        }
+
 
         if (!empty($filtros)) {
             $query->whereHas($categoria, function ($q) use ($filtros) {
@@ -253,6 +269,12 @@ trait FiltrablePorCategoria
                 'barda_completa',
                 'estado_barda',
                 'estado_cerco',
+            ],
+
+            'edificios' => [
+            'numero_edificios_min', 
+            'numero_edificios_max',
+            'numero_edificios_exacto'
             ],
 
             default => [],

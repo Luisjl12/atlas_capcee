@@ -132,13 +132,20 @@ Route::get('/planteles/filtrar', [PlantelController::class, 'filtrarEstatus'])->
 Route::resource('planteles', PlantelController::class);
 
 //Agregar planteles 
-Route::post('/planteles', [PlantelController::class, 'store'])->name('planteles.store'); // Sección I
+// Agrupamos todas las rutas de actualización de planteles bajo el middleware de protección
+Route::middleware([\App\Http\Middleware\ProteccionLecturaSiie::class])->group(function () {
 
-Route::put('/planteles/{id}/ubicacion', [PlantelController::class, 'updateUbicacion'])->name('planteles.update.ubicacion'); // Sección II
-Route::put('/planteles/{id}/contacto', [PlantelController::class, 'updateContacto'])->name('planteles.update.contacto'); // Sección III
-Route::put('/planteles/{id}/accesibilidad', [PlantelController::class, 'updateAccesibilidad'])->name('planteles.update.accesibilidad'); // Sección IV
-Route::put('/planteles/{id}/usuarios', [PlantelController::class, 'updateTotalUsuariosPlanteles'])->name('planteles.update.totalUsuariosPlanteles'); // Sección V
-Route::put('/planteles/{id}/estatus', [PlantelController::class, 'updateEstatus'])->name('planteles.update.estatus'); // Sección VI
+    // Agregar planteles (Sección I)
+    Route::post('/planteles', [PlantelController::class, 'store'])->name('planteles.store');
+
+    // Actualizaciones de las secciones II a VI
+    Route::put('/planteles/{id}/ubicacion', [PlantelController::class, 'updateUbicacion'])->name('planteles.update.ubicacion');
+    Route::put('/planteles/{id}/contacto', [PlantelController::class, 'updateContacto'])->name('planteles.update.contacto');
+    Route::put('/planteles/{id}/accesibilidad', [PlantelController::class, 'updateAccesibilidad'])->name('planteles.update.accesibilidad');
+    Route::put('/planteles/{id}/usuarios', [PlantelController::class, 'updateTotalUsuariosPlanteles'])->name('planteles.update.totalUsuariosPlanteles');
+    Route::put('/planteles/{id}/estatus', [PlantelController::class, 'updateEstatus'])->name('planteles.update.estatus');
+
+});
 
 
 
@@ -401,7 +408,8 @@ Route::get('/sso-login', function (Request $request) {
                 'id' => $usuario->id,
                 'rol' => $decoded->rol ?? 'ADMINISTRADOR',
                 
-                'nombre' => $usuario->nombre ?? ($usuario->correo_electronico ?? 'Usuario Atlas')
+                'nombre' => $usuario->nombre ?? ($usuario->correo_electronico ?? 'Usuario Atlas'), 
+                'origen_siie'=>true
             ]);
 
             return redirect('/admin'); 
