@@ -40,6 +40,7 @@ default => ['fas fa-file', 'text-dark'],
         <span class="nav-tab" data-step="5">Galerias</span>
         <span class="nav-tab" data-step="6">Ubicacion en el mapa</span>
         <span class="nav-tab" data-step="7">Detalles avanzados</span>
+        <span class="nav-tab" data-step="8">Intervencion del CAPCEE</span>
     </div>
 
     @if (session('success'))
@@ -719,6 +720,37 @@ default => ['fas fa-file', 'text-dark'],
                 @endif
 
             </div>
+        </div>
+
+        <div class="tab-pane" id="step-8">
+            <h4>Intervención del CAPCEE</h4>
+
+            <form action="{{ route('importar.escuelas') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="mb-3">
+                    <label for="archivo" class="form-label">Seleccionar archivo Excel/CSV</label>
+                    <input type="file" name="archivo" id="archivo" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-file-import"></i> Importar datos
+                </button>
+            </form>
+
+            @if(session('success'))
+                <div class="alert alert-success mt-3">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if($errors->any())
+                <div class="alert alert-danger mt-3">
+                    <ul>
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
         </div>
     </div>
 

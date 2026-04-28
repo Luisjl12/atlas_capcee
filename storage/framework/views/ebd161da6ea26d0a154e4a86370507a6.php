@@ -49,6 +49,9 @@
                     <a href="<?php echo e(route('historial.index')); ?>" class="accion-card green">
                         <i class="fas fa-history"></i> Historial de Modificaciones
                     </a>
+                    <a href="<?php echo e(route('proyectos.index')); ?>" class="accion-card green">
+                        <i class ="fas fa-lightbulb"></i> Proyectos CAPCEE
+                    </a>
                 </div>
 
             </div>

@@ -31,6 +31,9 @@ use Firebase\JWT\Key;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\MapaCienController;
+use App\Http\Controllers\ImportarDatosCapceeController; 
+use App\Http\Controllers\DatosProyectosController; 
+use App\Http\Controllers\ProyectoInversionController; 
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -436,3 +439,12 @@ Route::get('/mapa-escuelas-cien',[MapaCienController::class, 'index'])->name('ma
 Route::get('/mapa/escuela/{id}', [App\Http\Controllers\ReporteController::class, 'mapaIndividual'])->name('mapa.individual');
 
 Route::get('/admin/mapa-escuelas-100', [App\Http\Controllers\ReporteController::class, 'mapaEscuelas100General'])->name('mapa.escuelas100.general');
+
+//Importar datos intervencion del capcee / proyectos
+Route::post('/importar-escuelas', [ImportarDatosCapceeController::class, 'store'])->name('importar.escuelas'); 
+
+Route::get('/proyectos', [DatosProyectosController::class, 'index'])->name('proyectos.index'); 
+
+Route::post('/importar-proyectos', [DatosProyectosController::class, 'store'])->name('proyectos.importar');
+
+Route::delete('/proyectos/{id}', [DatosProyectosController::class, 'destroy'])->name('proyectos.destroy'); 

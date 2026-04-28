@@ -41,6 +41,7 @@ default => ['fas fa-file', 'text-dark'],
         <span class="nav-tab" data-step="5">Galerias</span>
         <span class="nav-tab" data-step="6">Ubicacion en el mapa</span>
         <span class="nav-tab" data-step="7">Detalles avanzados</span>
+        <span class="nav-tab" data-step="8">Intervencion del CAPCEE</span>
     </div>
 
     <?php if(session('success')): ?>
@@ -737,6 +738,38 @@ default => ['fas fa-file', 'text-dark'],
                 <?php endif; ?>
 
             </div>
+        </div>
+
+        <div class="tab-pane" id="step-8">
+            <h4>Intervención del CAPCEE</h4>
+
+            <form action="<?php echo e(route('importar.escuelas')); ?>" method="POST" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
+                <div class="mb-3">
+                    <label for="archivo" class="form-label">Seleccionar archivo Excel/CSV</label>
+                    <input type="file" name="archivo" id="archivo" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-file-import"></i> Importar datos
+                </button>
+            </form>
+
+            <?php if(session('success')): ?>
+                <div class="alert alert-success mt-3">
+                    <?php echo e(session('success')); ?>
+
+                </div>
+            <?php endif; ?>
+
+            <?php if($errors->any()): ?>
+                <div class="alert alert-danger mt-3">
+                    <ul>
+                        <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </ul>
+                </div>
+            <?php endif; ?>
         </div>
     </div>
 
