@@ -44,4 +44,9 @@ class DashboardController extends Controller
     public function administradorPrincipal(){
         return view('administradorPrincipal'); 
     }
+
+    public function proyectosEspeciales()
+    {
+        return view('proyectosEspeciales');
+    }
 }

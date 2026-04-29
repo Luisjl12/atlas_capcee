@@ -33,4 +33,27 @@ class DatosProyectosController extends Controller
         
         return redirect()->route('proyectos.index')->with('success', 'Proyecto eliminado correctamente'); 
     }
+
+    public function edit($id)
+    {
+        $proyecto = ProyectoInversion::findOrFail($id); 
+        return view ('proyectos.edit', compact ('proyecto')); 
+    }
+
+    public function update(Request $request, $id)
+    {
+        $proyecto= ProyectoInversion::findOrFail($id);
+        $validated= $request->validate([
+            'municipio'=>'required',
+            'nombre_proyecto'=>'required', 
+            'monto_inversion'=>'required|numeric', 
+            'inicio'=>'required|date', 
+            'termino'=>'required|date', 
+            'empresa'=>'nullable|string', 
+        ]); 
+
+        $proyecto->update($validated); 
+
+        return redirect()->route('proyectos.index')->with('success', 'Proyecto actualizado correctamente.'); 
+    }
 }

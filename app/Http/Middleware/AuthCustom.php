@@ -10,7 +10,7 @@ class AuthCustom
 {
     public function handle(Request $request, Closure $next): Response
     {
-        if (!session()->get('loggedin')) {
+        if (  !session()->get('loggedin')) {
             return redirect()->route('login');
         }
 

@@ -28,6 +28,7 @@ class RoleHelper
             6 => route('dashboard.visualizador'), 
             7 => route('dashboard.directorReportes'), 
             8 => route('dashboard.administradorPrincipal'), 
+            9 => route('dashboard.proyectosEspeciales'), 
         };
     }
 
@@ -43,6 +44,7 @@ class RoleHelper
             6 => route('dashboard.visualizador'), 
             7 => route('dashboard.directorReportes'), 
             8 => route('dashboard.administradorPrincipal'), 
+            9 => route('dashboard.proyectosEspeciales'), 
         };
     }
 
@@ -54,6 +56,7 @@ class RoleHelper
             2 => route('dashboard.analista'),
             6 => route('dashboard.visualizador'), 
             8 => route('dashboard.administradorPrincipal'),
+            9 => route('dashboard.proyectosEspeciales'), 
         };
     }
 
@@ -89,6 +92,7 @@ class RoleHelper
             6 => route('dashboard.visualizador'), 
             7 => route('dashboard.directorReportes'), 
             8 => route('dashboard.administradorPrincipal'),
+            9 => route('dashboard.proyectosEspeciales'), 
         };
     }
     

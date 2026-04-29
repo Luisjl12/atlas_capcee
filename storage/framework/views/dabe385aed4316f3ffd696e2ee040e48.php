@@ -43,15 +43,23 @@
                     <td><?php echo e($row->termino); ?></td>
                     <td><?php echo e($row->empresa); ?></td>
                     <td>
-                    <!--Boton para eliminar-->
-                    <form action = "<?php echo e(route('proyectos.destroy', $row->id)); ?>" method="POST" Onsubmit="return confirm('¿Seguro que quieres eliminar este proyecto?');">
-                        <?php echo csrf_field(); ?>
-                        <?php echo method_field('DELETE'); ?>
-                        <button type="submit" class="btn btn-sm btn-danger">
-                             <i class="fas fa-trash"></i> Eliminar
-                        </button>
-                    </form>
+                        <div class="d-flex align-items-center gap-1">
+                            <!-- Botón Editar -->
+                            <a href="<?php echo e(route('proyectos.edit', $row->id)); ?>" class="btn btn-sm btn-primary">
+                                <i class="fas fa-pen"></i>
+                            </a>
+
+                            <!-- Botón Eliminar -->
+                            <form action="<?php echo e(route('proyectos.destroy', $row->id)); ?>" method="POST" onsubmit="return confirm('¿Seguro que quieres eliminar este proyecto?');">
+                                <?php echo csrf_field(); ?>
+                                <?php echo method_field('DELETE'); ?>
+                                <button type="submit" class="btn btn-sm btn-danger">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </div>
                     </td>
+
                 </tr>
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                 <tr>

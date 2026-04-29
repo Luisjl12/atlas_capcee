@@ -1,6 +1,7 @@
 <?php
 //Controladores 
 
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ArchivoPlantelController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
@@ -64,10 +65,10 @@ Route::middleware(['auth.custom'])->group(function () {
     Route::get('/director', [DashboardController::class, 'director'])->name('dashboard.director');
     Route::get('/supervisor', [DashboardController::class, 'supervisor'])->name('dashboard.supervisor');
     Route::get('/capturista', [DashboardController::class, 'capturista'])->name('dashboard.capturista');
-        Route::get('/visualizador', [DashboardController::class, 'visualizador'])->name('dashboard.visualizador');
+    Route::get('/visualizador', [DashboardController::class, 'visualizador'])->name('dashboard.visualizador');
     Route::get('/director_reportes',[DashboardController::class, 'directorReportes'])->name('dashboard.directorReportes'); 
     Route::get('/administrador_principal', [DashboardController::class, 'administradorPrincipal'])->name('dashboard.administradorPrincipal'); 
-
+    Route::get('/proyectos-especiales', [DashboardController::class, 'proyectosEspeciales'])->name('dashboard.proyectosEspeciales'); 
 });
 
 //Rutas para acceder al dashboard desde la barra superior 
@@ -103,6 +104,8 @@ Route::get('/dashboard', function () {
             return redirect()->route('dashboard.directorReportes');
         case 'ADMINISTRADOR PRINCIPAL':
             return redirect()->route('dashboard.administradorPrincipal');
+        case 'PROYECTOS ESPECIALES': 
+            return redirect()->route('dashboard.proyectosEspeciales'); 
         default:
             abort(403, 'Rol no válido');
     }
@@ -407,6 +410,7 @@ Route::get('/sso-login', function (Request $request) {
             ->first();
 
         if ($usuario) {
+            Auth::loginUsingId($usuario->id);
             session([
                 'id' => $usuario->id,
                 'rol' => $decoded->rol ?? 'ADMINISTRADOR',
@@ -448,3 +452,10 @@ Route::get('/proyectos', [DatosProyectosController::class, 'index'])->name('proy
 Route::post('/importar-proyectos', [DatosProyectosController::class, 'store'])->name('proyectos.importar');
 
 Route::delete('/proyectos/{id}', [DatosProyectosController::class, 'destroy'])->name('proyectos.destroy'); 
+
+Route::get('/proyectos/{id}/edit', [DatosProyectosController::class, 'edit'])->name('proyectos.edit');
+Route::put('/proyectos/{id}', [DatosProyectosController::class, 'update'])->name('proyectos.update');
+
+
+
+//Rutas para el rol de proyectos especiales 
