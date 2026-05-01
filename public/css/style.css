@@ -2608,6 +2608,29 @@ Estilos para menu flotante
   color: #333; 
 }
 
+.avance-section {
+    background-color: #fff;   /* fondo blanco */
+    border: 1px solid #ddd;   /* borde tenue */
+    border-radius: 6px;
+    padding: 15px;
+}
+
+.data-pair {
+    border-bottom: 1px solid #eee; /* separador gris claro */
+    padding: 8px 0;
+}
+
+.data-pair:last-child {
+    border-bottom: none; /* quitar línea en el último */
+}
+
+.data-pair label {
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+
+
+
 
 
 

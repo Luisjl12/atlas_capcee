@@ -35,6 +35,7 @@ use App\Http\Controllers\MapaCienController;
 use App\Http\Controllers\ImportarDatosCapceeController; 
 use App\Http\Controllers\DatosProyectosController; 
 use App\Http\Controllers\ProyectoInversionController; 
+use App\Http\Controllers\ProyectosEspecialesController; 
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -444,9 +445,11 @@ Route::get('/mapa/escuela/{id}', [App\Http\Controllers\ReporteController::class,
 
 Route::get('/admin/mapa-escuelas-100', [App\Http\Controllers\ReporteController::class, 'mapaEscuelas100General'])->name('mapa.escuelas100.general');
 
-//Importar datos intervencion del capcee / proyectos
+//
 Route::post('/importar-escuelas', [ImportarDatosCapceeController::class, 'store'])->name('importar.escuelas'); 
 
+
+//Importar datos intervencion del capcee / proyectos
 Route::get('/proyectos', [DatosProyectosController::class, 'index'])->name('proyectos.index'); 
 
 Route::post('/importar-proyectos', [DatosProyectosController::class, 'store'])->name('proyectos.importar');
@@ -455,7 +458,10 @@ Route::delete('/proyectos/{id}', [DatosProyectosController::class, 'destroy'])->
 
 Route::get('/proyectos/{id}/edit', [DatosProyectosController::class, 'edit'])->name('proyectos.edit');
 Route::put('/proyectos/{id}', [DatosProyectosController::class, 'update'])->name('proyectos.update');
+//Ver detalles de proyectos especiales 
+Route::get('/proyectos{id}/ver-detalles', [DatosProyectosController::class, 'verDetalles'])->name('proyectos.detalle'); 
 
 
 
 //Rutas para el rol de proyectos especiales 
+Route::get('/seguimiento-proyectos', [ProyectosEspecialesController::class, 'index'])->name('seguimiento-proyectos'); 

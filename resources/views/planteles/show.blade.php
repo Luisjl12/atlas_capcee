@@ -238,7 +238,6 @@ default => ['fas fa-file', 'text-dark'],
 
 
         <!-- Protección Civil -->
-
         <div class="form-section step-section d-none" data-step="3">
             <h4>Protección Civil</h4>
 

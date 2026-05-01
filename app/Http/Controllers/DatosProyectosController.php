@@ -56,4 +56,10 @@ class DatosProyectosController extends Controller
 
         return redirect()->route('proyectos.index')->with('success', 'Proyecto actualizado correctamente.'); 
     }
+
+    public function verDetalles($id)
+    {
+        $proyecto= ProyectoInversion::findOrFail($id); 
+        return view('verDetallesProyecto', compact ('proyecto')); 
+    }
 }

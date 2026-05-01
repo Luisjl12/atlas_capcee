@@ -26,6 +26,9 @@
                     <a href="<?php echo e(route('mapa.escuelas100.general')); ?>" class="accion-card yellow">
                         <i class="fas fa-map-marked-alt"></i> Mapa Escuelas al 100
                     </a>
+                    <a href="<?php echo e(route('seguimiento-proyectos')); ?>" class="accion-card yellow">
+                        <i class="fas fa-map-marked-alt"></i> Seguimiento de proyectos
+                    </a>
                 </div>
                 <div class="columna-acciones">
                     <a href="<?php echo e(route('perfil')); ?>" class="accion-card green">

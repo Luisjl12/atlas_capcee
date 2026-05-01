@@ -1,0 +1,1 @@
+<?php /**PATH C:\xampp\htdocs\atlas_local\resources\views/proyectos_especiales.blade.php ENDPATH**/ ?>
