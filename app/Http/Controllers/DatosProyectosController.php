@@ -62,4 +62,22 @@ class DatosProyectosController extends Controller
         $proyecto= ProyectoInversion::findOrFail($id); 
         return view('verDetallesProyecto', compact ('proyecto')); 
     }
+
+    public function mapaProyectos()
+    {
+        return view('mapaProyectos'); 
+    }
+
+    public function obtenerProyectosMapa()
+    {
+        $proyectos=ProyectoInversion::select('id', 'folio_ppi', 'latitud', 'longitud', 'nombre_proyecto')
+            ->whereNotNull('latitud')
+            ->whereNotNull('longitud')
+            ->where('latitud', '!=', 0)
+            ->where('longitud', '!=', 0)
+            ->get(); 
+
+
+        return response()->json($proyectos); 
+    }
 }

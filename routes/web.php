@@ -461,6 +461,10 @@ Route::put('/proyectos/{id}', [DatosProyectosController::class, 'update'])->name
 //Ver detalles de proyectos especiales 
 Route::get('/proyectos{id}/ver-detalles', [DatosProyectosController::class, 'verDetalles'])->name('proyectos.detalle'); 
 
+Route::get('mapa-proyectos', [DatosProyectosController::class, 'mapaProyectos'])->name('mapa.proyectos'); 
+
+Route::get('/mapa/datos-proyectos', [DatosProyectosController::class, 'obtenerProyectosMapa']); 
+
 
 
 //Rutas para el rol de proyectos especiales 

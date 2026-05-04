@@ -1,15 +1,88 @@
 
 
 <?php $__env->startSection('content'); ?>
+<?php
+use App\Helpers\RoleHelper;
+?>
 <div class="container mt-4">
-    <h2 class="mb-3">Importar Proyectos</h2>
+    <style>
+        .proyecto-detalle {
+        background-color: #f9f9f9;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease;
+    }
+    
+    .proyecto-detalle strong {
+        color: #495057;
+    }
+    
+    .proyecto-detalle .acciones-btns .btn {
+        min-width: 36px;
+    }
 
-    <!-- Formulario de importación -->
-    <form action="<?php echo e(route('proyectos.importar')); ?>" method="POST" enctype="multipart/form-data" class="mb-4">
-        <?php echo csrf_field(); ?>
-        <input type="file" name="file" required>
-        <button type="submit" class="btn btn-primary">Importar</button>
-    </form>
+    </style>
+    <a href="<?php echo e(RoleHelper::gestionPlanteles(session('role_id'))); ?>" class="btn-icon-only">
+        <i class="fas fa-arrow-left"></i>
+        <h5><i class="fas fa-lightbulb"></i> Proyectos Capcee</h5>
+    </a>
+
+   
+    
+    <!-- Formulario de importación con cursor pointer -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body text-center p-5">
+            <form action="<?php echo e(route('proyectos.importar')); ?>" method="POST" enctype="multipart/form-data">
+                <?php echo csrf_field(); ?>
+                <!-- Área de carga -->
+                <div class="mb-3">
+                    <label for="file" class="form-label d-block upload-area">
+                        <i class="fas fa-file-csv fa-4x text-success mb-3"></i>
+                        <p class="text-muted">Haz clic aquí o arrastra tu archivo CSV/Excel</p>
+                    </label>
+                    <input type="file" name="file" id="file" class="form-control d-none" required>
+                    <p id="file-name" class="small text-secondary mt-2">Sin archivos seleccionados</p>
+                </div>
+    
+                <!-- Botón de acción -->
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-upload me-2"></i> Importar Datos
+                </button>
+            </form>
+        </div>
+    </div>
+     <div class="card shadow-sm mb-4 text-center">
+        <div class="card-body">
+            <a href="<?php echo e(route('mapa.proyectos')); ?>" class="btn btn-danger">
+                <i class="fas fa-map-marked-alt me-2"></i> Mapa global de proyectos
+            </a>
+        </div>
+    </div>
+
+    
+    <!-- Script para mostrar nombre del archivo -->
+    <script>
+        document.getElementById('file').addEventListener('change', function(){
+            const fileName = this.files.length ? this.files[0].name : "Sin archivos seleccionados";
+            document.getElementById('file-name').textContent = fileName;
+        });
+    </script>
+    
+    <!-- Estilos adicionales -->
+    <style>
+        .upload-area {
+            cursor: pointer; /* Cambia el cursor a mano */
+        }
+        .upload-area:hover {
+            background-color: #f8f9fa; /* Efecto visual al pasar el mouse */
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+
+
 
     <?php if(session('success')): ?>
         <div class="alert alert-success"><?php echo e(session('success')); ?></div>
@@ -79,25 +152,22 @@
             </tr>
 
             <!-- Detalles expandibles solo en móvil -->
-            <tr class="proyecto-detalle d-none d-md-none">
-                <td colspan="8">
-                    <div class="detalle-container d-flex flex-wrap justify-content-between gap-3">
-                        <div class="detalle-bloque flex-grow-1" style="min-width: 250px;">
-                            <strong>Folio PPI:</strong> <?php echo e($row->folio_ppi); ?><br>
-                            <strong>CCT:</strong><?php echo e($row->cct); ?><br>
-                            <strong>Municipio:</strong> <?php echo e($row->municipio); ?><br>
-                            <strong>Nombre:</strong> <?php echo e($row->nombre_proyecto); ?><br>
-                            <strong>Empresa:</strong> <?php echo e($row->empresa); ?>
+            <tr class="d-table-row d-md-none">
+                <td colspan="9">
+                    <div class="card shadow-sm mb-3">
+                        <div class="card-body">
+                            <h6 class="card-title mb-2">
+                                <i class="fas fa-lightbulb text-warning me-2"></i>
+                                <?php echo e($row->nombre_proyecto); ?>
 
-                        </div>
-                        <div class="detalle-bloque flex-grow-1" style="min-width: 250px;">
-                            <strong>Monto Inversión:</strong> <?php echo e(number_format($row->monto_inversion, 2)); ?><br>
-                            <strong>Inicio:</strong> <?php echo e($row->inicio); ?><br>
-                            <strong>Término:</strong> <?php echo e($row->termino); ?>
-
-                        </div>
-                        <div class="w-100 mt-2"><strong>Acciones</strong>
-                            <div class="acciones-btns d-flex align-items-center gap-1 flex-wrap">
+                            </h6>
+                            <p class="mb-1"><strong>Folio PPI:</strong> <?php echo e($row->folio_ppi); ?></p>
+                            <p class="mb-1"><strong>CCT:</strong> <?php echo e($row->cct); ?></p>
+                            <p class="mb-1"><strong>Municipio:</strong> <?php echo e($row->municipio); ?></p>
+                            <p class="mb-1"><strong>Empresa:</strong> <?php echo e($row->empresa); ?></p>
+                            <p class="mb-1"><strong>Monto:</strong> <?php echo e(number_format($row->monto_inversion, 2)); ?></p>
+                            <span class="badge bg-warning text-dark">En revisión</span>
+                            <div class="acciones-btns d-flex gap-2 mt-2">
                                 <a href="<?php echo e(route('proyectos.detalle', $row->id)); ?>" class="btn btn-sm btn-info">
                                     <i class="fas fa-eye"></i>
                                 </a>
@@ -117,6 +187,7 @@
                     </div>
                 </td>
             </tr>
+
             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
             <tr>
                 <td colspan="8" class="text-center">No hay registros disponibles.</td>
@@ -125,6 +196,21 @@
         </tbody>
     </table>
 </div>
+<script>
+document.querySelectorAll('.proyecto-row').forEach(row => {
+    row.addEventListener('click', () => {
+        const detalle = row.nextElementSibling;
+        detalle.classList.toggle('d-none');
+        detalle.classList.toggle('d-table-row');
+
+        const icon = row.querySelector('.toggle-icon i');
+        icon.classList.toggle('fa-chevron-down');
+        icon.classList.toggle('fa-chevron-up');
+    });
+});
+
+</script>
+
 
 </div>
 

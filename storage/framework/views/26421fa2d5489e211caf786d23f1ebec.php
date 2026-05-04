@@ -131,9 +131,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var map = L.map('map').setView([lat, lng], 15);
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
+    L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: 'Tiles © Esri & Sources'
     }).addTo(map);
+
 
     L.marker([lat, lng]).addTo(map)
         .bindPopup("<b><?php echo e($proyecto->nombre_proyecto); ?></b><br><?php echo e($proyecto->municipio); ?>")
