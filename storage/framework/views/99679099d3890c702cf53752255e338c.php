@@ -80,34 +80,53 @@
         </div>
 
         <!-- COLUMNA DERECHA: Mapa y Buscador de Planteles -->
-        <div class="col-md-9">
-            <!-- Buscador de planteles independiente (opcional, si lo sigues ocupando) -->
-            <div class="input-group shadow-sm mb-3">
-                <span class="input-group-text bg-white border-end-0">
-                    <i class="fas fa-search text-muted"></i>
-                </span>
-                <input type="text" id="buscadorProyecto" class="form-control border-start-0" placeholder="Buscar proyecto por Folio PPI...">
-            </div>
+        <div class="col-md-9"> 
 
             <!-- Loader de carga -->
             <div id="loader" class="text-center mb-3" style="display: none;">
                 <div class="spinner-border text-danger" role="status">
                     <span class="visually-hidden">Cargando...</span>
                 </div>
-                <div class="text-muted small mt-1">Renderizando mapa...</div>
+                <div class="text-muted small mt-1">Cargando mapa...</div>
             </div>
+            
 
             <!-- Contenedor del Mapa -->
-            <div class="card shadow-sm border-0">
-                <div class="card-body p-0">
-                    <div id="map" style="height: 70vh; width: 100%; border-radius: 8px;"></div>
+           <div class="card shadow-sm border-0">
+                <div class="card-body p-0" style="position: relative;">
+                    <!-- Botón flotante -->
+                    <div class="filtro-flotante">
+                        <button id="btnFiltroFecha" class="btn-flotante">
+                            <i class="bi bi-calendar-event"></i> Filtro Año
+                        </button>
+                        <div id="opcionesFiltro" class="opciones-filtro">
+                            <button data-anio="2025">2025</button>
+                            <button data-anio="2026">2026</button>
+                        </div>
+                    </div>
+
+                    <div class="container mt-4">
+                        <h4>Prueba de búsqueda por folio</h4>
+
+                        <div class="input-group mb-3">
+                            <input type="text" id="folioInput" class="form-control" placeholder="Escribe un folio...">
+                            <button id="btnBuscar" class="btn btn-danger">Buscar</button>
+                        </div>
+
+                        <div id="map" style="height: 700px; border:1px solid #ccc; border-radius:8px;"></div>
+                    </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 </div>
 
 <script src="<?php echo e(asset('js/mapa_proyectos.js')); ?>"></script>
 <script src="<?php echo e(asset('js/display-nombre.js')); ?>"></script>
+
+
+
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\atlas_local\resources\views/mapaProyectos.blade.php ENDPATH**/ ?>

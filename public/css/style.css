@@ -2629,6 +2629,53 @@ Estilos para menu flotante
     margin-right: 0.5rem;
 }
 
+.filtro-flotante {
+  position: absolute;   /* clave: posición absoluta dentro del contenedor */
+  top: 15px;            /* distancia desde arriba */
+  right: 15px;          /* distancia desde la derecha */
+  z-index: 1000;        /* que quede encima del mapa */
+}
+
+.btn-flotante {
+  background-color: #861E34; /* vino */
+  color: #fff;
+  border: none;
+  border-radius: 50px;
+  padding: 10px 18px;
+  font-size: 14px;
+  cursor: pointer;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+  transition: transform 0.2s ease;
+}
+
+.btn-flotante:hover {
+  transform: scale(1.05);
+}
+
+.opciones-filtro {
+  display: none;
+  margin-top: 8px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  padding: 5px;
+}
+
+.opciones-filtro button {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 6px;
+  cursor: pointer;
+  text-align: left;
+}
+
+.opciones-filtro button:hover {
+  background: #f0f0f0;
+}
+
+
 
 
 

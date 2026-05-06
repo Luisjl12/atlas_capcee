@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const estilo = {
             color: color,
             weight: 3,
-            fillColor: '#f9f9f9',
+            fillColor: '#f0f0f0',
             fillOpacity: 0.3
         };
 
@@ -252,61 +252,75 @@ document.addEventListener('DOMContentLoaded', function () {
 
     
     const capaProyectos = L.featureGroup().addTo(map);
-    const listaProyectos = [];
+    let listaProyectos = [];
+    let todosLosProyectos = []; 
 
-    // Función basada en tu diseño personalizado
-    function crearIconoProyecto() {
+    function crearIconoProyecto(inicio, termino) {
+        function obtenerAnio(fecha) {
+            if (!fecha) return null;
+            const f = new Date(fecha);
+            return isNaN(f) ? null : f.getFullYear();
+        }
+
+        const anioInicio = obtenerAnio(inicio);
+        const anioFin = obtenerAnio(termino);
+
+        let color = "#C79B66"; // por defecto
+
+        if (anioInicio === 2025 || anioFin === 2025) {
+            color = "#861E34"; // vino
+        } else if (anioInicio === 2026 || anioFin === 2026) {
+            color = "#366159"; // verde
+        }
+
         return L.divIcon({
-            className: 'custom-marker', // Mantiene la misma clase base de tu CSS
+            className: 'custom-marker',
             iconSize: [30, 30],
             iconAnchor: [15, 30],
             popupAnchor: [0, -30],
-            // Aquí puedes inyectar una clase CSS específica para proyectos (ej. 'proyecto') 
-            // o ponerle el color directamente con style
-            html: `<i class="bi bi-geo-alt-fill marker-icon" style="color: #FFC107; font-size: 30px; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);"></i>`
+            html: `<i class="bi bi-geo-alt-fill marker-icon" 
+                    style="color: ${color}; font-size: 30px; 
+                    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);"></i>`
         });
     }
 
-    function cargarMarcadoresProyectos() {
-        mostrarLoader(); 
-        
-        fetch('/mapa/datos-proyectos')
+    function cargarMarcadoresProyectos(anio) {
+        if (!anio) return; 
+
+        mostrarLoader();
+        let url = '/mapa/datos-proyectos?anio=' + anio;
+
+        fetch(url)
             .then(res => res.json())
             .then(data => {
+                listaProyectos = [];
+                capaProyectos.clearLayers();
+
                 data.forEach(proyecto => {
                     const lat = parseFloat(proyecto.latitud);
                     const lng = parseFloat(proyecto.longitud);
 
                     if (!isNaN(lat) && !isNaN(lng)) {
-                        
                         const marker = L.marker([lat, lng], {
-                            icon: crearIconoProyecto()
-                        });
-
-                        const popupContent = `
-                            <div style="font-family: sans-serif; min-width: 200px;">
-                                <h6 style="color: #7a0019; margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
-                                    <i class="fas fa-clipboard-list"></i> Proyecto
-                                </h6>
-                                <p style="margin-bottom: 5px; font-size: 14px;">
-                                    <b>Folio PPI:</b> ${proyecto.folio_ppi || 'Sin folio'}<br>
-                                    <b>Nombre:</b> ${proyecto.nombre_proyecto || 'Sin descripción asignada'}
-                                </p>
-                                <div style="margin-top: 12px; text-align: center;">
-                                    <a href="/proyectos${proyecto.id}/ver-detalles" target="_blank" class="btn btn-sm btn-outline-danger w-100" style="font-size: 12px;">
-                                        <i class="fas fa-eye"></i> Ver detalles del proyecto
-                                    </a>
-                                </div>
+                            icon: crearIconoProyecto(proyecto.inicio, proyecto.termino)
+                        }).bindPopup(`
+                            <b>Folio PPI:</b> ${proyecto.folio_ppi || 'Sin folio'}<br>
+                            <b>${proyecto.nombre_proyecto}</b><br>
+                            <b>Monto inversion: $</b>${proyecto.monto_inversion}<br>
+                            <div style="margin-top: 12px; text-align: center;">
+                                <a href="/proyectos${proyecto.id}/ver-detalles" target="_blank" class="btn btn-sm btn-outline-danger w-100" style="font-size: 12px;">
+                                    <i class="fas fa-eye"></i> Ver detalles del proyecto
+                                </a>
                             </div>
-                        `;
-                        marker.bindPopup(popupContent);
+                        `);
 
                         listaProyectos.push({
                             folio: (proyecto.folio_ppi || '').toLowerCase(),
-                            marker: marker
+                            marker: marker,
+                            proyecto: proyecto
                         });
 
-                        
+                        capaProyectos.addLayer(marker);
                     }
                 });
                 ocultarLoader();
@@ -317,32 +331,42 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    cargarMarcadoresProyectos();
-
-    const buscadorProyectos = document.getElementById('buscadorProyecto');
-    if (buscadorProyectos) {
-        buscadorProyectos.addEventListener('input', function () {
-            const texto = buscadorProyectos.value.toLowerCase().trim();
-            
-            capaProyectos.clearLayers(); 
-
-            if (texto.length === 0) {
-                map.closePopup();
-                return;
-            }
-
-            const resultado = listaProyectos.find(p => p.folio.includes(texto));
-
-            if (resultado) {
-                capaProyectos.addLayer(resultado.marker);
-                map.flyTo(resultado.marker.getLatLng(), 15, { duration: 1.5 });
-                setTimeout(() => {
-                    resultado.marker.openPopup();
-                }, 500); 
-            }
-        });
+    function buscarProyectoPorFolio(folio) {
+        fetch('/mapa/datos-proyectos?folio=' + encodeURIComponent(folio))
+            .then(res => res.json())
+            .then(data => {
+                capaProyectos.clearLayers();
+                data.forEach(proyecto => {
+                    const lat = parseFloat(proyecto.latitud);
+                    const lng = parseFloat(proyecto.longitud);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                        const marker = L.marker([lat, lng], {
+                            icon: crearIconoProyecto(proyecto.inicio, proyecto.termino)
+                        }).bindPopup(`
+                            <b>Folio PPI:</b> ${proyecto.folio_ppi || 'Sin folio'}<br>
+                            <b>${proyecto.nombre_proyecto}</b><br>
+                            <b>Monto inversion: $</b>${proyecto.monto_inversion}<br>
+                            <div style="margin-top: 12px; text-align: center;">
+                                <a href="/proyectos${proyecto.id}/ver-detalles" target="_blank" class="btn btn-sm btn-outline-danger w-100" style="font-size: 12px;">
+                                    <i class="fas fa-eye"></i> Ver detalles del proyecto
+                                </a>
+                            </div>
+                            `
+                        );
+                        capaProyectos.addLayer(marker);
+                       // map.flyTo([lat, lng], 14);
+                        marker.openPopup();
+                    }
+                });
+            })
+            .catch(err => console.error('Error en búsqueda:', err));
     }
 
+    document.getElementById('btnBuscar').addEventListener('click', () => {
+        const folio = document.getElementById('folioInput').value.trim();
+        if (folio) buscarProyectoPorFolio(folio);
+    });
+    
     function cargarMacroregionesPorLotes(data, lote = 3, delay = 100) {
         mostrarLoader();
         const nombres = Object.keys(regiones);
@@ -427,6 +451,30 @@ document.addEventListener('DOMContentLoaded', function () {
                 boton.style.display = 'none';
             }
         });
+    });
+
+    const filtroFecha = document.getElementById('filtroFecha');
+    if (filtroFecha) {
+        filtroFecha.addEventListener('change', function () {
+            const anioSeleccionado = filtroFecha.value;
+            cargarMarcadoresProyectos(anioSeleccionado);
+        });
+    }
+
+    const btnFiltroFecha = document.getElementById('btnFiltroFecha');
+    const opcionesFiltro = document.getElementById('opcionesFiltro');
+
+    btnFiltroFecha.addEventListener('click', () => {
+    opcionesFiltro.style.display = 
+        opcionesFiltro.style.display === 'block' ? 'none' : 'block';
+    });
+
+    opcionesFiltro.querySelectorAll('button').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const anioSeleccionado = btn.getAttribute('data-anio');
+        cargarMarcadoresProyectos(anioSeleccionado);
+        opcionesFiltro.style.display = 'none'; // cerrar menú
+    });
     });
 
 

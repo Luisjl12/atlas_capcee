@@ -6,9 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\ProyectoInversion;
 use App\Imports\ProyectosInversionImport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Traits\FiltrablePorFechaProyecto;
 
 class DatosProyectosController extends Controller
 {
+    use FiltrablePorFechaProyecto;
+
     public function index()
     {
         $registros=ProyectoInversion::paginate(10); 
@@ -68,16 +71,30 @@ class DatosProyectosController extends Controller
         return view('mapaProyectos'); 
     }
 
-    public function obtenerProyectosMapa()
+    public function obtenerProyectosMapa(Request $request)
     {
-        $proyectos=ProyectoInversion::select('id', 'folio_ppi', 'latitud', 'longitud', 'nombre_proyecto')
-            ->whereNotNull('latitud')
-            ->whereNotNull('longitud')
-            ->where('latitud', '!=', 0)
-            ->where('longitud', '!=', 0)
-            ->get(); 
+        $query = ProyectoInversion::select(
+            'id',
+            'folio_ppi',
+            'latitud',
+            'longitud',
+            'nombre_proyecto',
+            'inicio',
+            'termino',
+            'monto_inversion',
+            'municipio'
+        )
+        ->whereNotNull('latitud')
+        ->whereNotNull('longitud')
+        ->where('latitud', '!=', 0)
+        ->where('longitud', '!=', 0);
 
+        // aplicar filtros (anio y folio) desde el Trait
+        $this->aplicarFiltrosFecha($query, $request);
 
-        return response()->json($proyectos); 
+        $proyectos = $query->get();
+
+        return response()->json($proyectos);
     }
+
 }
