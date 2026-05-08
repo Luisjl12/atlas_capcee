@@ -82,7 +82,8 @@ class DatosProyectosController extends Controller
             'inicio',
             'termino',
             'monto_inversion',
-            'municipio'
+            'municipio',
+            'cct'
         )
         ->whereNotNull('latitud')
         ->whereNotNull('longitud')
@@ -97,4 +98,33 @@ class DatosProyectosController extends Controller
         return response()->json($proyectos);
     }
 
+    public function agregarProyecctos(Request $request)
+    {
+        $request->validate([
+            'folio_ppi' => 'required|string|unique:proyectos_inversion,folio_ppi',
+            'cct' => 'nullable|string',
+            'nombre_proyecto' => 'required|string',
+            'monto_inversion' => 'required|numeric',
+            'inicio' => 'required|date',
+            'termino' => 'required|date',
+            'empresa' => 'required|string',
+        ]); 
+
+        ProyectoInversion::create([
+            'folio_ppi' => $request->folio_ppi,
+            'cct' => $request->cct,
+            'nombre_proyecto' => $request->nombre_proyecto,
+            'monto_inversion' => $request->monto_inversion,
+            'inicio' => $request->inicio,
+            'termino' => $request->termino,
+            'empresa' => $request->empresa,
+        ]);
+
+        return redirect()->route('proyectos.index')->with ('success', 'Proyecto agregador correctamente'); 
+    }
+
+    public function create()
+    {
+        return view('agregarProyecto'); 
+    }
 }

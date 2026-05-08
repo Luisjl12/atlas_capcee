@@ -36,6 +36,7 @@ use App\Http\Controllers\ImportarDatosCapceeController;
 use App\Http\Controllers\DatosProyectosController; 
 use App\Http\Controllers\ProyectoInversionController; 
 use App\Http\Controllers\ProyectosEspecialesController; 
+use App\Http\Controllers\TicketController; 
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -458,14 +459,18 @@ Route::delete('/proyectos/{id}', [DatosProyectosController::class, 'destroy'])->
 
 Route::get('/proyectos/{id}/edit', [DatosProyectosController::class, 'edit'])->name('proyectos.edit');
 Route::put('/proyectos/{id}', [DatosProyectosController::class, 'update'])->name('proyectos.update');
-//Ver detalles de proyectos especiales 
 Route::get('/proyectos{id}/ver-detalles', [DatosProyectosController::class, 'verDetalles'])->name('proyectos.detalle'); 
 
 Route::get('mapa-proyectos', [DatosProyectosController::class, 'mapaProyectos'])->name('mapa.proyectos'); 
 
 Route::get('/mapa/datos-proyectos', [DatosProyectosController::class, 'obtenerProyectosMapa']); 
+Route::post('/proyectos', [DatosProyectosController::class, 'agregarProyecctos'])->name('proyectos.store'); 
 
-
+Route::get('/proyectos/create', [DatosProyectosController::class, 'create'])->name('proyectos.create');
 
 //Rutas para el rol de proyectos especiales 
-Route::get('/seguimiento-proyectos', [ProyectosEspecialesController::class, 'index'])->name('seguimiento-proyectos'); 
+Route::get('/seguimiento-proyectos', [ProyectosEspecialesController::class, 'index'])->name('seguimiento-proyectos');
+Route::post('/tickets', [ProyectosEspecialesController::class, 'store'])->name('tickets.store');
+//Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');  
+
+

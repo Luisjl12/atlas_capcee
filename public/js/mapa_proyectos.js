@@ -255,6 +255,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let listaProyectos = [];
     let todosLosProyectos = []; 
 
+    cargarMarcadoresProyectos();
+
     function crearIconoProyecto(inicio, termino) {
         function obtenerAnio(fecha) {
             if (!fecha) return null;
@@ -267,10 +269,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let color = "#C79B66"; // por defecto
 
-        if (anioInicio === 2025 || anioFin === 2025) {
-            color = "#861E34"; // vino
-        } else if (anioInicio === 2026 || anioFin === 2026) {
+        if (anioInicio === 2026 || anioFin === 2026) {
             color = "#366159"; // verde
+        } else if (anioInicio === 2025 || anioFin === 2025) {
+            color = "#861E34"; // vino
         }
 
         return L.divIcon({
@@ -284,11 +286,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function cargarMarcadoresProyectos(anio) {
-        if (!anio) return; 
-
+    function cargarMarcadoresProyectos(anio = null) {
         mostrarLoader();
-        let url = '/mapa/datos-proyectos?anio=' + anio;
+        let url = '/mapa/datos-proyectos';
+        if (anio) {
+            url += '?anio=' + anio;
+        }
 
         fetch(url)
             .then(res => res.json())
@@ -305,10 +308,12 @@ document.addEventListener('DOMContentLoaded', function () {
                             icon: crearIconoProyecto(proyecto.inicio, proyecto.termino)
                         }).bindPopup(`
                             <b>Folio PPI:</b> ${proyecto.folio_ppi || 'Sin folio'}<br>
-                            <b>${proyecto.nombre_proyecto}</b><br>
-                            <b>Monto inversion: $</b>${proyecto.monto_inversion}<br>
+                            <b>CCT:</b>${proyecto.cct}<br>
+                            <b>Nombre del proyecto u origen: </b>${proyecto.nombre_proyecto}<br>
+                            <b>Monto inversión: $</b>${proyecto.monto_inversion}<br>
                             <div style="margin-top: 12px; text-align: center;">
-                                <a href="/proyectos${proyecto.id}/ver-detalles" target="_blank" class="btn btn-sm btn-outline-danger w-100" style="font-size: 12px;">
+                                <a href="/proyectos${proyecto.id}/ver-detalles" target="_blank" 
+                                class="btn btn-sm btn-outline-danger w-100" style="font-size: 12px;">
                                     <i class="fas fa-eye"></i> Ver detalles del proyecto
                                 </a>
                             </div>
@@ -330,6 +335,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 ocultarLoader();
             });
     }
+
 
     function buscarProyectoPorFolio(folio) {
         fetch('/mapa/datos-proyectos?folio=' + encodeURIComponent(folio))

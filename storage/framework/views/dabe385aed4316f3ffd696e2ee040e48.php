@@ -88,6 +88,18 @@ use App\Helpers\RoleHelper;
         <div class="alert alert-success"><?php echo e(session('success')); ?></div>
     <?php endif; ?>
 
+    <div class="card shadow-sm mb-4 text-center">
+        <div class="card-body">
+            <!-- Botón para ir al formulario de nuevo registro -->
+            <a href="<?php echo e(route('proyectos.create')); ?>" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i> Agregar nuevo proyecto
+            </a>
+        </div>
+    </div>
+
+
+    
+
     <!-- Tabla de registros -->
     <div class="table-responsive mt-3 data-table-container">
     <!--Tabla para proyectos-->

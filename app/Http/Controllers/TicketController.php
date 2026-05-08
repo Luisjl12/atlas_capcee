@@ -5,13 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Ticket;
 
-class ProyectosEspecialesController extends Controller
+class TicketController extends Controller
 {
-    public function index()
-    {
-        return view('proyectos_especiales'); 
-    }
-
     public function store(Request $request)
     {
         $validated= $request->validate([
@@ -26,6 +21,6 @@ class ProyectosEspecialesController extends Controller
 
         $ticket = Ticket::create($validated);
         
-        return redirect()->route('seguimiento-proyectos')->with('success', 'Ticket creado correctamente'); 
+        return redirect()->route('tickets.index')->with('success', 'Ticket creado correctamente'); 
     }
 }

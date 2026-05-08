@@ -18,6 +18,17 @@
     </div>
 
     
+    <?php if(session('origen_siie')): ?>
+        <div class="alert alert-warning d-flex align-items-center mt-3" role="alert">
+            <i class="fas fa-eye fa-2x me-3"></i>
+            <div>
+                <strong>Modo de Solo Lectura:</strong> Has accedido desde el sistema <b>SIIE</b>. 
+                Puedes visualizar el expediente de este plantel y las intervenciones, pero la edición está desactivada.
+            </div>
+        </div>
+    <?php endif; ?>
+
+    
     <?php if(session('success')): ?>
     <div class="alert alert-success mt-2"><?php echo e(session('success')); ?></div>
     <?php endif; ?>

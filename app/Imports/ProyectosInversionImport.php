@@ -20,6 +20,7 @@ class ProyectosInversionImport implements ToModel, WithHeadingRow
             ['folio_ppi'        => $row['folio_ppi']],
             [
             'municipio'        => $row['municipio'],
+            'cct'              => $row['cct'], 
             'nombre_proyecto'  => $row['nombre_del_proyecto'],
             'monto_inversion'  => $this->parseDecimal($row['monto_inversion']),
             'inicio'           => $this->parseDate($row['inicio']),
