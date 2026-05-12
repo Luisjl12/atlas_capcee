@@ -38,5 +38,6 @@ class ProyectoInversion extends Model
         'latitud',
         'longitud',
         'cct', 
+        'modulo'
     ];
 }

@@ -108,6 +108,7 @@ use App\Helpers\RoleHelper;
             <tr>
                 <th>Folio PPI</th>
                 <th>CCT</th>
+                <th>Módulo</th>
                 <th>Municipio</th>
                 <th>Nombre Proyecto</th>
                 <th>Monto Inversión</th>
@@ -134,6 +135,7 @@ use App\Helpers\RoleHelper;
             <tr class="d-none d-md-table-row">
                 <td>{{ $row->folio_ppi }}</td>
                 <td>{{ $row->cct}}</td>
+                <td>{{ $row->modulo}}</td>
                 <td>{{ $row->municipio }}</td>
                 <td>{{ $row->nombre_proyecto }}</td>
                 <td>{{ number_format($row->monto_inversion, 2) }}</td>

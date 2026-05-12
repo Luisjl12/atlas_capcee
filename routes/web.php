@@ -471,6 +471,5 @@ Route::get('/proyectos/create', [DatosProyectosController::class, 'create'])->na
 //Rutas para el rol de proyectos especiales 
 Route::get('/seguimiento-proyectos', [ProyectosEspecialesController::class, 'index'])->name('seguimiento-proyectos');
 Route::post('/tickets', [ProyectosEspecialesController::class, 'store'])->name('tickets.store');
-//Route::post('/tickets', [TicketController::class, 'store'])->name('tickets.store');  
-
-
+Route::get('/tickets/{id}/dictamen', [ProyectosEspecialesController::class, 'dictamen'])->name('tickets.dictamen');
+Route::post('/tickets/{id}/dictamen', [ProyectosEspecialesController::class, 'guardarDictamen'])->name('tickets.guardarDictamen');

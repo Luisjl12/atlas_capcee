@@ -7,6 +7,12 @@ use App\Models\Ticket;
 
 class TicketController extends Controller
 {
+   public function index()
+    {
+        $tickets = Ticket::orderBy('fecha_oficialia', 'desc')->get();
+        return view('proyectos_especiales', compact('tickets'));
+    }
+
     public function store(Request $request)
     {
         $validated= $request->validate([

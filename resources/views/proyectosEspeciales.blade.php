@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+<!--Dashboard para el rol de proyectos especiales-->
 <div class="dashboard-welcome card-header-custom">
         <h2><i class="fas fa-tachometer-alt"></i> Panel Principal</h2>
     </div>

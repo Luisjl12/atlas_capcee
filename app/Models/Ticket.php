@@ -17,6 +17,12 @@ class Ticket extends Model
         'quien_atiende', 
         'anexo', 
         'fecha_oficialia', 
-        'fecha_dfe'
+        'fecha_dfe', 
+        'estatus'
     ]; 
+
+    public function Solicitante()
+    {
+        return $this -> hasOne(Solicitante::class); 
+    }
 }  

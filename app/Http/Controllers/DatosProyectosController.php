@@ -1,5 +1,5 @@
 <?php
-
+//Controlador para datos de proyectos CAPCEE
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -53,6 +53,7 @@ class DatosProyectosController extends Controller
             'inicio'=>'required|date', 
             'termino'=>'required|date', 
             'empresa'=>'nullable|string', 
+            'modulo'=>'nullable|string'
         ]); 
 
         $proyecto->update($validated); 
@@ -83,7 +84,8 @@ class DatosProyectosController extends Controller
             'termino',
             'monto_inversion',
             'municipio',
-            'cct'
+            'cct', 
+            'modulo',
         )
         ->whereNotNull('latitud')
         ->whereNotNull('longitud')
@@ -108,6 +110,7 @@ class DatosProyectosController extends Controller
             'inicio' => 'required|date',
             'termino' => 'required|date',
             'empresa' => 'required|string',
+            'modulo' => 'nullable|string',
         ]); 
 
         ProyectoInversion::create([
@@ -118,6 +121,7 @@ class DatosProyectosController extends Controller
             'inicio' => $request->inicio,
             'termino' => $request->termino,
             'empresa' => $request->empresa,
+            'modulo'=> $request->modulo, 
         ]);
 
         return redirect()->route('proyectos.index')->with ('success', 'Proyecto agregador correctamente'); 

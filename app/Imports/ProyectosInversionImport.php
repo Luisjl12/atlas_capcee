@@ -20,7 +20,7 @@ class ProyectosInversionImport implements ToModel, WithHeadingRow
             ['folio_ppi'        => $row['folio_ppi']],
             [
             'municipio'        => $row['municipio'],
-            'cct'              => $row['cct'], 
+            'cct' => !empty($row['cct']) ? $row['cct'] : ProyectoInversion::where('folio_ppi', $row['folio_ppi'])->value('cct'),
             'nombre_proyecto'  => $row['nombre_del_proyecto'],
             'monto_inversion'  => $this->parseDecimal($row['monto_inversion']),
             'inicio'           => $this->parseDate($row['inicio']),
@@ -42,6 +42,7 @@ class ProyectosInversionImport implements ToModel, WithHeadingRow
             'obs_admin'        => $row['obs_admin'],
             'notificacion'     => $row['notificacion'],
             'usuario_notif'    => $row['usuario_notif'],
+            'modulo'           => $row['modulo'], 
             'fecha_notif'      => $this->parseDate($row['fecha_notif']),
             'latitud'  => $this->parseCoordinate($row['latitud']),
             'longitud' => $this->parseCoordinate($row['longitud']),
