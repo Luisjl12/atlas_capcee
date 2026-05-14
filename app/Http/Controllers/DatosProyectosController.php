@@ -7,6 +7,7 @@ use App\Models\ProyectoInversion;
 use App\Imports\ProyectosInversionImport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Traits\FiltrablePorFechaProyecto;
+use Illuminate\Support\Facades\Storage; 
 
 class DatosProyectosController extends Controller
 {
@@ -85,18 +86,36 @@ class DatosProyectosController extends Controller
             'monto_inversion',
             'municipio',
             'cct', 
-            'modulo',
+            'modulo'
         )
         ->whereNotNull('latitud')
         ->whereNotNull('longitud')
         ->where('latitud', '!=', 0)
         ->where('longitud', '!=', 0);
 
-        // aplicar filtros (anio y folio) desde el Trait
-        $this->aplicarFiltrosFecha($query, $request);
+        if ($request->filled('folio')) {
+            $query->where('folio_ppi', 'LIKE', '%' . $request->folio . '%');
+        }
+
+        if ($request->filled('anio')) {
+            $anio = $request->anio;
+            $query->where(function($q) use ($anio) {
+                $q->whereYear('inicio', $anio)
+                ->orWhereYear('termino', $anio);
+            });
+        } else {
+            $this->aplicarFiltrosFecha($query, $request);
+        }
+
+        if ($request->filled('modulo')) {
+            $modulo = strtolower(trim($request->modulo));
+            
+            $query->where(function($q) use ($modulo) {
+                $q->whereRaw('LOWER(modulo) LIKE ?', ["%{$modulo}%"]);
+            });
+        }
 
         $proyectos = $query->get();
-
         return response()->json($proyectos);
     }
 
@@ -130,5 +149,16 @@ class DatosProyectosController extends Controller
     public function create()
     {
         return view('agregarProyecto'); 
+    }
+
+    public function descargar()
+    {
+        $nombreArchivo = 'plantillas/plantilla_encabezados.xlsx';
+
+        if (Storage::disk('public')->exists($nombreArchivo)) {
+            return Storage::disk('public')->download($nombreArchivo);
+        }
+
+        return abort(404, 'Archivo no encontrado en la ruta de Laravel');
     }
 }

@@ -29,7 +29,6 @@ class ProyectosEspecialesController extends Controller
 
         Ticket::create($validated);
         
-        // Redirigir al index del mismo controlador
         return redirect()->route('seguimiento-proyectos')
                          ->with('success', 'Ticket creado correctamente'); 
     }
@@ -51,7 +50,6 @@ class ProyectosEspecialesController extends Controller
             'modalidad' => 'nullable|string',
             'plantel' => 'nullable|string',
             'turno' => 'nullable|string',
-            'numero_alumnos' => 'nullable|integer',
         ]);
 
         $ticket->update($ticketData);
@@ -68,6 +66,11 @@ class ProyectosEspecialesController extends Controller
             'telefono_turna' => 'nullable|string',
             'correo_turna' => 'nullable|email',
             'clave_cct' => 'nullable|string',
+            'nivel' => 'nullable|string',
+            'modalidad' => 'nullable|string',
+            'plantel' => 'nullable|string',
+            'turno' => 'nullable|string',
+            'numero_alumnos' => 'nullable|integer', 
         ]);
 
         // Relacionar con el ticket
@@ -82,5 +85,6 @@ class ProyectosEspecialesController extends Controller
         return redirect()->route('seguimiento-proyectos')
                         ->with('success', 'Dictamen guardado correctamente');
     }
+
 
 }

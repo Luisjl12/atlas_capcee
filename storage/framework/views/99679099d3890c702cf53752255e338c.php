@@ -8,17 +8,13 @@
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
-<div class="container-fluid mt-4 px-4"> <!-- Cambiado a container-fluid para dar más espacio a la pantalla dividida -->
+<div class="container-fluid mt-4 px-4">
     
     <!-- Encabezado -->
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h5>
-            <i class="fas fa-map-marked-alt me-2"></i> Mapa de proyectos
-        </h5>
-        <a href="<?php echo e(url('/admin')); ?>" class="btn btn-outline-secondary btn-sm">
-            <i class="fas fa-arrow-left"></i> Volver
-        </a>
-    </div>
+    <a href = "<?php echo e(route('proyectos.index')); ?>" class = "btn-icon-only">
+        <i class="fas fa-arrow-left"></i>
+        <h5><i class="bi bi-geo-alt-fill"></i> Mapa de Proyectos</h5>
+    </a>
 
     <div class="row">
         <!-- COLUMNA IZQUIERDA: Sidebar de Filtros -->
@@ -90,32 +86,59 @@
                 <div class="text-muted small mt-1">Cargando mapa...</div>
             </div>
             
-
             <!-- Contenedor del Mapa -->
-           <div class="card shadow-sm border-0">
-                <div class="card-body p-0" style="position: relative;">
-                    <!-- Botón flotante -->
-                    <div class="filtro-flotante">
-                        <button id="btnFiltroFecha" class="btn-flotante">
-                            <i class="bi bi-calendar-event"></i> Filtro Año
-                        </button>
-                        <div id="opcionesFiltro" class="opciones-filtro">
-                            <button data-anio="2025">2025</button>
-                            <button data-anio="2026">2026</button>
-                        </div>
+            <div class="card shadow-sm border-0">
+                <div class="card-body p-3"> <!-- Simplificado: p-3 en lugar de p-0 y borramos el container interno -->
+                    
+                    <h5 class="mb-3">Búsqueda por folio</h5>
+
+                    <div class="input-group mb-3">
+                        <input type="text" id="folioInput" class="form-control" placeholder="Escribe un folio...">
+                        <button id="btnBuscar" class="btn btn-danger">Buscar</button>
                     </div>
 
-                    <div class="container mt-4">
-                        <h4>Prueba de búsqueda por folio</h4>
+                    <!-- NUEVO CONTENEDOR RELATIVO AL MAPA -->
+                    <div style="position: relative;">
+                        
+                        <!-- Botón flotante y Panel de Filtros -->
+                        <div class="filtro-flotante" style="position: absolute; top: 15px; left: 60px; z-index: 1000;">
+                            
+                            <button id="btnFiltros" class="btn btn-danger" style="border-radius: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">
+                                <i class="bi bi-funnel-fill"></i> Filtros
+                            </button>
+                            
+                            <!-- Panel desplegable con los selectores -->
+                            <div id="panelFiltros" class="opciones-filtro" style="display: none; position: absolute; top: 100%; left: 0; margin-top: 5px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.2); width: 200px;">
+                                
+                                <div class="mb-2">
+                                    <label class="form-label mb-1" style="font-size: 12px; font-weight: bold; color: #555;">Año del proyecto:</label>
+                                    <select id="filtroAnio" class="form-select form-select-sm">
+                                        <option value="">Todos los años</option>
+                                        <option value="2025">2025</option>
+                                        <option value="2026">2026</option>
+                                    </select>
+                                </div>
 
-                        <div class="input-group mb-3">
-                            <input type="text" id="folioInput" class="form-control" placeholder="Escribe un folio...">
-                            <button id="btnBuscar" class="btn btn-danger">Buscar</button>
+                                <div class="mb-3">
+                                    <label class="form-label mb-1" style="font-size: 12px; font-weight: bold; color: #555;">Módulo:</label>
+                                    <select id="filtroModulo" class="form-select form-select-sm">
+                                        <option value="">Todos los módulos</option>
+                                        <option value="obra">Obra</option>
+                                        <option value="mobiliario">Mobiliario</option>
+                                    </select>
+                                </div>
+
+                            <button id="btnAplicarFiltros" class="btn w-100" style="background-color: #cc0000 !important; color: white !important; border: none !important; font-weight: bold; padding: 6px;">Aplicar</button>
+                            
+                            <button id="btnLimpiarFiltros" class="btn btn-sm btn-outline-secondary w-100 mt-2" style="font-size: 12px;">
+                                <i class="fas fa-undo"></i> Borrar Filtros
+                            </button>
+                            </div>
                         </div>
 
                         <div id="map" style="height: 700px; border:1px solid #ccc; border-radius:8px;"></div>
+                        
                     </div>
-
                 </div>
             </div>
 
@@ -125,8 +148,6 @@
 
 <script src="<?php echo e(asset('js/mapa_proyectos.js')); ?>"></script>
 <script src="<?php echo e(asset('js/display-nombre.js')); ?>"></script>
-
-
 
 <?php $__env->stopSection(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\xampp\htdocs\atlas_local\resources\views/mapaProyectos.blade.php ENDPATH**/ ?>

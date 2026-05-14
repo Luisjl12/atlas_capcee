@@ -60,7 +60,6 @@ use App\Helpers\RoleHelper;
             </a>
         </div>
     </div>
-
     
     <!-- Script para mostrar nombre del archivo -->
     <script>
@@ -93,6 +92,9 @@ use App\Helpers\RoleHelper;
             <!-- Botón para ir al formulario de nuevo registro -->
             <a href="{{ route('proyectos.create') }}" class="btn btn-primary">
                 <i class="fas fa-plus me-2"></i> Agregar nuevo proyecto
+            </a>
+            <a href="{{ route('plantilla.descargar') }}" class="btn btn-primary">
+                <i class="fas fa-download"></i> Descargar Plantilla
             </a>
         </div>
     </div>

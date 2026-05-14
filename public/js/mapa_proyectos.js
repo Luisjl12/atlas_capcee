@@ -1,8 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     window.map = L.map('map', {
-    minZoom: 8
+        minZoom: 8
     }).setView([19.0414, -98.2063], 7);
-
 
     let capaPuebla;
     let municipioSeleccionado = null;
@@ -115,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         });
 
-
     const regiones = {
         "Sierra Norte": [
             "Zacatlán", "Huauchinango", "Xicotepec", "Chignahuapan", "Ahuacatlán",
@@ -133,7 +131,6 @@ document.addEventListener('DOMContentLoaded', function () {
             "Hueytamalco", "Hueytlalpan", "Ixtepec", "Jonotla", "Nauzontla", "Olintla",
             "Tenampulco", "Teteles de Ávila Castillo", "Teziutlán", "Tlatlauquitepec",
             "Tuzamapan de Galeana", "Xiutetelco", "Yaonáhuac", "Zacapoaxtla", "Zaragoza", "Zoquiapan"
-
         ],
         "Valle Serdán": [
             "Acatzingo", "Aljojuca", "Atoyatempan", "Atzitzintla", "Cañada Morelos", "Chalchicomula de Sesma", "Chichiquila",
@@ -213,7 +210,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const coloresMacro = ["#7a0019"];
     let capasActivas = [];
-    
 
     function limpiarMapa() {
         capasActivas.forEach(capa => map.removeLayer(capa));
@@ -238,7 +234,6 @@ document.addEventListener('DOMContentLoaded', function () {
             ? fusionarMunicipios(seleccionados)
             : seleccionados[0];
 
-
         const estilo = {
             color: color,
             weight: 3,
@@ -250,134 +245,115 @@ document.addEventListener('DOMContentLoaded', function () {
         capasActivas.push(capa);
     }
 
-    
     const capaProyectos = L.featureGroup().addTo(map);
     let listaProyectos = [];
-    let todosLosProyectos = []; 
 
+    // Llamada inicial para cargar todo
     cargarMarcadoresProyectos();
 
-    function crearIconoProyecto(inicio, termino, modulo) {
-    function obtenerAnio(fecha) {
-        if (!fecha) return null;
-        const f = new Date(fecha);
-        return isNaN(f) ? null : f.getFullYear();
-    }
+    const leyenda = L.control({ position: 'topright' });
 
-    const anioInicio = obtenerAnio(inicio);
-    const anioFin = obtenerAnio(termino);
+leyenda.onAdd = function (map) {
+    const div = L.DomUtil.create('div', 'leyenda-mapa');
+    div.style.backgroundColor = 'white';
+    div.style.padding = '12px';
+    div.style.borderRadius = '8px';
+    div.style.boxShadow = '0 2px 10px rgba(0,0,0,0.2)';
+    div.style.fontFamily = 'Arial, sans-serif';
+    div.style.fontSize = '13px';
+    div.style.color = '#333';
+    div.style.lineHeight = '1.5';
 
-    let color = "#C79B66"; // dorado por defecto
+    div.innerHTML = `
+        <h4 style="margin: 0 0 10px 0; font-size: 14px; border-bottom: 1px solid #ddd; padding-bottom: 5px;">
+            <i class="fas fa-info-circle"></i> Simbología
+        </h4>
+        
+        <strong style="display: block; margin-bottom: 5px;">Año del Proyecto</strong>
+        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+            <div style="width: 14px; height: 14px; background: #366159; border-radius: 50%; margin-right: 8px;"></div> 
+            <span>2026</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+            <div style="width: 14px; height: 14px; background: #861E34; border-radius: 50%; margin-right: 8px;"></div> 
+            <span>2025</span>
+        </div>
+        <div style="display: flex; align-items: center; margin-bottom: 12px;">
+            <div style="width: 14px; height: 14px; background: #C79B66; border-radius: 50%; margin-right: 8px;"></div> 
+            <span>Otro año</span>
+        </div>
 
-    if (anioInicio === 2026 || anioFin === 2026) {
-        color = "#366159"; // verde
-    } else if (anioInicio === 2025 || anioFin === 2025) {
-        color = "#861E34"; // vino
-    }
+        <strong style="display: block; margin-bottom: 5px;">Tipo de Proyecto</strong>
+        
+        <div style="display: flex; align-items: center; margin-bottom: 5px;">
+            <svg width="20" height="28" viewBox="0 0 100 100" style="margin-right: 5px;">
+                <path d="M50 0 A35 35 0 0 0 15 35 C15 65 50 100 50 100 C50 100 85 65 85 35 A35 35 0 0 0 50 0 Z" fill="#666" stroke="white" stroke-width="3"/>
+                <path d="M50 18 L32 34 L38 34 L38 50 L46 50 L46 40 L54 40 L54 50 L62 50 L62 34 L68 34 Z" fill="white" stroke="white" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>
+            </svg>
+            <span>Obra</span>
+        </div>
 
-    let diseñoInterior = "";
-
-    // Lógica para elegir el ícono basado en el módulo
-    if (modulo && modulo.toLowerCase().includes('mobiliario')) {
-        diseñoInterior = `
-            <g stroke="${color}" fill="none" stroke-linejoin="round" stroke-linecap="round">
-                <!-- Pizarrón -->
-                <rect x="35" y="24" width="50" height="26" stroke-width="2"/>
-                <rect x="37" y="26" width="46" height="22" stroke-width="1.5"/>
-                <rect x="46" y="44" width="8" height="4" stroke-width="1.5"/>
-
-                <!-- Bases Pizarrón -->
-                <rect x="32" y="52" width="56" height="3" stroke-width="2"/>
-                <line x1="34" y1="58" x2="86" y2="58" stroke-width="2"/>
-
-                <!-- Mesa -->
-                <rect x="30" y="64" width="60" height="4" fill="white" stroke-width="2"/>
-                <line x1="33" y1="68" x2="33" y2="86" stroke-width="2"/>
-                <line x1="38" y1="68" x2="36" y2="86" stroke-width="2"/>
-                <line x1="87" y1="68" x2="87" y2="86" stroke-width="2"/>
-                <line x1="82" y1="68" x2="84" y2="86" stroke-width="2"/>
-
-                <!-- Sillas -->
-                <g fill="white" stroke-width="2">
-                    <!-- Silla Izquierda -->
-                    <line x1="42" y1="80" x2="42" y2="88"/>
-                    <line x1="48" y1="80" x2="48" y2="88"/>
-                    <path d="M38 80 L52 80 L50 64 L40 64 Z" stroke-linejoin="round"/>
-                    <line x1="43" y1="68" x2="47" y2="68" stroke-width="2" stroke-linecap="round"/>
-                    
-                    <!-- Silla Derecha -->
-                    <line x1="72" y1="80" x2="72" y2="88"/>
-                    <line x1="78" y1="80" x2="78" y2="88"/>
-                    <path d="M68 80 L82 80 L80 64 L70 64 Z" stroke-linejoin="round"/>
-                    <line x1="73" y1="68" x2="77" y2="68" stroke-width="2" stroke-linecap="round"/>
-                </g>
-            </g>
-        `;
-    } else {
-        diseñoInterior = `
-            <defs>
-                <g id="win">
-                    <rect x="0" y="0" width="2.5" height="3.5" fill="white"/>
-                    <rect x="3.5" y="0" width="2.5" height="3.5" fill="white"/>
-                    <rect x="0" y="4.5" width="2.5" height="3.5" fill="white"/>
-                    <rect x="3.5" y="4.5" width="2.5" height="3.5" fill="white"/>
-                </g>
-            </defs>
-            <rect x="20" y="78" width="80" height="3" rx="1" fill="${color}"/>
-            <rect x="24" y="54" width="22" height="24" fill="${color}"/>
-            <polygon points="20,54 46,54 46,42 28,42" fill="${color}"/>
-            <rect x="74" y="54" width="22" height="24" fill="${color}"/>
-            <polygon points="74,54 100,54 92,42 74,42" fill="${color}"/>
-            <rect x="46" y="32" width="28" height="46" fill="${color}"/>
-            <polygon points="42,32 78,32 60,18" fill="${color}"/>
-            <line x1="60" y1="18" x2="60" y2="8" stroke="${color}" stroke-width="2"/>
-            <path d="M60 8 Q64 6 66 9 T72 8 L72 13 Q70 14 66 11 T60 14 Z" fill="${color}"/>
-            <circle cx="60" cy="42" r="7" fill="white"/>
-            <circle cx="60" cy="37.5" r="0.8" fill="${color}"/>
-            <circle cx="64.5" cy="42" r="0.8" fill="${color}"/>
-            <circle cx="60" cy="46.5" r="0.8" fill="${color}"/>
-            <circle cx="55.5" cy="42" r="0.8" fill="${color}"/>
-            <path d="M60 42 L60 38.5 M60 42 L63 42" stroke="${color}" stroke-width="1.5" stroke-linecap="round"/>
-            <use href="#win" x="28" y="58"/>
-            <use href="#win" x="28" y="68"/>
-            <use href="#win" x="37" y="58"/>
-            <use href="#win" x="37" y="68"/>
-            <use href="#win" x="77" y="58"/>
-            <use href="#win" x="77" y="68"/>
-            <use href="#win" x="86" y="58"/>
-            <use href="#win" x="86" y="68"/>
-            <use href="#win" x="51" y="52"/>
-            <use href="#win" x="63" y="52"/>
-            <rect x="51" y="64" width="7" height="14" fill="white"/>
-            <rect x="62" y="64" width="7" height="14" fill="white"/>
-        `;
-    }
-
-    // Se ajustó el viewBox para recortar el espacio vacío que dejó el pin
-    const svgIcon = `
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="10 0 100 95" width="100%" height="100%">
-        ${diseñoInterior}
-    </svg>
+        <div style="display: flex; align-items: center;">
+            <svg width="20" height="28" viewBox="0 0 100 100" style="margin-right: 5px;">
+                <path d="M50 0 A35 35 0 0 0 15 35 C15 65 50 100 50 100 C50 100 85 65 85 35 A35 35 0 0 0 50 0 Z" fill="#666" stroke="white" stroke-width="3"/>
+                <polygon points="50,20 65,43 35,43" fill="white" stroke-linejoin="round"/>
+            </svg>
+            <span>Mobiliario</span>
+        </div>
     `;
+    return div;
+};
 
-    return L.divIcon({
-        className: 'custom-marker',
-        
-        iconSize:    [40, 40],   
-        
-        iconAnchor:  [20, 40],   
-        
-        popupAnchor: [0, -40],
-        
-        html: `<div style="width:100%; height:100%;">${svgIcon}</div>`
-    });
-}
-    function cargarMarcadoresProyectos(anio = null) {
-        mostrarLoader();
-        let url = '/mapa/datos-proyectos';
-        if (anio) {
-            url += '?anio=' + anio;
+leyenda.addTo(map);
+    function crearIconoProyecto(inicio, termino, modulo) {
+        function obtenerAnio(fecha) {
+            if (!fecha) return null;
+            const f = new Date(fecha);
+            return isNaN(f) ? null : f.getFullYear();
         }
+
+        const anioInicio = obtenerAnio(inicio);
+        const anioFin = obtenerAnio(termino);
+
+        let color = "#C79B66"; // dorado por defecto
+
+        if (anioInicio === 2026 || anioFin === 2026) {
+            color = "#366159"; // verde
+        } else if (anioInicio === 2025 || anioFin === 2025) {
+            color = "#861E34"; // vino
+        }
+
+        let figuraInterior = "";
+
+        if (modulo && modulo.toLowerCase().includes('mobiliario')) {
+            figuraInterior = `<polygon points="50,20 65,43 35,43" fill="white" stroke-linejoin="round"/>`;
+        } else {
+            figuraInterior = `<path d="M50 18 L32 34 L38 34 L38 50 L46 50 L46 40 L54 40 L54 50 L62 50 L62 34 L68 34 Z" fill="white" stroke="white" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/>`;
+        }
+
+        const svgIcon = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+            <path d="M50 0 A35 35 0 0 0 15 35 C15 65 50 100 50 100 C50 100 85 65 85 35 A35 35 0 0 0 50 0 Z" fill="${color}" stroke="white" stroke-width="3"/>
+            ${figuraInterior}
+        </svg>
+        `;
+
+        return L.divIcon({
+            className: 'custom-marker',
+            iconSize:    [28, 40],   
+            iconAnchor:  [14, 40],   
+            popupAnchor: [0, -40],
+            html: `<div style="width:100%; height:100%; display:flex; justify-content:center; align-items:center;">${svgIcon}</div>`
+        });
+    }
+
+    // ACTIALIZADO: Ahora acepta anio y modulo
+    function cargarMarcadoresProyectos(anio = null, modulo = null) {
+        mostrarLoader();
+        
+        let url = new URL('/mapa/datos-proyectos', window.location.origin);
+        if (anio) url.searchParams.append('anio', anio);
+        if (modulo) url.searchParams.append('modulo', modulo);
 
         fetch(url)
             .then(res => res.json())
@@ -397,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <b>CCT:</b>${proyecto.cct}<br>
                             <b>Modulo:</b>${proyecto.modulo}<br>
                             <b>Nombre del proyecto u origen: </b>${proyecto.nombre_proyecto}<br>
-                            <b>Monto inversión: $</b>${proyecto.monto_inversion}<br>
+                            <b>Monto inversión: $</b>${Number(proyecto.monto_inversion).toLocaleString('es-MX')}<br>
                             <div style="margin-top: 12px; text-align: center;">
                                 <a href="/proyectos${proyecto.id}/ver-detalles" target="_blank" 
                                 class="btn btn-sm btn-outline-danger w-100" style="font-size: 12px;">
@@ -423,7 +399,6 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-
     function buscarProyectoPorFolio(folio) {
         fetch('/mapa/datos-proyectos?folio=' + encodeURIComponent(folio))
             .then(res => res.json())
@@ -434,18 +409,20 @@ document.addEventListener('DOMContentLoaded', function () {
                     const lng = parseFloat(proyecto.longitud);
                     if (!isNaN(lat) && !isNaN(lng)) {
                         const marker = L.marker([lat, lng], {
-                            icon: crearIconoProyecto(proyecto.inicio, proyecto.termino)
+                            icon: crearIconoProyecto(proyecto.inicio, proyecto.termino, proyecto.modulo)
                         }).bindPopup(`
                             <b>Folio PPI:</b> ${proyecto.folio_ppi || 'Sin folio'}<br>
-                            <b>${proyecto.nombre_proyecto}</b><br>
-                            <b>Monto inversion: $</b>${proyecto.monto_inversion}<br>
+                            <b>CCT:</b>${proyecto.cct}<br>
+                            <b>Modulo:</b>${proyecto.modulo}<br>
+                            <b>Nombre del proyecto u origen: </b>${proyecto.nombre_proyecto}<br>
+                            <b>Monto inversión: $</b>${Number(proyecto.monto_inversion).toLocaleString('es-MX')}<br>
                             <div style="margin-top: 12px; text-align: center;">
-                                <a href="/proyectos${proyecto.id}/ver-detalles" target="_blank" class="btn btn-sm btn-outline-danger w-100" style="font-size: 12px;">
+                                <a href="/proyectos/${proyecto.id}/ver-detalles" target="_blank" 
+                                class="btn btn-sm btn-outline-danger w-100" style="font-size: 12px;">
                                     <i class="fas fa-eye"></i> Ver detalles del proyecto
                                 </a>
                             </div>
-                            `
-                        );
+                        `);
                         capaProyectos.addLayer(marker);
                         marker.openPopup();
                     }
@@ -458,7 +435,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const folio = document.getElementById('folioInput').value.trim();
         if (folio) buscarProyectoPorFolio(folio);
     });
-    
+
     function cargarMacroregionesPorLotes(data, lote = 3, delay = 100) {
         mostrarLoader();
         const nombres = Object.keys(regiones);
@@ -505,9 +482,6 @@ document.addEventListener('DOMContentLoaded', function () {
         procesarLote();
     }
 
-    const planteles = window.planteles || [];
-    const markers = [];
-
     function mostrarLoader() {
         document.getElementById('loader').style.display = 'block';
     }
@@ -525,7 +499,6 @@ document.addEventListener('DOMContentLoaded', function () {
             );
             botones.forEach(b => contenedor.appendChild(b));
         }
-
         ordenarGrupo('.grupo-macro');
         ordenarGrupo('.grupo-micro');
     });
@@ -533,7 +506,6 @@ document.addEventListener('DOMContentLoaded', function () {
     document.getElementById('buscadorRegion').addEventListener('input', function () {
         const valorBusqueda = this.value.toLowerCase();
         const botones = document.querySelectorAll('.filtro-btn');
-
         botones.forEach(boton => {
             const nombre = boton.getAttribute('data-nombre').toLowerCase();
             if (nombre.includes(valorBusqueda)) {
@@ -544,27 +516,49 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    const filtroFecha = document.getElementById('filtroFecha');
-    if (filtroFecha) {
-        filtroFecha.addEventListener('change', function () {
-            const anioSeleccionado = filtroFecha.value;
-            cargarMarcadoresProyectos(anioSeleccionado);
+    
+    const btnFiltros = document.getElementById('btnFiltros');
+    const panelFiltros = document.getElementById('panelFiltros');
+    const btnAplicarFiltros = document.getElementById('btnAplicarFiltros');
+
+    if (btnFiltros && panelFiltros) {
+        btnFiltros.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (panelFiltros.style.display === 'none' || panelFiltros.style.display === '') {
+                panelFiltros.style.display = 'block';
+            } else {
+                panelFiltros.style.display = 'none';
+            }
         });
     }
 
-    const btnFiltroFecha = document.getElementById('btnFiltroFecha');
-    const opcionesFiltro = document.getElementById('opcionesFiltro');
+    if (btnAplicarFiltros) {
+        btnAplicarFiltros.addEventListener('click', (e) => {
+            e.preventDefault();
+            const anioSeleccionado = document.getElementById('filtroAnio').value;
+            const moduloSeleccionado = document.getElementById('filtroModulo').value;
+            
+            cargarMarcadoresProyectos(anioSeleccionado, moduloSeleccionado);
+            panelFiltros.style.display = 'none'; 
+        });
+    }
 
-    btnFiltroFecha.addEventListener('click', () => {
-    opcionesFiltro.style.display = 
-        opcionesFiltro.style.display === 'block' ? 'none' : 'block';
-    });
+    const btnLimpiarFiltros = document.getElementById('btnLimpiarFiltros');
 
-    opcionesFiltro.querySelectorAll('button').forEach(btn => {
-    btn.addEventListener('click', () => {
-        const anioSeleccionado = btn.getAttribute('data-anio');
-        cargarMarcadoresProyectos(anioSeleccionado);
-        opcionesFiltro.style.display = 'none'; 
-    });
-    });
+    if (btnLimpiarFiltros) {
+        btnLimpiarFiltros.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            document.getElementById('filtroAnio').value = "";
+            document.getElementById('filtroModulo').value = "";
+
+            const folioInput = document.getElementById('folioInput');
+            if (folioInput) folioInput.value = "";
+
+            cargarMarcadoresProyectos();
+
+            document.getElementById('panelFiltros').style.display = 'none';
+        });
+    }
+
 });
