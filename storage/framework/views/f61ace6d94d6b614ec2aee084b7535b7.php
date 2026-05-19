@@ -82,6 +82,28 @@
     
     <?php echo $__env->yieldPushContent('scripts'); ?>
 
+    
+    <?php if (isset($component)) { $__componentOriginalba2562234d78813400578b9bccfb664c = $component; } ?>
+<?php if (isset($attributes)) { $__attributesOriginalba2562234d78813400578b9bccfb664c = $attributes; } ?>
+<?php $component = Illuminate\View\AnonymousComponent::resolve(['view' => 'components.agente-atlas','data' => []] + (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag ? $attributes->all() : [])); ?>
+<?php $component->withName('agente-atlas'); ?>
+<?php if ($component->shouldRender()): ?>
+<?php $__env->startComponent($component->resolveView(), $component->data()); ?>
+<?php if (isset($attributes) && $attributes instanceof Illuminate\View\ComponentAttributeBag): ?>
+<?php $attributes = $attributes->except(\Illuminate\View\AnonymousComponent::ignoredParameterNames()); ?>
+<?php endif; ?>
+<?php $component->withAttributes([]); ?>
+<?php echo $__env->renderComponent(); ?>
+<?php endif; ?>
+<?php if (isset($__attributesOriginalba2562234d78813400578b9bccfb664c)): ?>
+<?php $attributes = $__attributesOriginalba2562234d78813400578b9bccfb664c; ?>
+<?php unset($__attributesOriginalba2562234d78813400578b9bccfb664c); ?>
+<?php endif; ?>
+<?php if (isset($__componentOriginalba2562234d78813400578b9bccfb664c)): ?>
+<?php $component = $__componentOriginalba2562234d78813400578b9bccfb664c; ?>
+<?php unset($__componentOriginalba2562234d78813400578b9bccfb664c); ?>
+<?php endif; ?>
+
 </body>
 
 </html><?php /**PATH C:\xampp\htdocs\atlas_local\resources\views/layouts/app.blade.php ENDPATH**/ ?>

@@ -115,27 +115,27 @@
                     <div class="mb-3">
                         <label for="nivel" class="form-label">Nivel</label>
                         <input type="text" name="nivel" id="nivel" class="form-control"
-                            value="{{ old('nivel', $ticket->nivel ?? '') }}">
+                            value="{{ old('nivel', $ticket->solicitante->nivel ?? '') }}">
                     </div>
                     <div class="mb-3">
                         <label for="modalidad" class="form-label">Modalidad</label>
                         <input type="text" name="modalidad" id="modalidad" class="form-control"
-                            value="{{ old('modalidad', $ticket->modalidad ?? '') }}">
+                            value="{{ old('modalidad', $ticket->solicitante->modalidad ?? '') }}">
                     </div>
                     <div class="mb-3">
                         <label for="plantel" class="form-label">Plantel</label>
                         <input type="text" name="plantel" id="plantel" class="form-control"
-                            value="{{ old('plantel', $ticket->plantel ?? '') }}">
+                            value="{{ old('plantel', $ticket->solicitante->plantel ?? '') }}">
                     </div>
                     <div class="mb-3">
                         <label for="turno" class="form-label">Turno</label>
                         <input type="text" name="turno" id="turno" class="form-control"
-                            value="{{ old('turno', $ticket->turno ?? '') }}">
+                            value="{{ old('turno', $ticket->solicitante->turno ?? '') }}">
                     </div>
                     <div class="mb-3">
                         <label for="numero_alumnos" class="form-label">Número de Alumnos</label>
                         <input type="number" name="numero_alumnos" id="numero_alumnos" class="form-control"
-                            value="{{ old('numero_alumnos', $ticket->numero_alumnos ?? '') }}">
+                            value="{{ old('numero_alumnos', $ticket->solicitante->numero_alumnos ?? '') }}">
                     </div>
                 </div>
             </div>

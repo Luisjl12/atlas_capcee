@@ -27,7 +27,9 @@ class Solicitante extends Model
         'modalidad', 
         'plantel', 
         'turno', 
-        'numero_alumnos'
+        'numero_alumnos', 
+        'numero_maestros', 
+        'numero_aulas', 
     ];
 
     //Relacion con ticket

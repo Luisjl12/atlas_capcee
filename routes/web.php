@@ -37,6 +37,8 @@ use App\Http\Controllers\DatosProyectosController;
 use App\Http\Controllers\ProyectoInversionController; 
 use App\Http\Controllers\ProyectosEspecialesController; 
 use App\Http\Controllers\TicketController; 
+use App\Http\Controllers\AgenteAtlasController;
+
 
 //Rutas para ver y acceder al login, accion del logout
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -475,4 +477,26 @@ Route::get('/seguimiento-proyectos', [ProyectosEspecialesController::class, 'ind
 Route::post('/tickets', [ProyectosEspecialesController::class, 'store'])->name('tickets.store');
 Route::get('/tickets/{id}/dictamen', [ProyectosEspecialesController::class, 'dictamen'])->name('tickets.dictamen');
 Route::post('/tickets/{id}/dictamen', [ProyectosEspecialesController::class, 'guardarDictamen'])->name('tickets.guardarDictamen');
+
+
+/*
+|--------------------------------------------------------------------------
+| Ruta del Agente IA Atlas CAPCEE
+|--------------------------------------------------------------------------
+| Añade estas líneas a tu archivo routes/web.php
+|
+| Se protege con el middleware 'auth' para que solo usuarios
+| autenticados en Atlas puedan usar el agente.
+|--------------------------------------------------------------------------
+*/
+
+// Ruta GET para mostrar la vista del chat
+Route::get('/agente', function () {
+    return view('agente.chat');
+})->name('agente.chat');
+
+// Ruta POST para procesar los mensajes
+Route::post('/agente/chat', [AgenteAtlasController::class, 'chat'])
+    ->name('agente.atlas.chat');
+
 

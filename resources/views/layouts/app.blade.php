@@ -82,6 +82,9 @@
     {{-- Scripts adicionales desde @push --}}
     @stack('scripts')
 
+    {{-- Botón Flotante del Agente AI --}}
+    <x-agente-atlas />
+
 </body>
 
 </html>
